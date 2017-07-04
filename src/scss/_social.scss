@@ -1,0 +1,59 @@
+
+$dropbox: #0d6aad;
+$facebook: #3a589a;
+$twitter: #4099ff;
+$google: #e9544f;
+$openid: #777;
+
+
+@mixin social($color) {
+  background-color: $color !important;
+  color: $white !important;
+  border-color: transparent;
+
+  &:hover {
+    background-color: mix($color, $white, 20%) !important;
+    color: $color !important;
+    // background-color: rgba($color, .8) !important;
+  }
+}
+
+
+.dropbox {
+  @include social($dropbox);
+}
+
+.dropbox-fg {
+  color: $dropbox;
+}
+
+.facebook {
+  @include social($facebook);
+}
+
+
+.facebook-fg {
+  color: $facebook;
+}
+
+.twitter {
+  @include social($twitter);
+}
+
+
+.twitter-fg {
+  color: $twitter;
+}
+
+.google {
+  @include social($google);
+}
+
+
+.google-fg {
+  color: $google;
+}
+
+.open-id {
+  @include social($openid);
+}

@@ -1,0 +1,91 @@
+.participant-lookup-panel {
+  background: mix($light-blue, $white, 50%);
+  padding: 10px;
+  width: 520px;
+
+  .filters {
+    > div {
+      margin: 5px 0;
+    }
+
+    .submittedby-autocomplete-row {
+      margin: 10px 0 0;
+    }
+  }
+
+  .participants-table {
+    background: $white;
+    border-radius: 8px;
+    width: 100%;
+
+    tr:hover {
+      background: rgba($light-blue, .4);
+    }
+
+    .select-column-header,
+    .column-avatar,
+    .column-preview {
+      text-align: center;
+    }
+
+    .column-avatar {
+      width: 30px;
+    }
+
+    .column-gender {
+      width: 85px;
+    }
+
+    .column-date {
+      white-space: nowrap;
+      width: 110px;
+    }
+
+    .column-preview {
+      width: 30px;
+    }
+  }
+
+  img {
+    height: 30px;
+    width: 30px;
+  }
+
+  .actions {
+    margin-top: 10px;
+    text-align: right;
+  }
+
+  .user-autocomplete {
+    display: inline-block;
+    height: 20px;
+    width: 100%;
+
+    .suggestions-panel {
+      @extend %shadow-z-1;
+    }
+
+    input {
+      text-align: left;
+      width: 100%;
+    }
+  }
+
+}
+
+.preview-panel {
+  background: mix($light-blue, $white, 50%);
+  padding: 5px 20px !important;
+  width: 800px;
+
+  > div {
+    max-height: 90%;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+    .panel {
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  }
+}

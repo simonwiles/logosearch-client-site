@@ -1,0 +1,249 @@
+// based on:
+// http://www.cssscript.com/creating-accessible-switch-controls-with-pure-css-scss/
+
+
+@mixin ui-toggle-branding(
+  $ui-toggle-off-color: #777,
+  $ui-toggle-on-color: #5fc054,
+  $ui-toggle-inactive-text: rgba(white, 0.5),
+  $ui-toggle-transition: cubic-bezier(0,1,0.5,1)
+) {
+
+  input[type="checkbox"] {
+
+    &[disabled] ~ label {
+      color: rgba($ui-toggle-off-color, 0.5);
+      .ui-toggle__switch { box-shadow: none; }
+    }
+
+    &:focus ~ label, &:hover ~ label {
+      .ui-toggle__switch {
+        background-color: $ui-toggle-off-color;
+        &:after { color: darken($ui-toggle-off-color, 10%); }
+      }
+    }
+    &:hover ~label { color: darken($ui-toggle-off-color, 5%); }
+    &:checked {
+      ~ label {
+        &:hover { color: darken($ui-toggle-on-color, 3%); }
+
+        .ui-toggle__switch {
+          background-color: lighten($ui-toggle-on-color, 5%);
+          &:after { color: darken($ui-toggle-on-color, 5%); }
+        }
+      }
+
+      &:focus, &:hover {
+        ~ label {
+          .ui-toggle__switch {
+            background-color: $ui-toggle-on-color;
+            &:after { color: darken($ui-toggle-on-color, 10%); }
+          }
+        }
+      }
+    }
+  }
+
+  label {
+
+    .ui-toggle__label-text { flex: 1; }
+
+    .ui-toggle__switch {
+      transition: background-color 0.3s $ui-toggle-transition;
+      background: lighten($ui-toggle-off-color, 5%);
+      &:before { color: $ui-toggle-inactive-text; text-shadow: none; text-decoration: line-through; }
+      &:after {
+        // Autoprefixer choked here, so making the prefixes explicit
+        -webkit-transition: -webkit-transform 0.3s $ui-toggle-transition;
+        transition: transform 0.3s $ui-toggle-transition;
+        color: $ui-toggle-off-color;
+      }
+    }
+
+  }
+}
+
+@mixin ui-toggle-appearance
+(
+  $ui-toggle-width: 134px,
+  $ui-toggle-height: 36px,
+  $ui-toggle-border-radius: 4px,
+  $ui-toggle-offset: 2px,
+  $ui-toggle-label-font-size: 14px,
+  $ui-toggle-switch-font-size: 12px,
+  $ui-toggle-shadow: 0 3px 3px rgba(black, 0.4)
+){
+  $ui-toggle-switch-width: $ui-toggle-width/2;
+
+  input[type="checkbox"] {
+
+    &:focus ~ label, &:hover ~ label {
+      .ui-toggle__switch {
+        &:after { box-shadow: $ui-toggle-shadow; }
+      }
+    }
+
+    &:checked {
+      ~ label {
+        .ui-toggle__switch {
+          &:after { transform: translate3d($ui-toggle-width - ($ui-toggle-switch-width + $ui-toggle-offset),0,0); }
+        }
+      }
+      &:focus, &:hover {
+        ~ label {
+          .ui-toggle__switch { &:after { box-shadow: $ui-toggle-shadow; } }
+        }
+      }
+    }
+  }
+
+  label {
+    font-size: $ui-toggle-label-font-size;
+
+    .ui-toggle__switch {
+      height: $ui-toggle-height;
+      flex: 0 0 $ui-toggle-width;
+      border-radius: $ui-toggle-border-radius;
+      box-shadow: $button-shadow;
+
+      &:before {
+        left: $ui-toggle-width/2;
+        font-size: $ui-toggle-switch-font-size;
+        line-height: $ui-toggle-height;
+        width: $ui-toggle-width/2;
+        padding: 0 12px;
+      }
+
+      &:after {
+        top: $ui-toggle-offset; left: $ui-toggle-offset;
+        border-radius: $ui-toggle-border-radius/2;
+        width: $ui-toggle-switch-width - $ui-toggle-offset;
+        line-height: $ui-toggle-height - ($ui-toggle-offset*2);
+        font-size: $ui-toggle-switch-font-size;
+      }
+
+      &:hover {
+        &:after { box-shadow: $ui-toggle-shadow; }
+      }
+    }
+  }
+}
+
+
+
+.ui-toggle {
+  display: inline-block;
+  position: relative;
+  *, *:before, *:after { box-sizing: border-box; }
+  //overflow: hidden;
+
+  input[type="checkbox"] {
+    opacity: 0;
+    position: absolute;
+    top: 0; left: 0;
+
+    &[disabled] ~ label {
+      pointer-events: none;
+      .ui-toggle__switch { opacity: 0.4; }
+    }
+
+    &:checked {
+      ~ label {
+
+        .ui-toggle__switch {
+
+          &:before {
+            content: attr(data-unchecked);
+            left: 0;
+          }
+
+          &:after {
+            content: attr(data-checked);
+          }
+        }
+      }
+
+      &:focus, &:hover {
+        ~ label {
+        }
+      }
+    }
+  }
+
+  label {
+    user-select: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    .ui-toggle__label-text {
+      flex: 1;
+      padding-left: 32px;
+    }
+
+    .ui-toggle__switch {
+      position: relative;
+
+      &:before {
+        content: attr(data-checked);
+        position: absolute;
+        top: 0;
+        text-transform: uppercase;
+        text-align: center;
+      }
+
+      &:after {
+        content: attr(data-unchecked);
+        position: absolute;
+        z-index: 5;
+        text-transform: uppercase;
+        text-align: center;
+        background: white;
+        transform: translate3d(0,0,0);
+      }
+
+    }
+
+  }
+
+  // Default values for .ui-toggle class
+  @include ui-toggle-branding;
+  @include ui-toggle-appearance;
+
+  // Create toggles of different sizes by overriding the ui-toggle-appearance mixin defaults
+  &.ui-toggle--size-small {
+    @include ui-toggle-appearance
+    (
+      90px, // Toggle width
+      24px,  // Toggle height
+      2px,   // Toggle border radius
+      1px,   // Offset (distance btw switch and box)
+      13px,  // Label font size
+      10px,  // Switch font size
+      0 2px 2px rgba(black, 0.4) // Switch shadow on hover/focus
+    );
+  }
+
+  &.ui-toggle--size-large {
+    @include ui-toggle-appearance
+    (
+      160px, // Toggle width
+      50px,  // Toggle height
+      4px,   // Toggle border radius
+      2px,   // Offset (distance btw switch and box)
+      14px,  // Label font size
+      14px,  // Switch font size
+      0 4px 4px rgba(black, 0.4) // Switch shadow on hover/focus
+    );
+  }
+
+  &.radio {
+    @include ui-toggle-branding
+    (
+      $accent-bg,  // Off state color
+      $accent-bg,  // On state color
+      rgba($white, .8),  // Off state text color
+      ease-in-out  // Transition timing function
+    );
+  }
+}

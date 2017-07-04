@@ -1,0 +1,43 @@
+@import '~scss/definitions';
+
+$black: #000 !default;
+$main-accent: #00f !default;
+$accent-bg: #800080 !default;
+
+.modal-mask {
+  background: rgba($black, .6);
+  height: 100%;
+  left: 0;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 3;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    margin-right: -.25em; // Adjusts for spacing
+    vertical-align: middle;
+  }
+}
+
+.wrapper {
+  display: inline-block;
+  position: relative;
+  text-align: initial;
+  vertical-align: middle;
+}
+
+.close-button {
+  color: $main-accent;
+  cursor: pointer;
+  position: absolute;
+  right: -5px;
+  top: -5px;
+
+  &:hover {
+    color: $accent-bg;
+  }
+}

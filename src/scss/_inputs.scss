@@ -1,0 +1,279 @@
+%md-input-blurred {
+  background-color: transparent;
+  background-image: none;
+  border: 0;
+  border-bottom: 1px solid rgba($black, .26);
+  box-shadow: none;
+  color: rgba($black, .87);
+  // margin-bottom: 1px;
+  outline: 0;
+  padding: 0;
+  text-shadow: 1px 1px 1px rgba($black, .004);
+
+}
+
+%md-input-focussed-label {
+  color: $main-accent !important;
+  font-weight: bold;
+}
+
+%md-input-focussed {
+  border-color: $main-accent;
+  border-width: 2px;
+  margin-bottom: 0;
+
+  ~ label {
+    @extend %md-input-focussed-label;
+  }
+}
+
+%md-input {
+  @extend %md-input-blurred;
+  border-radius: 0;
+
+  &:focus {
+    @extend %md-input-focussed;
+  }
+}
+
+
+%md-input-select {
+
+  @extend %md-input;
+
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNiIgd2lkdGg9IjEwIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMCwwIDUsNiIgc3R5bGU9ImZpbGw6cmdiYSgwLDAsMCwuMjQpOyIvPjwvc3ZnPg==);
+  background-position: right center;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  padding: 0 12px 0 0;
+}
+
+%button-bar {
+  margin: 0;
+  padding: 0;
+  display: flex;
+
+  li {
+    box-shadow: $button-shadow;
+    display: inline-block;
+    font-size: 1.2em;
+    margin: 0 1px;
+
+    text-shadow: 0 0 1px rgba($black, .12);
+
+    &:first-child {
+      border-radius: 4px 0 0 4px;
+
+      a {
+        border-radius: 4px 0 0 4px;
+      }
+    }
+
+    &:last-child {
+      border-radius: 0 4px 4px 0;
+
+      a {
+        border-radius: 0 4px 4px 0;
+      }
+    }
+
+    &.selected { box-shadow: 0 3px 2px 0 rgba($black, .24); }
+
+    &:hover a,
+    &.selected a {
+      background-color: rgba($main-accent, .2);
+      color: $main-accent;
+    }
+  }
+
+  a {
+    @extend %clickable;
+    background-color: $accent-bg;
+    background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
+    color: $white;
+    display: block;
+    padding: 4px 15px;
+    text-align: center;
+    text-decoration: none;
+  }
+}
+
+ul.ui-button-bar { @extend %button-bar; }
+
+select {
+  @extend %md-input-select;
+
+  &:required:invalid {
+    color: $gray;
+  }
+  option[value=""][disabled] {
+    display: none;
+  }
+}
+
+
+button.text-style {
+  background: transparent;
+  border: 0;
+  color: $main-accent;
+  cursor: pointer;
+  display: inline-block;
+  font: inherit;
+  line-height: normal;
+  margin: 0;
+  overflow: visible;
+  padding: 0 4px;
+
+  -moz-user-select: text;
+  -ms-user-select: text;
+  -webkit-user-select: text;
+  user-select: text;
+
+  &:hover,
+  &:focus {
+    background-color: $light-blue;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
+  &[disabled] {
+    color: $gray;
+    pointer-events: none;
+  }
+}
+
+
+button.button-style {
+  @extend %clickable;
+  background-color: $accent-bg;
+  background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
+  border: 0;
+  border-radius: 2px;
+  box-shadow: $button-shadow;
+  box-sizing: border-box;
+  color: $white;
+  cursor: pointer;
+  display: inline-block;
+  flex: 0 0 90px;
+  font: inherit;
+  font-size: 12px;
+  height: 24px;
+  left: 0;
+  line-height: 24px;
+  margin: 0;
+  overflow: visible;
+  padding: 0 6px;
+  position: relative;
+  text-transform: uppercase;
+  top: 0;
+
+  &:hover,
+  &:focus {
+    // @include alpha-background-color(rgba($main-accent, .2), $white);
+    background-color: mix($main-accent, $white, 20%);
+    color: $main-accent;
+  }
+
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
+  &.larger {
+    font-size: 16px;
+    height: 32px;
+    line-height: 32px;
+  }
+}
+
+
+
+input.text-style {
+  @extend %md-input;
+
+  -moz-appearance: textfield;
+
+  display: inline-block;
+  text-align: center;
+  width: 2em;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}
+
+.input-field {
+  margin-bottom: 20px;
+  position: relative;
+
+  &.labelled {
+    padding-top: 15px;
+
+    > textarea,
+    > input,
+    .select2 {
+      margin-top: 8px;
+    }
+  }
+
+  > label {
+    color: rgba($black, .5);
+    display: block;
+    margin-bottom: 4px;
+    position: absolute;
+    top: 0;
+
+    &.focussed {
+      @extend %md-input-focussed-label;
+    }
+
+    .help-icon {
+      margin-left: 8px;
+    }
+  }
+
+  > textarea,
+  > input {
+
+    @extend %md-input;
+    display: block;
+    font-size: 16px;
+    width: 100%;
+
+    &.ng-invalid.ng-touched {
+      border-color: $alert;
+      border-width: 2px;
+
+      ~ .alert {
+        color: $alert;
+        display: block;
+        font-size: .7em;
+      }
+    }
+  }
+
+  > textarea {
+    min-height: 64px;
+  }
+
+  > input,
+  > select {
+    height: 32px;
+  }
+
+  .alert {
+    display: none;
+  }
+}
+
+
+
+
+

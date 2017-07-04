@@ -1,0 +1,352 @@
+import { Observable }                 from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+
+import { Injectable }                 from '@angular/core';
+import { Headers,
+         Http,
+         Response,
+         RequestOptions,
+         URLSearchParams }            from '@angular/http';
+
+import { environment }                from '../../environments/environment';
+
+import { User,
+         IUser }                      from '../models/user';
+import { Sample }                     from '../models/sample';
+import { StudentParticipant }         from '../models/participants';
+
+import { AuthService }                from './auth.service';
+import { PubSubService }              from './pubsub.service';
+
+import { DjangoQueryEncoder }         from '../utils/django-query-encoder';
+
+
+@Injectable()
+export class ApiService {
+
+  private headers: Headers = new Headers({
+    // 'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  });
+
+  constructor(
+    private http: Http,
+    private authService: AuthService,
+    private pubSubService: PubSubService) { }
+
+
+  public getUsers(params?): Observable<any> {
+
+    const getUsersURI: string = environment.apiURL + 'users/';
+
+    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+    if (params) {
+
+      if (params.offset) { _params.set('offset', params.offset); }
+
+      if (params.limit) { _params.set('limit', params.limit); }
+
+      if (params.sortBy) {
+        _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
+      }
+
+      if (params.search) { _params.set('search', params.search); }
+
+      if (params.hasSamples) { _params.set('hasSamples', params.hasSamples); }
+    }
+
+    // const options: RequestOptions = new RequestOptions({
+    //   headers: this.getHeadersWithAuth(this.headers),
+    //   search: _params
+    // });
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+
+    return this.http.get(getUsersURI, options)
+                    .map(
+                      (response: Response) => {
+                        const data = response.json();
+                        data.results = data.results.map(
+                          (result) => {
+                            return new User(<IUser>result);
+                          }
+                        );
+                        return data;
+                      }
+                    )
+                    .catch(error => this.handleError(error));
+  };
+
+  public getUser(uuid: string): Observable<any> {
+
+    const getUserURI: string = environment.apiURL + 'users/' + uuid;
+    const options: RequestOptions = new RequestOptions({ headers: this.headers });
+
+    return this.http.get(getUserURI, options)
+                    .map(response => new User(<IUser>response.json()))
+                    .catch(error => this.handleError(error));
+  };
+
+  public getUserSocial(uuid: string): Observable<any> {
+
+    const userSocialURI: string = environment.apiURL + 'users/' + uuid + '/social/';
+    const options: RequestOptions = new RequestOptions({
+      headers: this.getHeadersWithAuth(this.headers)
+    });
+
+    return this.http.get(userSocialURI, options)
+                    .map(response => response.json().socialAuth)
+                    .catch(error => this.handleError(error));
+  };
+
+  public deleteUserSocial(uuid: string, provider: string) {
+    const userSocialURI = `${environment.apiURL}users/${uuid}/social/${provider}/`;
+    const options: RequestOptions = new RequestOptions({
+      headers: this.getHeadersWithAuth(this.headers)
+    });
+
+    return this.http.delete(userSocialURI, options)
+                    .catch(error => this.handleError(error));
+  }
+
+
+  // public getUserRecordings(uuid: string): Observable<any> {
+
+  //   const userRecordingsURI: string = environment.apiURL + 'users/' + uuid + '/recordings/';
+  //   const options: RequestOptions = new RequestOptions({ headers: this.headers });
+
+  //   return this.http.get(userRecordingsURI, options)
+  //                   .map(response => response.json().recordings || [])
+  //                   .catch(error => this.handleError(error));
+  // };
+
+
+  // public getUserSamples(userUuid: string): Observable<any> {
+
+  //   const userSamplesURI: string = environment.apiURL + 'users/' + userUuid + '/samples/';
+  //   const options: RequestOptions = new RequestOptions({ headers: this.headers });
+
+  //   return this.http.get(userSamplesURI, options)
+  //                   .map(response => response.json().samples || [])
+  //                   .catch(error => this.handleError(error));
+  // };
+
+
+  public getSample(uuid: string): Observable<any> {
+
+    const sampleURI: string = environment.apiURL + 'samples/' + uuid + '/';
+    const options: RequestOptions = new RequestOptions({ headers: this.headers });
+
+    return this.http.get(sampleURI, options)
+                    .map(response => new Sample(response.json()))
+                    .catch(error => this.handleError(error));
+  };
+
+  public getSampleEvaluations(uuid: string): Observable<any> {
+
+    const sampleURI: string = environment.apiURL + 'samples/' + uuid + '/evaluations/';
+    const options: RequestOptions = new RequestOptions({ headers: this.headers });
+
+    return this.http.get(sampleURI, options)
+                    .map(response => response.json())
+                    .catch(error => this.handleError(error));
+  }
+
+  public getSamples(params?): Observable<any> {
+    const samplesURI: string = environment.apiURL + 'samples/';
+
+    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+    if (params) {
+
+      if (params.offset) { _params.set('offset', params.offset); }
+
+      if (params.limit) { _params.set('limit', params.limit); }
+
+      if (params.sortBy) {
+        _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
+      }
+
+      if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
+
+      if (params.subjectArea) {
+        _params.set('subjectArea', ((params.subjectAreaOperator === true) ? '+' : '') + params.subjectArea);
+      }
+
+      if (params.gradeLevel) {
+        _params.set('gradeLevel', ((params.gradeLevelOperator === true) ? '+' : '') + params.gradeLevel);
+      }
+
+      if (params.participantFilters && params.participantFilters.length) {
+        let _pfilters = params.participantFilters.filter(fobj => fobj.valid)
+        .map(
+          fobj => Object.keys(fobj)
+                    .filter(key => key !== 'count' && key !== 'valid')
+                    .map(key => (fobj[key] === 'any') ? '' : fobj[key])
+                    .join('_') + ':' + fobj.count
+        );
+        _params.set('p', _pfilters.join(','));
+      }
+
+      if (params.search) { _params.set('search', params.search); }
+
+      if (params.langUsageFilters && params.langUsageFilters.length) {
+        let _lufilters = params.langUsageFilters.filter(fobj => fobj.valid).map(
+          fobj => `${fobj.lang}_${fobj.operator}_${fobj.usage}`
+        );
+        _params.set('langUsage', _lufilters.join(','));
+      }
+
+      if (params.numTurns && params.numTurns.valid) {
+        _params.set('numTurns', `${params.numTurns.operator}:${params.numTurns.count}`);
+      }
+
+      if (params.hasEll && params.hasEll !== 'any') { _params.set('hasEll', params.hasEll); }
+      if (params.hasRecording) { _params.set('hasRecording', params.hasRecording); }
+
+    }
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+
+    return this.http.get(samplesURI, options)
+                    .map(
+                      (response: Response) => {
+                        let data = response.json();
+                        data.results = data.results.map(
+                          (sample) => new Sample(sample)
+                        );
+                        data.params = _params;
+                        return data;
+                      }
+                    )
+                    .catch(error => this.handleError(error));
+  };
+
+  public getParticipants(params): Observable<any> {
+    const participantsURI: string = environment.apiURL + 'participants/';
+
+    let participantType = params.type;
+
+    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+
+    if (params.offset) { _params.set('offset', params.offset); }
+
+    if (params.limit) { _params.set('limit', params.limit); }
+
+    if (params.sortBy) {
+      _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
+    }
+
+    if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
+
+    if (params.search) { _params.set('search', params.search); }
+
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+
+    return this.http.get(participantsURI + participantType + '/', options)
+                    .map(
+                      (response: Response) => {
+                        let data = response.json();
+                        data.results = data.results.map(
+                          (participant) => new StudentParticipant(participant)
+                        );
+                        data.params = _params;
+                        return data;
+                      }
+                    )
+                    .catch(error => this.handleError(error));
+
+  }
+
+  public getEvaluations(params?): Observable<any> {
+    const evaluationssURI: string = environment.apiURL + 'evaluations/';
+
+    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+    if (params) {
+
+      if (params.offset) { _params.set('offset', params.offset); }
+
+      if (params.limit) { _params.set('limit', params.limit); }
+
+      if (params.sortBy) {
+        _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
+      }
+
+      if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
+
+    }
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+
+    return this.http.get(evaluationssURI, options)
+                    .map(
+                      (response: Response) => {
+                        let data = response.json();
+                        // data.results = data.results.map(
+                        //   (sample) => new Sample(sample)
+                        // );
+                        data.params = _params;
+                        return data;
+                      }
+                    )
+                    .catch(error => this.handleError(error));
+  };
+
+
+
+  public postSample(): Observable<any> {
+    const samplesURI: string = environment.apiURL + 'samples/';
+    const options: RequestOptions = new RequestOptions({
+      headers: this.getHeadersWithAuth(this.headers)
+    });
+
+    return this.http.post(samplesURI, options)
+                    .map(response => response.json())
+                    .catch(error => this.handleError(error));
+
+  }
+
+
+  private getHeadersWithAuth(headers): Headers {
+
+    if (!this.authService.isLoggedIn) {
+      this.pubSubService.error(
+        'Not logged in!',
+        'Sorry, you must be logged in to perform this operation!');
+    }
+
+    this.authService.getJWT().subscribe(
+      jwt => {
+        headers.set('Authorization', 'JWT ' + jwt);
+        return headers;
+      },
+      error => { this.pubSubService.error('Authentication Error!', error.message); }
+    );
+
+    return headers;
+  }
+
+
+  private handleError(error: any): Observable<any> {
+    let errString: string;
+
+    if (error.status === 0) {
+      errString = 'No response from server!';
+    } else if (error.status === 404) {
+      errString = 'Resource not found!';
+    } else {
+      try {
+        errString = (
+          (typeof error === 'string') ?
+            error : error.json().detail || error.json().non_field_errors[0]);
+      } catch (err) {
+        errString = `Unknown server error: ${error.status}!`;
+      }
+    }
+
+    if (!environment.production) { console.warn(errString); console.error(error); }
+
+    return new Observable<string>(
+      (observer: any) => {
+        observer.error(new Error(errString));
+        observer.complete();
+      }
+    );
+  }
+}

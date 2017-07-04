@@ -1,0 +1,36 @@
+<form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="login-form panel">
+
+  <div class="heading">Login to the Language Repository</div>
+
+  <div *ngIf="errorMessage" class="ui-state-error">
+    <i class="fa fa-exclamation-triangle "></i> Error: {{errorMessage}}
+  </div>
+
+  <div class="left">
+    <label for="email">Email</label> <span [hidden]="_email.valid || _email.pristine">(invalid)</span><br>
+    <input type="email" name="email" [(ngModel)]="email"
+           #_email="ngModel" required pattern=".+@.+"> <br>
+    <label for="password">Password</label> <br>
+    <input type="password" name="password" [(ngModel)]="password" required> <br>
+    <input type="submit" value="Login">
+  </div>
+
+  <div class="right">
+    <div class="connect">Login with</div>
+    <button class="facebook">
+      <i class="fa fa-facebook" aria-hidden="true"></i> Facebook
+    </button>
+    <br>
+    <button class="google" (click)="authService.socialLogin('googleOauth2')">
+      <i class="fa fa-google" aria-hidden="true"></i> Google
+    </button>
+    <br>
+    <button class="dropbox" (click)="authService.socialLogin('dropboxOauth2')">
+      <i class="fa fa-dropbox" aria-hidden="true"></i> Dropbox
+    </button>
+    <br>
+    <button class="open-id" (click)="doOpenIdLogin()">
+      <i class="fa fa-openid" aria-hidden="true"></i> OpenID
+    </button>
+  </div>
+</form>

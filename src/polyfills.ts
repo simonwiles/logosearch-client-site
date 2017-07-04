@@ -70,3 +70,28 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
  * Need to import at least one locale-data with intl.
  */
 // import 'intl/locale-data/jsonp/en';
+
+
+
+
+/***************************************************************************************************
+ * LOCAL
+ */
+
+Storage.prototype.setObject = function(key, value) {
+  this.setItem(key, JSON.stringify(value));
+};
+
+Storage.prototype.getObject = function(key) {
+  const value = this.getItem(key);
+  return value && JSON.parse(value);
+};
+
+String.prototype.toCamelCase = function(){
+  return this.replace(/-[a-z]/g, function(match) { return match.toUpperCase(); });
+};
+
+String.prototype.toKebabCase = function(){
+  return this.replace(/[A-Z]/g, function(match) { return '-' + match.toLowerCase(); });
+};
+

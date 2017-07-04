@@ -1,0 +1,118 @@
+
+// * { Box-sizing: Border-box } FTW
+// http://www.paulirish.com/2012/box-sizing-border-box-ftw/
+html {
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+
+.cf:after {
+  clear: both;
+  content: '';
+  display: table;
+}
+
+a {
+  color: $main-accent;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+hr {
+  border-color: $accent-bg;
+  margin: 20px 0;
+}
+
+dt { padding: .2em; }
+dd { margin: 0; padding: .2em; }
+
+p-fieldset { margin-bottom: 1em; }
+
+input[disabled] {
+  background: none;
+  border: 0;
+  color: inherit;
+  padding: 0;
+}
+
+.clickable { @extend %clickable; }
+
+.u-flex {
+  display: inline-flex;
+  align-items: center;
+}
+
+ul.pills {
+  margin: 0;
+  padding: 0;
+
+  height: 28px;
+  line-height: 28px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  li {
+    background-color: $pill-bg;
+    border: 1px solid $pill-border;
+    border-radius: 1px;
+    display: inline;
+    list-style-type: none;
+    margin-right: 5px;
+    margin-top: 5px;
+    padding: 0 5px;
+  }
+}
+
+span.value-stud {
+  -moz-border-radius: .8em;
+  -webkit-border-radius: .8em;
+  background: $main-accent;
+  border-radius: .8em;
+  color: $white;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 5px;
+  text-align: center;
+  width: 1.6em;
+
+  i.fa {
+    line-height: 1.6em;
+  }
+}
+
+.accent {
+  color: $main-accent;
+  font-weight: bold;
+}
+
+
+.tooltip-table {
+  // background-color: $white;
+  color: $white;
+  font-size: 14px;
+
+  td,
+  th {
+    height: 22px;
+  }
+
+  th {
+    border-bottom: 1px dotted $white;
+    font-size: 12px;
+    text-shadow: none;
+    text-transform: uppercase;
+  }
+
+  td {
+    // border-bottom: 1px dotted $main-accent;
+  }
+}

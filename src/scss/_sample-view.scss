@@ -1,0 +1,149 @@
+.sample-view {
+
+  h2 { margin: 8px 0; }
+
+  .context {
+    margin: 4px 28px;
+
+    img {
+      vertical-align: middle;
+    }
+  }
+
+  .transcription-participant {
+    white-space: nowrap;
+  }
+
+  table.participants {
+    td {
+      // display: inline-flex;
+    }
+  }
+
+  .transcription {
+    display: table;
+    width: 100%;
+
+    td,
+    th {
+      border-bottom: 2px solid rgba($black, .12);
+      height: 30px;
+      padding: 4px 8px;
+    }
+
+    th {
+      color: $main-accent;
+      font-weight: 700;
+      padding: 0 8px;
+      text-align: left;
+      text-shadow: 0 1px 0 $white;
+    }
+
+    td {
+      text-align: left;
+      vertical-align: top;
+    }
+
+    tr {
+      transition: background .4s ease;
+    }
+
+    .highlight {
+      @extend %bg-overlay;
+      background-color: $light-blue;
+    }
+  }
+
+  .recording {
+    display: inline-flex;
+
+    > div {
+      background: $light-blue;
+      border-radius: 4px;
+      display: flex;
+      margin: auto 0;
+      padding: 8px;
+      width: 100%;
+    }
+
+    span {
+      color: rgba($black, .56);
+      margin: 4px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      // text-shadow: none;
+      white-space: nowrap;
+    }
+
+    audio {
+      text-shadow: none;
+      width: 100%;
+    }
+
+  }
+
+}
+
+.evaluations {
+
+  background: rgba($light-blue, .2);
+
+  table {
+    width: 100%;
+  }
+
+  .value-stud {
+    display: inline-block;
+    float: right;
+  }
+
+  th,
+  td {
+    vertical-align: text-top;
+    width: 50%;
+  }
+
+  th {
+    text-align: left;
+  }
+
+  tfoot {
+    background: $light-blue;
+
+    td {
+      height: 20px;
+      text-align: right;
+    }
+
+    a {
+      font-weight: bold;
+      // text-shadow: none;
+    }
+  }
+}
+
+.display-main {
+  // display: inline-block;
+  // width: 100%;
+  // transform: translate3d(100%, 0, 0);
+}
+
+.participant-languages {
+
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+
+  li {
+    border: 1px solid rgba($black, .56);
+    display: inline-block;
+    margin: 0 2px;
+    padding: 0 2px;
+
+    i {
+      margin-left: 4px;
+    }
+  }
+}
+
+

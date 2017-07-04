@@ -1,0 +1,102 @@
+<div *ngIf="sample" class="sample-view" [ngClass]="panelClass">
+
+  <div class="g">
+    <div class="u-1-2">
+      <p class="submission-details">[Submitted by <a [routerLink]="['/user', sample?.submittedBy.uuid]">{{sample?.submittedBy.displayName}}</a> on <span>{{sample?.submittedAt | date}}</span>]</p>
+      <!--p>This is a {{sample?.subjectArea}} class with {{sample?.students.length}} students...</p-->
+    </div>
+    <div class="u-1-2 recording">
+      <div>
+        <span *ngIf="!sample.recording">[no audio recording available]</span>
+        <audio *ngIf="sample.recording" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
+      </div>
+    </div>
+  </div>
+
+  <ui-collapsible header="<h2>Context</h2>" [shown]="true">
+    <p>{{sample?.context}}</p>
+    <table class="context">
+      <tr>
+        <th>Subject Area / Topic</th>
+        <td>
+          <ul class="pills">
+            <li *ngFor="let subjectArea of sample?.render('subjectArea')">{{subjectArea.label}}</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th>Objective</th><td>{{sample?.objective}}</td>
+      </tr>
+      <tr>
+        <th>Prompt</th><td>{{sample?.prompt}}</td>
+      </tr>
+      <tr>
+        <th>Evaluations</th>
+        <td>
+          Dimension One: <strong>{{sample?.d1Avg}}</strong>, Dimension Two: <strong>{{sample?.d2Avg}}</strong> (avg. of {{sample?.numScores}} scores)
+          <a (click)="evaluationsCollapsible.toggle(true)">[more...]</a>
+        </td>
+      </tr>
+    </table>
+  </ui-collapsible>
+
+  <ui-collapsible header="<h2>Participants</h2>" [shown]="true">
+    <table class="participants">
+      <tr *ngFor="let participant of sample?.students" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
+        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
+        <td>“{{participant.nickname}}”</td>
+        <td>
+          <span class="value-stud"><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></span>
+          {{(participant.gender == 'F') ? 'Female' : 'Male' }}
+        </td>
+        <td>
+          <span class="value-stud">{{participant.gradeLevel}}</span> {{gradeLevel[participant.gradeLevel]}}
+        </td>
+        <td>
+          Speaker of
+          <ul class="participant-languages">
+            <li *ngFor="let lang of participant.languages">
+              {{languages[lang.language].label}}
+              <i *ngIf="lang.isPrimaryLanguage" class="fa fa-home" uiTooltip="{{languages[lang.language].label}} is a primary language of {{participant.nickname}}."></i>
+              <i *ngIf="lang.participantIsLearner" class="fa fa-mortar-board" uiTooltip="{{participant.nickname}} is a learner of {{languages[lang.language].label}}."></i>
+              <i *ngIf="lang.assessedLevel" class="fa fa-bar-chart" uiTooltip="{{renderAssessedLevel(lang.assessedLevel)}}."></i>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr *ngFor="let participant of sample?.adults" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
+        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
+        <td>“{{participant.nickname}}”</td>
+        <td>{{participant.role}} <i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></td>
+      </tr>
+    </table>
+  </ui-collapsible>
+
+  <hr>
+  <ui-collapsible header="<h2>Transcription</h2>" [shown]="true">
+    <div [innerHtml]="renderedTranscription"></div>
+  </ui-collapsible>
+
+  <hr>
+  <ui-collapsible #evaluationsCollapsible id="test" header="<h2>Evaluations</h2>" [shown]="false" (open)="getEvaluations()">
+    <div *ngFor="let evaluation of evaluations" class="evaluations panel">
+      <table>
+        <tr>
+          <th>Dimension One <span class="value-stud">{{evaluation.d1Score}}</span></th>
+          <th>Dimension Two <span class="value-stud">{{evaluation.d2Score}}</span></th>
+        </tr>
+        <tr>
+          <td *ngIf="evaluation.d1Reason">{{evaluation.d1Reason}}</td>
+          <td *ngIf="!evaluation.d1Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
+          <td *ngIf="evaluation.d2Reason">{{evaluation.d2Reason}}</td>
+          <td *ngIf="!evaluation.d2Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
+        </tr>
+        <tfoot>
+          <tr>
+            <td colspan="100%">Evaluation by: <a [routerLink]="['/user', evaluation.submittedBy.uuid]">{{evaluation.submittedBy.displayName}}</a>{{(evaluation.scorerIsSubmitter) ? ' (submitter)': ''}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </ui-collapsible>
+</div>

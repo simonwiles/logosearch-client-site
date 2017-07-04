@@ -1,0 +1,116 @@
+
+// standards
+$white: #fff;
+$black: #000;
+$gray: #909090;
+
+// main colours
+$cardinal: #8d181b;
+$orange: #ed7d31;
+$dark-blue: #2b3d50;
+$light-blue: #a8d8eb;
+
+// ui colours
+$background: $white;
+$main-accent: $orange;
+$accent-bg: mix($main-accent, $white, 80%);
+$accent-disabled: mix($main-accent, $gray, 50%);
+$panel: #eff0f1;
+$alert: #f00;
+$invalid-warning: #f00;
+$valid-confirmation: #008000;
+$hover-highlight: $light-blue;
+$pill-bg: #e4e4e4;
+$pill-border: #ccc;
+
+
+
+$font-header: 'Roboto Slab', serif;
+$font-main: 'Roboto', sans-serif;
+
+
+$button-shadow: 0 1px 2px 0 rgba($black, .24);
+
+@mixin transform-vcenter {
+  position: relative;
+  top: 50%;
+  @include transform(translateY(-50%));
+  @include transform-style(preserve-3d);
+}
+
+
+
+
+%clickable {
+  cursor: pointer !important;
+  transition: background-color .2s, color .2s;
+
+  &:hover {
+    background-color: $hover-highlight;
+  }
+}
+
+%bg-overlay {
+  background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
+}
+
+%accent-bg {
+  @extend %bg-overlay;
+  background-color: $accent-bg;
+}
+
+
+// Material Design shadows
+%shadow-z-1 { box-shadow: 0 1px 3px 0 rgba($black, .12), 0 1px 2px 0 rgba($black, .24); }
+
+
+%animation-pulse {
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-name: pulse;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-name: pulse;
+  animation-timing-function: ease-in-out;
+}
+
+%animation-bounce {
+  -webkit-animation-duration: 1s;
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-name: bounce;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-duration: 1s;
+  animation-iteration-count: 1;
+  animation-name: bounce;
+  animation-timing-function: ease-in-out;
+}
+
+
+// mixin for multiline ellipsis
+// adapted from: http://hackingui.com/front-end/a-pure-css-solution-for-multiline-text-truncation/
+@mixin multiline-ellipsis($line-height: 1.2em, $line-count: 1, $bg-color: $white) {
+  overflow: hidden;
+  position: relative;
+  line-height: $line-height;
+  max-height: $line-height * $line-count;
+  text-align: justify;
+  padding-right: 1em;
+
+  &:before {
+    bottom: 0;
+    content: '...';
+    position: absolute;
+    right: 0;
+  }
+
+  &:after {
+    background: $bg-color;
+    content: '';
+    height: 1em;
+    margin-top: .2em;
+    position: absolute;
+    right: 0;
+    width: 1em;
+  }
+}

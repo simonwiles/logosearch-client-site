@@ -1,0 +1,315 @@
+
+.sample-entry {
+
+  > div {
+    position: relative;
+    transform-style: preserve-3d;
+    width: 100%;
+
+    > div {
+      float: left;
+      position: relative;
+      width: 100%;
+    }
+
+    > div:nth-child(2) {
+      position: absolute;
+    }
+  }
+
+  .switch-toggle label {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  h3 {
+    @extend %accent-bg;
+    border-bottom: 3px $main-accent solid;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 1px 3px 0 rgba($black, .12), 0 1px 2px 0 rgba($black, .24);
+    color: $white;
+    margin: 20px 5% -20px;
+    padding: 8px 16px;
+    text-shadow: none;
+  }
+
+  .step-buttons {
+    position: absolute;
+    right: 6%;
+    top: 28px;
+
+    .button-style {
+      background: mix($accent-bg, $white, 20%);
+      color: $main-accent;
+      font-size: 14px;
+
+      &:hover {
+        background: $light-blue;
+        color: $white;
+      }
+    }
+  }
+
+  .language-usage {
+    label {
+      color: rgba($black, .5);
+
+      &.focussed {
+        color: $main-accent;
+        font-weight: bold;
+      }
+    }
+
+    > :first-child button {
+      margin: 4px 0 0 8px;
+    }
+  }
+
+  .lang-usage-row {
+    height: 45px;
+
+    button {
+      height: 30px;
+    }
+
+    > :first-child {
+      text-align: center;
+    }
+
+    > :nth-child(2) {
+      padding-right: 8px;
+      padding-top: 4px;
+    }
+
+    > :last-child {
+      border-bottom: 1px solid rgba($black, .2);
+      padding-top: 5px;
+      position: relative;
+
+      &::after {
+        @extend %animation-pulse;
+        color: $valid-confirmation;
+        content: '\f00c';  // fa-exclamation-triangle
+        font: normal normal normal 18px/1 FontAwesome;
+        opacity: 0;
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        transition: opacity .5s ease;
+      }
+
+      &.invalid::after {
+        @extend %animation-bounce;
+        color: $invalid-warning;
+        content: '\f071';  // fa-exclamation-triangle
+        opacity: 1;
+        transition: opacity .1s;
+      }
+    }
+  }
+
+  .participants-table {
+    width: 100%;
+
+    .remove {
+      text-align: center;
+      padding: 0;
+      width: 10px;
+    }
+
+    .avatar {
+      width: 60px;
+    }
+
+    .nickname {
+      min-width: 270px;
+    }
+
+    .languages {
+      width: 100%;
+    }
+
+    li:after {
+      font: normal normal normal 14px/1 FontAwesome;
+    }
+
+    li.valid:after {
+      color: $valid-confirmation;
+      // content: '\f058';  // fa-check-circle
+      content: '\f00c';  // fa-check
+    }
+
+    li.select2-selection__choice:not(.valid):after {
+      color: $invalid-warning;
+      // content: '\f06a';  // fa-exclamation-circle
+      content: '\f071';  // fa-exclamation-triangle
+    }
+  }
+
+  .actions {
+    margin-top: 20px;
+    text-align: right;
+  }
+
+  .transcription {
+    table-layout: fixed;
+    width: 100%;
+
+    td {
+      border-bottom: 0;
+      vertical-align: middle;
+    }
+
+    .remove-turn { width: 40px; }
+    .turn-num { width: 40px; }
+    .speaker { width: 150px; }
+    .turn {}
+
+    .turn-participant {
+      width: 100%;
+    }
+  }
+
+}
+
+.linguagram-panel {
+  background: mix($light-blue, $white, 50%);
+  padding: 5px 20px !important;
+  width: 500px;
+
+  .toggle-container {
+    border: 1px solid $gray;
+    line-height: 24px;
+    margin-top: 10px;
+    overflow: visible;
+    padding: 4px 8px;
+  }
+
+  .standards {
+
+    p {
+      margin: 10px 0 0;
+    }
+
+    > div {
+      display: flex;
+
+      button {
+        flex: 0 0 auto;
+        margin-top: 6px;
+      }
+
+      > div {
+        flex: 1 0 auto;
+
+        > div {
+          display: flex;
+        }
+      }
+
+      .input-field {
+        flex: 1 0 auto;
+        margin-bottom: 0;
+        padding: 0 10px;
+
+        select {
+          width: 100%;
+        }
+      }
+
+      .remove {
+        flex: 0 0 auto;
+      }
+    }
+
+  }
+}
+
+.linguagram {
+  border: 1px solid $gray;
+  padding: 4px 8px 4px;
+  width: 100%;
+
+  th {
+    color: $gray;
+    font-weight: normal;
+    width: 95px;
+
+    &.active {
+      border-color: $main-accent;
+      color: $main-accent;
+      font-weight: bold;
+    }
+
+    i {
+      transform: translateZ(0);
+
+      &.fa-check-circle {
+        @extend %animation-bounce;
+        color: $valid-confirmation;
+      }
+
+      &.fa-exclamation-circle {
+        @extend %animation-pulse;
+        color: $invalid-warning;
+      }
+    }
+  }
+
+  td {
+    height: 45px;
+    padding-top: 10px;
+
+    &:last-child {
+      padding: 0;
+      width: 20px;
+    }
+  }
+}
+
+.file-upload {
+  background: $light-blue;
+  border-radius: 4px;
+  display: flex;
+  float: right;
+  padding: 8px;
+  text-shadow: none;
+  width: 50%;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    min-width: 1px;
+  }
+
+  > div:first-child {
+    flex: 0 1 auto;
+  }
+
+  > div:nth-child(2) {
+    flex: 2 1 auto;
+    padding: 0 4px;
+
+    span {
+      color: rgba($black, .56);
+      margin: 4px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  > div:last-child {
+    flex: 0 0 auto;
+
+    button {
+      flex: 0 0 auto;
+      margin: 2px 0;
+    }
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+}
+

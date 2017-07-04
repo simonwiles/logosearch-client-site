@@ -1,1 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
+
+// 3rd party CSS
+@import 'lib/pure-grids';
+@import 'lib/pure-grids-responsive';
+@import 'lib/normalize.min';
+
+// 3rd party SCSS
+@import '~compass-mixins/lib/compass';
+
+// Global styles and definitions
+@import 'scss/definitions';
+@import 'scss/animations';
+@import 'scss/social';
+@import 'scss/base-styles';
+@import 'scss/inputs';
+@import 'scss/tables';
+
+// ui-modules
+@import 'scss/ui/ui-classes';
+@import 'scss/ui/ui-dropdown';
+@import 'scss/ui/ui-growl';
+@import 'scss/ui/ui-range-slider';
+@import 'scss/ui/ui-select';
+@import 'scss/ui/ui-tabs';
+@import 'scss/ui/ui-toggle';
+@import 'scss/ui/ui-toggle-switch';
+@import 'scss/ui/ui-tooltip';
+@import 'scss/ui/ui-wizard';
+
+// main website structure
+@import 'scss/website-main';
+
+// homepage
+@import 'scss/homepage';
+
+// app components
+@import 'scss/login-form';
+@import 'scss/profile';
+@import 'scss/sample-view';
+@import 'scss/samples-browser';
+@import 'scss/sample-entry';
+@import 'scss/participant-lookup';

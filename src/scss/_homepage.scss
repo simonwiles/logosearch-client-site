@@ -1,0 +1,26 @@
+.homepage {
+  background-color: $white;
+  margin: -15px;
+  padding-bottom: 1em;
+  text-align: center;
+
+  .main-image {
+    width: 1200px;
+  }
+
+  .items {
+    font-family: $font-header;
+    font-size: 2em;
+    min-height: 100px;
+    padding: 1em 0 0;
+    vertical-align: middle;
+
+    > div {
+      @extend %clickable;
+    }
+
+    img {
+      margin-bottom: 8px;
+    }
+  }
+}

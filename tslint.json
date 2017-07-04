@@ -17,7 +17,7 @@
       true,
       "rxjs"
     ],
-    "import-spacing": true,
+    "import-spacing": false,
     "indent": [
       true,
       "spaces"
@@ -63,6 +63,7 @@
     "no-trailing-whitespace": true,
     "no-unnecessary-initializer": true,
     "no-unused-expression": true,
+    "no-unused-variable": true,
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
@@ -73,7 +74,7 @@
       "check-else",
       "check-whitespace"
     ],
-    "prefer-const": true,
+    "prefer-const": false,
     "quotemark": [
       true,
       "single"
@@ -110,13 +111,13 @@
     "directive-selector": [
       true,
       "attribute",
-      "lr",
+      ["lr", "ui"],
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "lr",
+      ["lr", "ui"],
       "kebab-case"
     ],
     "use-input-property-decorator": true,

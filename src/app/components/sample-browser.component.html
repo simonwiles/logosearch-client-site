@@ -1,0 +1,274 @@
+<div class="panel samples-browser">
+
+  <div class="filters">
+    <div class="filters-header">
+      <button *ngIf="!expandFilters" class="button-style" (click)="filtersCollapsible.toggle()">
+        <i class="fa fa-plus-square"></i>
+        show filters
+      </button>
+      <button *ngIf="expandFilters" class="button-style" (click)="filtersCollapsible.toggle()">
+       <i class="fa fa-minus-square"></i>
+        hide filters
+      </button>
+      <button class="button-style" (click)="resetFilters()" *ngIf="samplesListService.itemCount !== samplesListService.itemTotal" [@expandInOutHorizontal]>
+        <i class="fa fa-eraser"></i>
+        reset filters
+      </button>
+      <h3>
+        Showing {{samplesListService.itemCount | uiFormatThousands}} of {{samplesListService.itemTotal | uiFormatThousands}} Total Samples Available
+      </h3>
+      <ul class="ui-button-bar">
+        <li [ngClass]="{'selected': displayType === 'table'}"><a (click)="displayType = 'table'"><i class="fa fa-th-list"></i></a></li>
+        <li [ngClass]="{'selected': displayType === 'cards'}"><a (click)="displayType = 'cards'"><i class="fa fa-th-large"></i></a></li>
+        <li [ngClass]="{'selected': displayType === 'carousel'}"><a (click)="displayType = 'carousel'"><i class="fa fa-clone"></i></a></li>
+      </ul>
+    </div>
+
+    <ui-collapsible #filtersCollapsible
+                    [shown]="expandFilters"
+                    (open)="expandFilters = true"
+                    (close)="expandFilters = false"
+                    [hideHeader]="true"
+                    fixedHeight="59px">
+      <div class="g filter-headings">
+        <div class="u-7-24">Subject Area</div>
+        <div class="u-7-24">Grade Level</div>
+        <div class="u-10-24">Participants</div>
+      </div>
+      <div class="g">
+        <div class="u-5-24">
+          <ui-select [(ngModel)]="filters.subjectArea"
+                     [options]="subjectAreaItems"
+                     [multiple]="true"
+                     placeholder="Select subject area(s)"
+                     (selected)="samplesListService.update()"
+                     (deselected)="samplesListService.update()"
+                     [allowClear]="true">
+          </ui-select>
+        </div>
+        <div class="u-2-24">
+          <ui-toggle [(ngModel)]="filters.subjectAreaOperator"
+                     (change)="samplesListService.update()"
+                     idString="subject-area-operator"
+                     [checked]="false"
+                     [disabled]="(filters.subjectArea === null || filters.subjectArea.length < 2)"
+                     onStateLabel="All"
+                     offStateLabel="Any">
+          </ui-toggle>
+        </div>
+        <div class="u-5-24">
+          <ui-select #gradeLevelFilter name="gradeLevel"
+                     [(ngModel)]="filters.gradeLevel"
+                     [options]="gradeLevels"
+                     [multiple]="true"
+                     placeholder="Select grade level(s)"
+                     (selected)="samplesListService.update()"
+                     (deselected)="samplesListService.update()"
+                     [allowClear]="true">
+          </ui-select>
+        </div>
+        <div class="u-2-24">
+          <ui-toggle [(ngModel)]="filters.gradeLevelOperator"
+                     (change)="samplesListService.update()"
+                     idString="grade-level-operator"
+                     [checked]="false"
+                     [disabled]="(filters.gradeLevel === null || filters.gradeLevel.length < 2)"
+                     onStateLabel="All"
+                     offStateLabel="Any">
+          </ui-toggle>
+        </div>
+        <div class="u-8-24">
+          <ul class="participant-filters">
+            <li *ngIf="!filters.participantFilters.length"
+                #pNoFiltersMessage
+                class="no-filters"
+                (click)="newParticipantFilter()">
+              [Click to add a Participant Filter]
+            </li>
+
+            <li *ngFor="let participantFilter of filters.participantFilters; let i = index"
+                [ngClass]="{'invalid': !participantFilter.valid}">
+              <button class="text-style"
+                      (click)="removeParticipantFilter(participantFilter)">
+                <i class="fa fa-close"></i>
+              </button>
+              <select [(ngModel)]="participantFilter.ptype" name="pType{{i}}" required
+                      (ngModelChange)="updateFilterValidity(participantFilter)">
+                <option value="" disabled selected>type..</option>
+                <option value="a">Adult</option>
+                <option value="s" selected>Student</option>
+              </select>
+              <select [(ngModel)]="participantFilter.gender" name="pGender{{i}}" required
+                      (ngModelChange)="updateFilterValidity(participantFilter)">
+                <option value="" disabled selected>gender...</option>
+                <option *ngFor="let gender of genders"
+                        [value]="gender.value">{{gender.label}}</option>
+                <option value="any">Any</option>
+              </select>
+              <div class="fill">
+                <ui-select #languageSelect
+                           name="pLang{{i}}" required
+                           [(ngModel)]="participantFilter.lang"
+                           (ngModelChange)="updateFilterValidity(participantFilter)"
+                           [options]="languagesWithAny"
+                           [allowClear]="false">
+                </ui-select>
+              </div>
+              <select [(ngModel)]="participantFilter.operator" name="pOperator{{i}}" required
+                      (ngModelChange)="updateFilterValidity(participantFilter)">
+                <option value="eq">=</option>
+                <option value="gt">&gt;</option>
+                <option value="gte">≥</option>
+                <option value="lt">&lt;</option>
+                <option value="lte">≤</option>
+              </select>
+              <input type="number"
+                     name="pCount{{i}}"
+                     class="text-style"
+                     placeholder="#"
+                     [(ngModel)]="participantFilter.count"
+                     (ngModelChange)="updateFilterValidity(participantFilter)">
+            </li>
+          </ul>
+        </div>
+        <div class="u-2-24 u-flex">
+          <button class="button-style" (click)="newParticipantFilter()"><i class="fa fa-plus"></i> Add Filter</button>
+        </div>
+      </div>
+
+      <div class="g filter-headings">
+        <div class="u-7-24">Search</div>
+        <div class="u-7-24"># turns</div>
+        <div class="u-10-24">Language Usage</div>
+      </div>
+
+      <div class="g">
+        <div class="u-7-24 search-filter">
+          <input type="text"
+                 [(ngModel)]="samplesListService.searchTerm"
+                 uiTooltip="Search in Context, Objective, Prompt, and in the Transcript"
+                 (keyup.enter)="samplesListService.update()">
+          <button class="button-style" (click)="samplesListService.update()">
+            <i class="fa fa-search"></i> Search
+          </button>
+        </div>
+
+        <div class="u-7-24">
+          <button class="text-style"
+                  (click)="clearNumTurns()" [disabled]="!filters.numTurns.valid">
+            <i class="fa fa-close"></i>
+          </button>
+          <select [(ngModel)]="filters.numTurns.operator"
+                  (ngModelChange)="updateFilterValidity(filters.numTurns)">
+            <option value="gte">At least</option>
+            <option value="eq">Exactly</option>
+            <option value="lte">No more than</option>
+          </select>
+          <input type="number"
+                 class="text-style"
+                 placeholder="#"
+                 [(ngModel)]="filters.numTurns.count"
+                 (ngModelChange)="updateFilterValidity(filters.numTurns)">
+          turns
+        </div>
+
+        <div class="u-8-24">
+          <ul class="lang-usage-filters">
+
+            <li *ngIf="!filters.langUsageFilters.length"
+                class="no-filters"
+                (click)="newLangUsageFilter()">
+              [Click to add a Language Usage Filter]
+            </li>
+
+            <li *ngFor="let langUsageFilter of filters.langUsageFilters; let i = index"
+                [ngClass]="{'invalid': !langUsageFilter.valid}">
+              <button class="text-style"
+                      (click)="removeLangUsageFilter(langUsageFilter)">
+                <i class="fa fa-close"></i>
+              </button>
+              <select [(ngModel)]="langUsageFilter.operator" name="luOperator{{i}}" required
+                      (ngModelChange)="updateFilterValidity(langUsageFilter)">
+                <option value="gte">At least</option>
+                <option value="eq">Exactly</option>
+                <option value="lte">No more than</option>
+              </select>
+              <select [(ngModel)]="langUsageFilter.usage" name="luUsage{{i}}" required
+                      (ngModelChange)="updateFilterValidity(langUsageFilter)">
+                <option *ngFor="let langUsageUsage of langUsageUsages"
+                        [value]="langUsageUsage.value">{{langUsageUsage.label}}</option>
+              </select>
+              <div class="fill">
+                <ui-select #languageUsageSelect
+                           name="luLang{{i}}" required
+                           [(ngModel)]="langUsageFilter.lang"
+                           (ngModelChange)="updateFilterValidity(langUsageFilter)"
+                           [options]="languages"
+                           [allowClear]="false">
+                </ui-select>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="u-2-24 u-flex">
+          <button class="button-style" (click)="newLangUsageFilter()"><i class="fa fa-plus"></i> Add Filter</button>
+        </div>
+
+      </div>
+
+      <div class="g filter-headings">
+        <div class="u-4-24">Has Recording?</div>
+        <div class="u-4-24">Has ELLs?</div>
+        <div class="u-4-24"></div>
+        <div class="u-12-24"></div>
+      </div>
+      <div class="g">
+        <div class="u-4-24 switch-toggle-filter">
+          <ui-switch-toggle name="has-recording"
+                            [options]="[{label: 'Any', value: null}, {label: 'Yes', value: 'true'}, {label: 'No', value: 'false'}]"
+                            [(ngModel)]="filters.hasRecording"
+                            (ngModelChange)="samplesListService.update()">
+          </ui-switch-toggle>
+        </div>
+        <div class="u-4-24 switch-toggle-filter"
+             uiTooltip="
+              <table class='tooltip-table'>
+                <tr><th>All:</th><td>All students in the sample are ELLs</td></tr>
+                <tr><th>Some:</th><td>At least one student in the sample is an ELL</td></tr>
+                <tr><th>None:</th><td>No students in the sample are Ells</td></tr>
+              </table>"
+             [uiTooltipHTML]="true"
+             uiTooltipPosition="right">
+          <ui-switch-toggle name="has-ell"
+                            [options]="[{label: 'Any', value: null}, {label: 'All', value: 'all'}, {label: 'Some', value: 'some'}, {label: 'None', value: 'none'}]"
+                            [(ngModel)]="filters.hasEll"
+                            (ngModelChange)="samplesListService.update()">
+          </ui-switch-toggle>
+        </div>
+        <div class="u-4-24">
+        </div>
+        <div class="u-12-24"></div>
+      </div>
+
+
+    </ui-collapsible>
+  </div>
+
+  <div class="slide-container">
+    <div *ngIf="displayType === 'table'" class="display-main" [@slideForwardBack]="slideDirection">
+      <lr-samples-table [parentComponent]="samplesBrowser" [noItemsMsgHtml]="noItemsMsgHtml"></lr-samples-table>
+    </div>
+    <div *ngIf="displayType === 'cards'" class="display-main" [@slideForwardBack]="slideDirection">
+      <lr-samples-cards [noItemsMsgHtml]="noItemsMsgHtml"></lr-samples-cards>
+    </div>
+    <div *ngIf="displayType === 'carousel'" class="display-main" [@slideForwardBack]="slideDirection">
+      <lr-samples-carousel [noItemsMsgHtml]="noItemsMsgHtml"></lr-samples-carousel>
+    </div>
+  </div>
+</div>
+
+
+<!--ui-collapsible [shown]="false" header="diagnostic">
+  <pre>{{filters | json}}</pre>
+</ui-collapsible-->

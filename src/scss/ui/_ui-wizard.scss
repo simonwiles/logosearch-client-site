@@ -1,0 +1,54 @@
+.ui-wizard {
+
+  .wizard-step {
+    padding: 1em;
+  }
+
+  ul.steps-list li {
+
+    list-style: none;
+    padding: 3px 8px;
+
+    &.ui-state-default,
+    &.ui-state-active,
+    &.ui-state-disabled {
+      color: $white;
+    }
+
+    &.ui-state-default {
+      background: rgba($main-accent, .5);
+      cursor: pointer;
+    }
+
+    &.ui-state-active {
+      background: $main-accent;
+      cursor: pointer;
+    }
+
+    &.ui-state-disabled,
+    &.ui-state-disabled a, {
+      cursor: not-allowed !important;
+    }
+
+    span {
+      font-size: 1.5em;
+    }
+  }
+
+  .actions {
+
+    li {
+      float: left;
+      list-style: none;
+      text-align: center;
+      width: 8em;
+    }
+
+    &:after {
+      clear: both;
+      content: '';
+      display: table;
+    }
+  }
+
+}

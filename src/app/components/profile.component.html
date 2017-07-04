@@ -1,0 +1,126 @@
+<div *ngIf="errorMessage" class="ui-state-error">
+  <i class="fa fa-exclamation-triangle "></i> Error: {{errorMessage}}
+</div>
+
+<lr-tab-view #tabView *ngIf="user">
+
+
+  <lr-tab-panel leftIcon="fa-user" header="User Details">
+    <div class="panel">
+      <table>
+        <tr>
+          <th>Display Name:</th>
+          <td>{{user.displayName}}</td>
+        </tr>
+
+        <tr>
+          <th>email:</th>
+          <td>{{user.email}}</td>
+        </tr>
+
+        <tr>
+          <th>Given Name:</th>
+          <td>{{user.givenName}}</td>
+        </tr>
+
+        <tr>
+          <th>Family Name:</th>
+          <td>{{user.familyName}}</td>
+        </tr>
+      </table>
+    </div>
+  </lr-tab-panel>
+
+
+
+  <lr-tab-panel *ngIf="isOwnUser" leftIcon="fa-pencil-square-o" header="Edit Profile">
+    <p>Edit your profile here!</p>
+  </lr-tab-panel>
+
+
+
+  <lr-tab-panel *ngIf="isOwnUser" leftIcon="fa-cloud" header="Social Logins" class="social-logins">
+
+    <dl class="g">
+
+    <ng-template ngFor let-auth [ngForOf]="authConfig.oauthProviders | lrMapToIterable">
+      <dt class="u-xl-1-5 u-lg-1-3 u-1-4 {{auth.value.class}}"
+          [ngClass]="{'inactive': !userSocial[auth.key]}">
+        <i class="fa {{auth.value.icon}}" aria-hidden="true"></i> {{auth.value.name}}
+      </dt>
+      <dd class="u-xl-3-5 u-lg-1-2 u-1-2">
+        <p *ngIf="userSocial[auth.key]">{{userSocial[auth.key]}}</p>
+        <button *ngIf="!userSocial[auth.key]" (click)="addUserSocial(auth.key)">
+          <i class="fa fa-sign-in"></i> sign-in
+        </button>
+      </dd>
+      <dd class="u-xl-1-5 u-lg-1-6 u-1-4">
+        <button *ngIf="userSocial[auth.key]" (click)="removeUserSocial(auth.key)">
+          <i class="fa fa-sign-out"></i> remove
+        </button>
+      </dd>
+    </ng-template>
+    </dl>
+
+  </lr-tab-panel>
+
+  <lr-tab-panel #samplesTab leftIcon="fa-comments" header="Samples ({{samplesListService.itemCount}})">
+    <lr-sample-browser [noItemsMsgHtml]="noSamplesMsgHtml" displayType="cards"></lr-sample-browser>
+  </lr-tab-panel>
+
+  <lr-tab-panel #evaluationsTab leftIcon="fa-thumbs-up" header="Evaluations ({{evaluationsListService.itemCount}})">
+    <div class="pagination ui-helper-clearfix">
+      <ui-pagination [dataService]="evaluationsListService"
+                     paginationLimitLabel="Evaluations per page:"
+                     [paginationLimitOptions]="[4, 10, 20]">
+      </ui-pagination>
+    </div>
+    <div *ngFor="let evaluation of evaluationsListService.items" class="evaluations panel">
+      <table>
+        <tr>
+          <th>Dimension One <span class="value-stud">{{evaluation.d1Score}}</span></th>
+          <th>Dimension Two <span class="value-stud">{{evaluation.d2Score}}</span></th>
+        </tr>
+        <tr>
+          <td *ngIf="evaluation.d1Reason">{{evaluation.d1Reason}}</td>
+          <td *ngIf="!evaluation.d1Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
+          <td *ngIf="evaluation.d2Reason">{{evaluation.d2Reason}}</td>
+          <td *ngIf="!evaluation.d2Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
+        </tr>
+        <tfoot>
+          <tr>
+            <td colspan="100%">Evaluation by: <strong>{{evaluation.submittedBy.displayName}}{{(evaluation.scorerIsSubmitter) ? ' (submitter)': ''}}</strong></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </lr-tab-panel>
+
+  <lr-tab-panel leftIcon="fa-upload" header="Unattached Recordings ()">
+  <!--ul>
+    <li *ngFor="let recording of userRecordings">
+      {{recording.recordingFile.split('/').pop()}}<br><br>
+      <audio src="{{appConfig.mediaURL}}{{recording.recordingFile}}" controls></audio>
+    </li>
+  </ul-->
+  </lr-tab-panel>
+
+</lr-tab-view>
+
+<p-dialog
+  [header]="dialogHeader"
+  [(visible)]="dialogDisplay"
+  modal="true"
+  width="600"
+  minWidth="300">
+
+  <p [innerHTML]="dialogContent" style="margin-top:0"></p>
+  <button class="{{dialogProvider.name.toLowerCase()}}"
+          (click)="openSocialAccountSettings()">
+    {{dialogProvider.name}} Account Settings
+  </button>
+  <button type="button" (click)="dialogDisplay=false" style="float:right">
+    <i class="fa fa-close"></i> Cancel
+  </button>
+</p-dialog>
+

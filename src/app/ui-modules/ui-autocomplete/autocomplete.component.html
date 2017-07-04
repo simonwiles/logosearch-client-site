@@ -1,0 +1,53 @@
+<span class="autocomplete" [ngClass]="styleClass">
+
+  <input #input
+         type="text"
+         name="ac"
+         autocomplete="off"
+         [attr.id]="inputId"
+         [attr.placeholder]="placeholder"
+         [attr.size]="size"
+         [attr.maxlength]="maxlength"
+         [attr.tabindex]="tabindex"
+         [readonly]="readonly"
+         [disabled]="disabled"
+
+         [ngClass]="inputStyleClass"
+         [value]="value ? (prop ? value[prop] : value) : null"
+         (input)="onInput($event)"
+         (keydown)="onKeydown($event)"
+         (focus)="onInputFocus($event)"
+         (blur)="onInputBlur($event)">
+
+  <button *ngIf="showClearButton"
+          class="clear-button"
+          [ngClass]="buttonStyleClass"
+          (click)="clear()">
+    <i class="fa fa-close"></i>
+  </button>
+
+  <div #suggestionsPanel
+       class="suggestions-panel"
+       [style.display]="suggestionsVisible ? 'block' : 'none'"
+       [style.max-height]="suggestionsMaxHeight">
+
+    <ul *ngIf="suggestionsVisible">
+
+      <li *ngFor="let option of suggestions; let idx = index"
+          [ngClass]="{'highlight': (highlightedOption===option)}"
+          (mouseenter)="highlightedOption=option"
+          (mouseleave)="highlightedOption=null"
+          (click)="selectItem(option)">
+
+        <span *ngIf="!itemTemplate">{{prop ? option[prop] : option}}</span>
+        <ng-template *ngIf="itemTemplate"></ng-template>
+
+      </li>
+
+      <li *ngIf="(suggestions && suggestions.length === 0) && emptyMessage">{{emptyMessage}}</li>
+
+    </ul>
+
+  </div>
+
+</span>

@@ -1,0 +1,48 @@
+@import '~scss/definitions';
+
+$black: #000 !default;
+$white: #fff !default;
+$main-accent: #00f !default;
+$accent-bg: #800080 !default;
+
+
+.autocomplete {
+  position: relative;
+}
+
+.clear-button {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.suggestions-panel {
+  background: $white;
+  box-shadow: 1px 1px 2px $black;
+  position: absolute;
+  width: 400px;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 5px;
+  }
+
+  li {
+    cursor: pointer;
+    margin: 1px;
+    padding: 4px;
+
+    span {
+      display: inline-block;
+      width: 100%;
+    }
+  }
+}
+
+.highlight {
+  background-color: $accent-bg;
+  background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
+  color: $white;
+  text-shadow: none;
+}

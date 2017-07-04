@@ -1,3 +1,8 @@
 export const environment = {
-  production: true
+  production: true,
+  apiURL: 'https://lr.simonwiles.net/api/',
+  baseURL: 'https://lr.simonwiles.net/',
+  baseHref: '/',
+  jwtRefreshMinValidity: 5000,
+  mediaURL: 'https://lr.simonwiles.net/'
 };

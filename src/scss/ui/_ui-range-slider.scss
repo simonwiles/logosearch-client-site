@@ -1,0 +1,99 @@
+
+.range {
+  background-image: linear-gradient(to right, $accent-bg, $accent-bg),
+                    linear-gradient(to right, $gray, $gray);
+  background-position: 0, 1px;
+  background-repeat: no-repeat;
+  background-size: 0 5px, 100% 2px;
+  height: 5px;
+  margin: 0 auto;
+  position: relative;
+  transition: all .4s ease;
+
+  &.disabled {
+    background-image: linear-gradient(to right, $accent-disabled, $accent-disabled),
+                      linear-gradient(to right, $accent-disabled, $accent-disabled);
+    cursor: not-allowed;
+  }
+}
+
+
+// Labels below slider
+.range-labels {
+  display: flex;
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+
+  &.disabled {
+
+    li {
+      pointer-events: none;
+    }
+
+    .selected {
+      color: $accent-disabled;
+    }
+
+    .selected::before,
+    .active::before {
+      background-color: $accent-disabled;
+      cursor: not-allowed;
+    }
+  }
+
+  li {
+    color: $gray;
+    cursor: pointer;
+    flex: 1 0 0;
+    font-size: 12px;
+    margin-top: -30px;
+    padding-top: 20px;
+    position: relative;
+    text-align: center;
+
+    &::before {
+      background-color: $gray;
+      background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
+      border-radius: 50%;
+      content: '';
+      height: 9px;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      right: 0;
+      top: 5px;
+      transition: all .2s ease;
+      width: 9px;
+    }
+
+    &.disabled {
+      color: rgba($gray, .4);
+      pointer-events: none;
+
+      &::before {
+        background-color: rgba($gray, .4);
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .selected {
+    color: $main-accent;
+  }
+
+  .active::before {
+    background-color: $main-accent;
+  }
+
+  li:hover::before,
+  .selected::before {
+    background-color: $main-accent;
+    border-radius: 50%;
+    cursor: pointer;
+    height: 18px;
+    margin-top: -4px;
+    width: 18px;
+
+  }
+}

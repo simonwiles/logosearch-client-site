@@ -1,0 +1,72 @@
+
+$tooltip-color: rgb(76, 76, 76);
+// $tooltip-color: rgba($main-accent, .8);
+
+.ui-tooltip {
+  display: none;
+  padding: .5em .5em;
+  position: absolute;
+
+  &.ui-tooltip-right,
+  &.ui-tooltip-left {
+    padding: 0 .25em;
+  }
+
+  &.ui-tooltip-top,
+  &.ui-tooltip-bottom {
+    padding: .5em 0;
+  }
+
+  &.ui-tooltip-top {
+    padding: .5em 0;
+  }
+
+  .ui-tooltip-text {
+    background-color: $tooltip-color;
+    color: $white;
+    padding: .25em .5em;
+    white-space: nowrap;
+  }
+}
+
+
+.ui-tooltip-arrow {
+  border-color: transparent;
+  border-style: solid;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+
+.ui-tooltip-right .ui-tooltip-arrow {
+  border-right-color: $tooltip-color;
+  border-width: .25em .25em .25em 0;
+  left: 0;
+  margin-top: -.25em;
+  top: 50%;
+}
+
+.ui-tooltip-left .ui-tooltip-arrow {
+  border-left-color: $tooltip-color;
+  border-width: .25em 0 .25em .25em;
+  margin-top: -.25em;
+  right: 0;
+  top: 50%;
+}
+
+
+.ui-tooltip-top .ui-tooltip-arrow {
+  border-top-color: $tooltip-color;
+  border-width: .5em .5em 0;
+  bottom: 0;
+  left: 50%;
+  margin-left: -.5em;
+}
+
+.ui-tooltip-bottom .ui-tooltip-arrow {
+  border-bottom-color: $tooltip-color;
+  border-width: 0 .5em .5em;
+  left: 50%;
+  margin-left: -.5em;
+  top: 0;
+}

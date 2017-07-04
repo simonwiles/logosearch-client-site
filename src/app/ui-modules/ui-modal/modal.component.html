@@ -1,0 +1,18 @@
+<div #mask
+     *ngIf="displayed"
+     class="modal-mask"
+     (window:click)="maskClicked($event)">
+
+  <div #wrapper
+       class="wrapper"
+       [ngClass]="styleClass"
+       [@flyInOut]="display">
+    <span *ngIf="showCloseButton"
+          class="close-button"
+          (click)="removeModal()">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <ng-content></ng-content>
+  </div>
+
+</div>

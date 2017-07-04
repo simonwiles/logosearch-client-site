@@ -1,0 +1,63 @@
+.ui-helper-clearfix:before,
+.ui-helper-clearfix:after {
+  content: '';
+  display: table;
+}
+
+.ui-helper-clearfix:after {
+  clear: both;
+}
+
+.ui-helper-clearfix {
+  zoom: 1;
+}
+
+.ui-helper-hidden-accessible {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.ui-helper-reset {
+  border: 0;
+  font-size: 100%;
+  line-height: 1.3;
+  list-style: none;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  text-decoration: none;
+}
+
+.ui-shadow {
+  box-shadow: 0 1px 3px 0 rgba($black, .3);
+}
+
+
+.ui-chkbox {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: middle;
+
+  .ui-chkbox-box {
+    border-radius: 2px;
+    float: left;
+    height: 16px;
+    margin-right: 3px;
+    width: 16px;
+  }
+
+  .ui-chkbox-icon {
+    margin-left: -3px;
+    margin-top: -1px;
+  }
+
+  .ui-chkbox-label {
+    vertical-align: middle;
+  }
+}

@@ -1,0 +1,32 @@
+<div *ngIf="samplesListService.itemCount">
+  <button class="carousel-previous"
+          [disabled]="!samplesListService.hasPreviousItem()"
+          (click)="previousSample()">
+    <i class="fa fa-chevron-left"></i>
+  </button>
+  <span class="pagination-range">
+    {{sampleIndex}} of {{samplesListService.itemCount}}
+  </span>
+  <button class="carousel-next"
+          [disabled]="!samplesListService.hasNextItem()"
+          (click)="nextSample()">
+    <i class="fa fa-chevron-right"></i>
+  </button>
+</div>
+
+<div *ngIf="!samplesListService.itemCount" [innerHtml]="noItemsMsgHtml"></div>
+
+<!--ui-collapsible heading="service">
+<pre>{{samplesListService.params | json}}
+{{samplesListService.selectedSampleIndex}}</pre>
+</ui-collapsible-->
+
+<div #container *ngIf="samplesListService.itemCount" class="perspective-container">
+  <div [class]="containerClass">
+    <lr-sample-view #sampleView [sample]="sample"></lr-sample-view>
+  </div>
+</div>
+
+<div class="reload-mask" *ngIf="samplesListService.reloading">
+  <i class="fa fa-spin fa-spinner"></i>
+</div>

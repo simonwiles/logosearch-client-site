@@ -1,0 +1,89 @@
+  <ui-data-table tableClass="samples-list-table"
+
+                 [dataService]="samplesListService"
+
+                 (reload)="samplesListService.reloadItems($event)"
+                 [autoReload]="false"
+                 [showReloading]="true"
+
+                 [labels]="labels"
+
+                 [selectColumn]="false"
+                 [selectOnRowClick]="false"
+                 [multiSelect]="false"
+
+                 [indexColumn]="false"
+                 [indexColumnHeader]="'#'"
+
+                 [substituteRows]="false"
+
+                 [expandableRows]="true"
+
+                 [noItemsMsgHtml]="noItemsMsgHtml">
+
+    <ng-template #dataTableExpand let-item="item">
+      <div class="panel">
+        <div [innerHtml]="parentComponent.buildExpansion(item) | uiSafe" style="padding: 5px; color: gray"></div>
+      </div>
+    </ng-template>
+
+    <ui-data-table-column [header]="'UUID'"
+                       [property]="'uuid'"
+                       [sortable]="true"
+                       [visible]="false">
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'Subject Area'"
+                       [property]="'subjectArea'"
+                       [sortable]="true">
+      <ng-template #dataTableCell let-item="item" let-i="index">
+        <ul class="pills" #subjectAreaList [ngClass]="{popout: subjectAreaList.scrollWidth > subjectAreaList.offsetWidth}">
+          <li *ngFor="let subjectArea of item.render('subjectArea')" class="clickable" (click)="filterSubjectArea(subjectArea.key)">
+            {{subjectArea.label}}
+          </li>
+        </ul>
+      </ng-template>
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'Grade Level(s)'"
+                       [property]="'gradeLevels'"
+                       [sortable]="false">
+      <ng-template #dataTableCell let-item="item">{{parentComponent.getGradeLevels(item)}}</ng-template>
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'Participants'"
+                       [property]="'participants'"
+                       [sortable]="false">
+      <ng-template #dataTableCell let-item="item">{{item.students.length}} Students{{(item.adults.length)?', ' + item.adults.length + ' Adult(s)':''}}</ng-template>
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'# turns'"
+                       [property]="'numTurns'"
+                       [sortable]="true">
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'D1 Score'"
+                       [property]="'d1Avg'"
+                       [sortable]="true">
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'D2 Score'"
+                       [property]="'d2Avg'"
+                       [sortable]="true">
+    </ui-data-table-column>
+
+    <ui-data-table-column [header]="'Date'"
+                       [property]="'submittedAt'"
+                       [sortable]="true">
+      <ng-template #dataTableCell let-item="item">{{item.submittedAt | date}}</ng-template>
+    </ui-data-table-column>
+
+    <ui-data-table-column>
+      <ng-template #dataTableCell let-item="item"><a (click)="switchToCarousel(item)"><i class="fa fa-arrow-right"></i></a></ng-template>
+    </ui-data-table-column>
+
+  </ui-data-table>
+  <ui-pagination [dataService]="samplesListService"
+                 paginationLimitLabel="Rows per page:"
+                 [paginationLimitOptions]="[4, 10, 20]">
+  </ui-pagination>
