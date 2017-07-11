@@ -12,6 +12,8 @@
                  [selectOnRowClick]="false"
                  [multiSelect]="false"
 
+                 [header]="false"
+
                  [indexColumn]="false"
                  [indexColumnHeader]="'#'"
 
@@ -38,8 +40,8 @@
                        [sortable]="true">
       <ng-template #dataTableCell let-item="item" let-i="index">
         <ul class="pills" #subjectAreaList [ngClass]="{popout: subjectAreaList.scrollWidth > subjectAreaList.offsetWidth}">
-          <li *ngFor="let subjectArea of item.render('subjectArea')" class="clickable" (click)="filterSubjectArea(subjectArea.key)">
-            {{subjectArea.label}}
+          <li *ngFor="let subjectArea of item.subjectArea" class="clickable" (click)="filterSubjectArea(subjectAreas[subjectArea].key)">
+            {{subjectAreas[subjectArea].label}}
           </li>
         </ul>
       </ng-template>

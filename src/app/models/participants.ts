@@ -101,7 +101,7 @@ interface IParticipant {
   nickname: string;
   avatar: string;
   gender: string;
-  languages: Linguagram[];
+  languageSkills: LanguageSkill[];
 }
 
 interface IAdultParticipant extends IParticipant {
@@ -117,10 +117,10 @@ export class Participant implements IParticipant {
   public uuid: string = uuid.v4();
   public nickname = '';
   public avatar: string = Participant.getRandomAvatar();
-  public gender = '';
-  public languages: Linguagram[] = [];
+  public gender = null;
+  public languageSkills: LanguageSkill[] = [];
   public languageKeys: string[] = [];
-  public samples: any[] = [];
+  public samples?: any[];
 
 
   static getRandomAvatar(): string {
@@ -135,65 +135,38 @@ export class Participant implements IParticipant {
 
   constructor(obj?: IParticipant) {
     Object.assign(this, obj);
-    this.languageKeys = this.languages.map(lang => lang.language);
-    this.languages = this.languages.map(lang => new Linguagram(lang));
-
-    // this.uuid = (obj) ? obj.uuid : window.uuid.v4();
-    // this.nickname = (obj) ? obj.nickname : '';
-    // this.avatar = (obj) ? obj.avatar : Participant.getRandomAvatar();
-    // this.gender = (obj) ? obj.gender : '';
-    // // this.languages = (obj && obj.languages) ? obj.languages : [];
-    // this.languages = (obj && obj.languages) ? obj.languages.map(lang => new Linguagram(lang)) : [];
-    // this.samples = (obj && obj.samples) ? obj.samples : [];
+    this.languageKeys = this.languageSkills.map(lang => lang.language);
+    this.languageSkills = this.languageSkills.map(lang => new LanguageSkill(lang));
   }
 
-  linguagramIsValid(language) {
-    let linguagram = this.languages.find(lang => lang.language === language);
-    return linguagram && linguagram.isValid();
+  languageSkillIsValid(language) {
+    let languageSkill = this.languageSkills.find(lang => lang.language === language);
+    return languageSkill && languageSkill.isValid();
   }
 }
 
 export class AdultParticipant extends Participant implements IAdultParticipant {
   public role: string;
   public experience: string;
-
-  constructor(obj?: IAdultParticipant) {
-    super(obj);
-    this.role = (obj) ? obj.role : '';
-    this.experience = (obj) ? obj.experience : '';
-  }
 };
 
 
 export class StudentParticipant extends Participant implements IStudentParticipant {
   public gradeLevel: number;
-
-  constructor(obj?: IStudentParticipant) {
-    super(obj);
-    this.gradeLevel = (obj) ? obj.gradeLevel : null;
-  }
 };
 
-// this rather ugly stringBoolean business is because passing `true` and `false` around
-//  between ngModel and HTMLInputElement.value is a pain in the arse...
-type stringBoolean = ( 'true' | 'false' | true | false | null );
-export class Linguagram {
+export class LanguageSkill {
   public language: string;
   public readingProficiency?: number;
   public writingProficiency?: number;
   public speakingProficiency?: number;
   public listeningProficiency?: number;
-  public participantIsLearner?: stringBoolean = null;
-  public isPrimaryLanguage?: stringBoolean = null;
-  public assessedLevel?: any[] = []; // TODO: typings!
+  public participantIsLearner?: boolean = null;
+  public isPrimaryLanguage?: boolean = null;
+  public assessedLevel?: any[] = []; // TODO: typings?
 
   constructor(obj?) {
     Object.assign(this, obj);
-    if (this.assessedLevel === null) { this.assessedLevel = []; }
-    if (this.participantIsLearner === true) { this.participantIsLearner = 'true'; }
-    if (this.participantIsLearner === false) { this.participantIsLearner = 'false'; }
-    if (this.isPrimaryLanguage === true) { this.isPrimaryLanguage = 'true'; }
-    if (this.isPrimaryLanguage === false) { this.isPrimaryLanguage = 'false'; }
   }
 
   isValid(): boolean {

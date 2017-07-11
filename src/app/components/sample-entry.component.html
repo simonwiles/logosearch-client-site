@@ -5,6 +5,8 @@
                     [(ngModel)]="step">
   </ui-switch-toggle>
 
+<!-- ################################################################################################################# -->
+
   <div>
 
     <div *ngIf="step == 'about'"
@@ -50,10 +52,10 @@
             <button class="button-style" (click)="addLanguageUsage()"><i class="fa fa-plus"></i> Add Language</button>
           </div>
           <div class="u-19-24">
-            <div class="g lang-usage-row" *ngFor="let langUsage of sample.languageUsages; let i=index">
+            <div class="g lang-usage-row" *ngFor="let langUsage of sample.languagesUsed; let i=index">
               <div class="u-1-24">
                 <button class="text-style"
-                        [disabled]="sample.languageUsages.length <= 1"
+                        [disabled]="sample.languagesUsed.length <= 1"
                         (click)="removeLanguageUsage(langUsage)">
                   <i class="fa fa-close"></i>
                 </button>
@@ -68,7 +70,7 @@
               </div>
               <div class="u-11-24 language-usage-usage" [class.invalid]="!langUsage.usage">
                 <ui-range-slider #languageUsageRangeInput
-                  [disabled]="sample.languageUsages.length <= 1"
+                  [disabled]="sample.languagesUsed.length <= 1"
                   [options]="[
                     {label: 'Minimal', value: 'min'},
                     {label: 'Some', value: 'some'},
@@ -83,6 +85,8 @@
         </div>
       </div>
     </div>
+
+<!-- ################################################################################################################# -->
 
     <div *ngIf="step == 'participants'"
          [@slideForwardBack]="stepDirection"
@@ -130,17 +134,17 @@
                              [(ngModel)]="participant.languageKeys"
                              [options]="langKnowns"
                              [multiple]="true"
-                             (selected)="newLinguagram($event, participant, selectComponent)">
+                             (selected)="newLanguageSkill($event, participant, selectComponent)">
 
                     <ng-template #pillTemplate let-selection="selection">
                       <li *ngFor="let option of selection"
-                          [uiTooltip]="(participant.linguagramIsValid(option.value)) ? 'Click to show the Linguagram!' : 'Please click to complete the Linguagram!'"
+                          [uiTooltip]="(participant.languageSkillIsValid(option.value)) ? 'Click to show the LanguageSkill!' : 'Please click to complete the LanguageSkill!'"
                           uiTooltipPosition="top"
                           class="select2-selection__choice"
-                          [class.valid]="participant.linguagramIsValid(option.value)"
+                          [class.valid]="participant.languageSkillIsValid(option.value)"
                           title="{{option.label}}"
                           [attr.data-value]="option.value"
-                          (click)="editLinguagram($event, option, participant)">
+                          (click)="editLanguageSkill($event, option, participant)">
                         <span class="select2-selection__choice__remove"
                               [attr.data-value]="option.value"
                               (click)="clearParticipantLanguage($event, participant)">
@@ -210,17 +214,17 @@
                              [(ngModel)]="participant.languageKeys"
                              [options]="langKnowns"
                              [multiple]="true"
-                             (selected)="newLinguagram($event, participant, selectComponent)">
+                             (selected)="newLanguageSkill($event, participant, selectComponent)">
 
                     <ng-template #pillTemplate let-selection="selection">
                       <li *ngFor="let option of selection"
-                          [uiTooltip]="(participant.linguagramIsValid(option.value)) ? 'Click to show the Linguagram!' : 'Please click to complete the Linguagram!'"
+                          [uiTooltip]="(participant.languageSkillIsValid(option.value)) ? 'Click to show the LanguageSkill!' : 'Please click to complete the LanguageSkill!'"
                           uiTooltipPosition="top"
                           class="select2-selection__choice"
-                          [class.valid]="participant.linguagramIsValid(option.value)"
+                          [class.valid]="participant.languageSkillIsValid(option.value)"
                           title="{{option.label}}"
                           [attr.data-value]="option.value"
-                          (click)="editLinguagram($event, option, participant)">
+                          (click)="editLanguageSkill($event, option, participant)">
                         <span class="select2-selection__choice__remove"
                               [attr.data-value]="option.value"
                               (click)="clearParticipantLanguage($event, participant)">
@@ -257,10 +261,11 @@
           </button>
         </div>
 
-
-
       </div>
     </div>
+
+<!-- ################################################################################################################# -->
+
     <div *ngIf="step == 'transcription'"
          [@slideForwardBack]="stepDirection"
          (@slideForwardBack.start)="sampleEntryContainer.style.overflow = 'hidden'"
@@ -309,6 +314,8 @@
                 <select [(ngModel)]="turn.speaker" (change)="addTurn($event)" class="turn-participant">
                   <option *ngFor="let participant of sample.students"
                           [value]="participant.uuid">{{participant.nickname}}</option>
+                  <option *ngFor="let participant of sample.adults"
+                          [value]="participant.uuid">{{participant.nickname}}</option>
                 </select>
               </td>
               <td class="input-field">
@@ -325,103 +332,104 @@
   </div>
 
   <ui-collapsible header="diagnostic" [shown]="false">
-    <pre>{{step | json}}</pre>
     <pre>{{sample | json}}</pre>
   </ui-collapsible>
 
 </div>
 
-<ui-overlay-panel #linguagramPanel [dismissable]="true" [showCloseIcon]="true" styleClass="linguagram-panel">
-  <p *ngIf="linguagram">
+<!-- ################################################################################################################# -->
+
+<ui-overlay-panel #languageSkillPanel [dismissable]="true" [showCloseIcon]="true" styleClass="language-skill-panel">
+  <p *ngIf="languageSkill">
     Please indicate your evaluation of
     {{(selectedParticipant?.nickname) ? selectedParticipant?.nickname : 'this student'}}'s
-    <span class="accent">{{languages[linguagram.language].label}}</span>:
+    <span class="accent">{{languages[languageSkill.language].label}}</span>:
   </p>
-  <table class="linguagram">
+  <table class="language-skill">
     <tr>
-      <th [class.active]="linguagram.speakingProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Speaking <i class="fa" [ngClass]="{'fa-check-circle': linguagram.speakingProficiency, 'fa-exclamation-circle': !linguagram.speakingProficiency}"></i>
+      <th [class.active]="languageSkill.speakingProficiency" uiTooltip="Required" uiTooltipPosition="left">
+        Speaking <i class="fa" [ngClass]="{'fa-check-circle': languageSkill.speakingProficiency, 'fa-exclamation-circle': !languageSkill.speakingProficiency}"></i>
       </th>
       <td>
-        <ui-range-slider [(ngModel)]="linguagram.speakingProficiency"
+        <ui-range-slider [(ngModel)]="languageSkill.speakingProficiency"
                          [options]="[
-                           {label: 'One', value: 'one'},
-                           {label: 'Two', value: 'two'},
-                           {label: 'Three', value: 'three'},
-                           {label: 'Four', value: 'four'},
-                           {label: 'Five', value: 'five'}
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
                          ]">
         </ui-range-slider>
       </td>
       <td>
         <button class="text-style"
-                [disabled]="!linguagram.speakingProficiency"
-                (click)="linguagram.speakingProficiency = null">
+                [disabled]="!languageSkill.speakingProficiency"
+                (click)="languageSkill.speakingProficiency = null">
           <i class="fa fa-close"></i>
         </button>
       </td>
     </tr>
     <tr>
-      <th [class.active]="linguagram.listeningProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Listening <i class="fa" [ngClass]="{'fa-check-circle': linguagram.listeningProficiency, 'fa-exclamation-circle': !linguagram.listeningProficiency}"></i>
+      <th [class.active]="languageSkill.listeningProficiency" uiTooltip="Required" uiTooltipPosition="left">
+        Listening <i class="fa" [ngClass]="{'fa-check-circle': languageSkill.listeningProficiency, 'fa-exclamation-circle': !languageSkill.listeningProficiency}"></i>
       </th>
       <td>
-        <ui-range-slider [(ngModel)]="linguagram.listeningProficiency"
+        <ui-range-slider [(ngModel)]="languageSkill.listeningProficiency"
                          [options]="[
-                           {label: 'One', value: 'one'},
-                           {label: 'Two', value: 'two'},
-                           {label: 'Three', value: 'three'},
-                           {label: 'Four', value: 'four'},
-                           {label: 'Five', value: 'five'}
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
                          ]">
         </ui-range-slider>
       </td>
       <td>
         <button class="text-style"
-                [disabled]="!linguagram.listeningProficiency"
-                (click)="linguagram.listeningProficiency = null">
+                [disabled]="!languageSkill.listeningProficiency"
+                (click)="languageSkill.listeningProficiency = null">
           <i class="fa fa-close"></i>
         </button>
       </td>
     </tr>
     <tr>
-      <th [class.active]="linguagram.readingProficiency">Reading</th>
+      <th [class.active]="languageSkill.readingProficiency">Reading</th>
       <td>
-        <ui-range-slider [(ngModel)]="linguagram.readingProficiency"
+        <ui-range-slider [(ngModel)]="languageSkill.readingProficiency"
                          [options]="[
-                           {label: 'One', value: 'one'},
-                           {label: 'Two', value: 'two'},
-                           {label: 'Three', value: 'three'},
-                           {label: 'Four', value: 'four'},
-                           {label: 'Five', value: 'five'}
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
                          ]">
         </ui-range-slider>
       </td>
       <td>
         <button class="text-style"
-                [disabled]="!linguagram.readingProficiency"
-                (click)="linguagram.readingProficiency = null">
+                [disabled]="!languageSkill.readingProficiency"
+                (click)="languageSkill.readingProficiency = null">
           <i class="fa fa-close"></i>
         </button>
       </td>
     </tr>
     <tr>
-      <th [class.active]="linguagram.writingProficiency">Writing</th>
+      <th [class.active]="languageSkill.writingProficiency">Writing</th>
       <td>
-        <ui-range-slider [(ngModel)]="linguagram.writingProficiency"
+        <ui-range-slider [(ngModel)]="languageSkill.writingProficiency"
                          [options]="[
-                           {label: 'One', value: 'one'},
-                           {label: 'Two', value: 'two'},
-                           {label: 'Three', value: 'three'},
-                           {label: 'Four', value: 'four'},
-                           {label: 'Five', value: 'five'}
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
                          ]">
         </ui-range-slider>
       </td>
       <td>
         <button class="text-style"
-                [disabled]="!linguagram.writingProficiency"
-                (click)="linguagram.writingProficiency = null">
+                [disabled]="!languageSkill.writingProficiency"
+                (click)="languageSkill.writingProficiency = null">
           <i class="fa fa-close"></i>
         </button>
       </td>
@@ -430,37 +438,37 @@
 
   <div class="g toggle-container">
     <div class="u-2-3">
-      {{languages[linguagram.language].label}} is a
+      {{languages[languageSkill.language].label}} is a
       <span class="accent" uiTooltip="[Guidance on what we mean by “primary language” goes here]"><i class="fa fa-home"></i> Primary Langauge</span>?
     </div>
     <div class="u-1-3">
       <ui-switch-toggle name="primary-language"
-                        [options]="[{label: 'Yes', value: 'true'}, {label: 'No', value: 'false'}, {label: '??', value: null}]"
-                        [(ngModel)]="linguagram.isPrimaryLanguage">
+                        [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
+                        [(ngModel)]="languageSkill.isPrimaryLanguage">
       </ui-switch-toggle>
     </div>
   </div>
   <div class="toggle-container">
     <div class="g">
       <div class="u-2-3">
-        {{(selectedParticipant?.nickname) ? selectedParticipant?.nickname : 'This student'}} is a {{languages[linguagram.language].label}}
+        {{(selectedParticipant?.nickname) ? selectedParticipant?.nickname : 'This student'}} is a {{languages[languageSkill.language].label}}
         <span class="accent" uiTooltip="[Guidance on what we mean by “learner” goes here]"><i class="fa fa-mortar-board"></i> Learner</span>?
       </div>
       <div class="u-1-3">
         <ui-switch-toggle name="is-learner"
-                          [options]="[{label: 'Yes', value: 'true'}, {label: 'No', value: 'false'}, {label: '??', value: null}]"
-                          [(ngModel)]="linguagram.participantIsLearner">
+                          [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
+                          [(ngModel)]="languageSkill.participantIsLearner">
         </ui-switch-toggle>
       </div>
     </div>
 
-    <div *ngIf="linguagram.participantIsLearner === 'true' && linguagram.language === 'eng'" class="standards">
+    <div *ngIf="languageSkill.participantIsLearner === true && languageSkill.language === 'eng'" class="standards">
       <p>Please add one (or more) Standardized Test score(s), if available.</p>
 
       <div>
-        <button class="button-style" (click)="addLanguageStandard(linguagram)"><i class="fa fa-plus"></i> Add a Score</button>
+        <button class="button-style" (click)="addLanguageStandard(languageSkill)"><i class="fa fa-plus"></i> Add a Score</button>
         <div>
-          <div *ngFor="let standard of linguagram.assessedLevel">
+          <div *ngFor="let standard of languageSkill.assessedLevel">
             <div class="input-field">
               <select required [(ngModel)]="standard.standard">
                 <option value="" disabled selected >standard...</option>
@@ -482,7 +490,7 @@
                         [value]="level">{{level}}</option>
               </select>
             </div>
-            <button class="text-style" (click)="removeLanguageStandard($event, linguagram, standard)"><i class="fa fa-close"></i></button>
+            <button class="text-style" (click)="removeLanguageStandard($event, languageSkill, standard)"><i class="fa fa-close"></i></button>
           </div>
         </div>
       </div>
@@ -491,6 +499,8 @@
   </div>
 
 </ui-overlay-panel>
+
+<!-- ################################################################################################################# -->
 
 <ui-modal #participantLookupPanel [showCloseButton]="true" styleClass="participant-lookup-panel" (onAfterDisplay)="participantLookup.getParticipants()">
   <lr-participant-lookup #participantLookup (onOkayClicked)="addLookedUpParticipants($event)"></lr-participant-lookup>

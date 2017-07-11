@@ -20,7 +20,7 @@
         <th>Subject Area / Topic</th>
         <td>
           <ul class="pills">
-            <li *ngFor="let subjectArea of sample?.render('subjectArea')">{{subjectArea.label}}</li>
+            <li *ngFor="let subjectArea of sample.subjectArea">{{subjectAreas[subjectArea].label}}</li>
           </ul>
         </td>
       </tr>
@@ -50,7 +50,7 @@
           {{(participant.gender == 'F') ? 'Female' : 'Male' }}
         </td>
         <td>
-          <span class="value-stud">{{participant.gradeLevel}}</span> {{gradeLevel[participant.gradeLevel]}}
+          <span class="value-stud">{{participant.gradeLevel}}</span> {{gradeLevels[participant.gradeLevel]}}
         </td>
         <td>
           Speaker of

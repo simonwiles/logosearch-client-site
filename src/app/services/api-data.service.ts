@@ -148,6 +148,7 @@ export class ApiDataService implements IApiDataService {
   clear() {
     this.items = [];
     this.selectedItem = null;
+    this.currentParams = null;
     this._updated.next({results: [], count: 0});
   }
 

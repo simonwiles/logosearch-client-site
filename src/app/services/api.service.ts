@@ -13,7 +13,8 @@ import { environment }                from '../../environments/environment';
 import { User,
          IUser }                      from '../models/user';
 import { Sample }                     from '../models/sample';
-import { StudentParticipant }         from '../models/participants';
+import { AdultParticipant,
+         StudentParticipant }         from '../models/participants';
 
 import { AuthService }                from './auth.service';
 import { PubSubService }              from './pubsub.service';
@@ -109,28 +110,6 @@ export class ApiService {
   }
 
 
-  // public getUserRecordings(uuid: string): Observable<any> {
-
-  //   const userRecordingsURI: string = environment.apiURL + 'users/' + uuid + '/recordings/';
-  //   const options: RequestOptions = new RequestOptions({ headers: this.headers });
-
-  //   return this.http.get(userRecordingsURI, options)
-  //                   .map(response => response.json().recordings || [])
-  //                   .catch(error => this.handleError(error));
-  // };
-
-
-  // public getUserSamples(userUuid: string): Observable<any> {
-
-  //   const userSamplesURI: string = environment.apiURL + 'users/' + userUuid + '/samples/';
-  //   const options: RequestOptions = new RequestOptions({ headers: this.headers });
-
-  //   return this.http.get(userSamplesURI, options)
-  //                   .map(response => response.json().samples || [])
-  //                   .catch(error => this.handleError(error));
-  // };
-
-
   public getSample(uuid: string): Observable<any> {
 
     const sampleURI: string = environment.apiURL + 'samples/' + uuid + '/';
@@ -210,7 +189,7 @@ export class ApiService {
                       (response: Response) => {
                         let data = response.json();
                         data.results = data.results.map(
-                          (sample) => new Sample(sample)
+                          sample => new Sample(sample)
                         );
                         data.params = _params;
                         return data;
@@ -244,9 +223,11 @@ export class ApiService {
                     .map(
                       (response: Response) => {
                         let data = response.json();
+                        console.log(data.results);
                         data.results = data.results.map(
-                          (participant) => new StudentParticipant(participant)
+                          (participant) => new {'students': StudentParticipant, 'adults': AdultParticipant}[participantType](participant)
                         );
+                        console.log(data.results);
                         data.params = _params;
                         return data;
                       }
@@ -340,7 +321,10 @@ export class ApiService {
       }
     }
 
-    if (!environment.production) { console.warn(errString); console.error(error); }
+    if (!environment.production) {
+      console.warn(errString);
+      throw error;
+    }
 
     return new Observable<string>(
       (observer: any) => {

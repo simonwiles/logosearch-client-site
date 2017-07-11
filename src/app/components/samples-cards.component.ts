@@ -1,6 +1,7 @@
 import { Component,
          Input }              from '@angular/core';
 
+import { SubjectArea }        from '../models/sample';
 import { SamplesListService } from '../services/samples-list.service';
 
 
@@ -20,10 +21,10 @@ import { SamplesListService } from '../services/samples-list.service';
         <tr>
           <td><strong>Subject Area:</strong>
             <ul class="pills">
-              <li *ngFor="let subjectArea of sample?.render('subjectArea')"
+              <li *ngFor="let subjectArea of sample.subjectArea"
                   class="clickable"
-                  (click)="filterSubjectArea(subjectArea.key)">
-                {{subjectArea.label}}
+                  (click)="filterSubjectArea(subjectAreas[subjectArea].key)">
+                {{subjectAreas[subjectArea].label}}
               </li>
             </ul>
           </td>
@@ -83,6 +84,8 @@ import { SamplesListService } from '../services/samples-list.service';
 export class SamplesCardsComponent {
 
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
+
+  public subjectAreas = SubjectArea;
 
   constructor(public samplesListService: SamplesListService) { }
 }

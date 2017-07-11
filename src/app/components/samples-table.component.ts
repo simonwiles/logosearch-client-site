@@ -6,6 +6,7 @@ import { Component,
 
 import { IDataTableLabels }   from '../ui-modules/data-table/components/types';
 
+import { SubjectArea }        from '../models/sample';
 import { SamplesListService } from '../services/samples-list.service';
 
 
@@ -22,6 +23,8 @@ export class SamplesTableComponent {
 
   @Input() parentComponent: any;
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
+
+  public subjectAreas = SubjectArea;
 
   @ViewChildren('subjectAreaList') subjectAreaLists: QueryList<ElementRef>;
 

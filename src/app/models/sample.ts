@@ -16,7 +16,7 @@ export interface ISample {
   students: StudentParticipant[];
   adults: AdultParticipant[];
 
-  languageUsages: any[];
+  languagesUsed: any[];
 
   turns: any[];
   numTurns: number;
@@ -57,7 +57,7 @@ export const LangUsageUsages = {
 
 
 export class Sample implements ISample {
-  public uuid: string;
+  public uuid: string = uuid.v4();
 
   public context: string;
   public subjectArea: string[];
@@ -67,12 +67,12 @@ export class Sample implements ISample {
   public submittedAt: string;
   public submittedBy: string;
 
-  public students: StudentParticipant[];
-  public adults: AdultParticipant[];
+  public students: StudentParticipant[] = [];
+  public adults: AdultParticipant[] = [];
 
-  public languageUsages: any[];
+  public languagesUsed: LanguageUsage[] = [];
 
-  public turns: Turn[];
+  public turns: Turn[] = [new Turn()];
   public numTurns: number;
 
   public transcription: string;
@@ -84,37 +84,11 @@ export class Sample implements ISample {
   public recording: any;
 
   constructor(obj?: ISample) {
-
-    this.uuid = (obj) ? obj.uuid : uuid.v4();
-    this.context = (obj) ? obj.context : '';
-    if (obj) { this.subjectArea = obj.subjectArea; }
-    this.objective = (obj) ? obj.objective : '';
-    this.prompt = (obj) ? obj.prompt : '';
-    this.submittedAt = (obj) ? obj.submittedAt : '';
-    this.submittedBy = (obj) ? obj.submittedBy : '';
-
-    this.students = (obj) ? obj.students.map(student => new StudentParticipant(student)) : [];
-    this.adults = (obj) ? obj.adults.map(adult => new AdultParticipant(adult)) : [];
-
-    this.languageUsages = (obj) ? obj.languageUsages : [new LanguageUsage({lang: 'eng', usage: 'all'})];
-    this.turns = (obj) ? obj.turns : [new Turn()];
-    this.numTurns = (obj) ? obj.numTurns : null;
-
-    this.transcription = (obj) ? obj.transcription : '';
-
-    this.numScores = (obj) ? obj.numScores : null;
-    this.d1Avg = (obj) ? obj.d1Avg : null;
-    this.d2Avg = (obj) ? obj.d2Avg : null;
-
-    this.recording = (obj) ? obj.recording : null;
-
-  }
-
-  render(field): any {
-    if (field === 'subjectArea') {
-      return this.subjectArea.map(subjectArea => ({key: subjectArea, label: SubjectArea[subjectArea].label}));
-    }
-    return this[field];
+    Object.assign(this, obj);
+    this.languagesUsed = this.languagesUsed.map(langUsed => new LanguageUsage(langUsed));
+    if (this.languagesUsed.length === 0) { this.languagesUsed = [new LanguageUsage({lang: 'eng', usage: 'all'})]; }
+    this.students = this.students.map(student => new StudentParticipant(student));
+    this.adults = this.adults.map(adult => new AdultParticipant(adult));
   }
 }
 
@@ -130,7 +104,7 @@ export class Turn {
 
 export class LanguageUsage {
   public lang: string;
-  public usage: number;
+  public usage: string;
 
   constructor(obj?) {
     this.lang = (obj) ? obj.lang : null;

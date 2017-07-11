@@ -10,7 +10,8 @@ import { ActivatedRoute }                 from '@angular/router';
 import { environment }                    from '../../environments/environment';
 
 import { Language }                       from '../models/common';
-import { Sample }                         from '../models/sample';
+import { Sample,
+         SubjectArea }                    from '../models/sample';
 import { GradeLevel }                     from '../models/participants';
 
 import { ApiService }                     from '../services/api.service';
@@ -28,8 +29,10 @@ export class SampleViewComponent implements OnInit, OnChanges {
   @Input() panelClass = 'panel';
   @Input() highlight: string;
 
-  gradeLevel = GradeLevel;
+  gradeLevels = GradeLevel;
   languages = Language;
+  subjectAreas = SubjectArea;
+
   evaluations: any[];
 
   public environment = environment;

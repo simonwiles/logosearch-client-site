@@ -1,4 +1,4 @@
-import { Observable }   from 'rxjs/Observable';
+import { Observable }                 from 'rxjs/Observable';
 
 import { AfterViewInit,
          ChangeDetectorRef,
@@ -21,7 +21,7 @@ import { AdultParticipant,
          StudentParticipant,
          Gender,
          GradeLevel,
-         Linguagram,
+         LanguageSkill,
          LanguageStandardLevels }     from '../models/participants';
 
 import { Sample,
@@ -86,10 +86,10 @@ export class SampleEntryComponent implements AfterViewInit {
   // Our master model:
   public sample: Sample = new Sample();
 
-  // A model for the linguagramPanel:
+  // A model for the languageSkillPanel:
   public selectedParticipant: StudentParticipant | AdultParticipant;
-  public linguagram = new Linguagram({language: 'eng'});
-  @ViewChild('linguagramPanel') linguagramPanel;
+  public languageSkill = new LanguageSkill({language: 'eng'});
+  @ViewChild('languageSkillPanel') languageSkillPanel;
 
   //
   @ViewChild('participantLookup') participantLookup;
@@ -141,23 +141,23 @@ export class SampleEntryComponent implements AfterViewInit {
     return arr.filter(e => e !== value);
   }
 
-  editLinguagram(event, option, participant) {
-    // Populate and pop-up the linguagramPanel when a language 'pill' is clicked.
+  editLanguageSkill(event, option, participant) {
+    // Populate and pop-up the languageSkillPanel when a language 'pill' is clicked.
     event.stopPropagation();
     this.selectedParticipant = participant;
-    this.linguagram = participant.languages.find(lang => lang.language === option.value);
-    this.linguagramPanel.toggle(event);
+    this.languageSkill = participant.languageSkills.find(lang => lang.language === option.value);
+    this.languageSkillPanel.toggle(event);
   }
 
-  newLinguagram(option, participant, selectComponent) {
-    // Populate and pop-up the linguagramPanel when a new language is first added.
-    // First, find the 'pill' <li/> to align the linguagramPanel to:
+  newLanguageSkill(option, participant, selectComponent) {
+    // Populate and pop-up the languageSkillPanel when a new language is first added.
+    // First, find the 'pill' <li/> to align the languageSkillPanel to:
     const targetEl = selectComponent.el.nativeElement
                     .querySelector(`li.select2-selection__choice[data-value^=${option.value}]`);
     this.selectedParticipant = participant;
-    this.linguagram = new Linguagram({language: option.value});
-    participant.languages.push(this.linguagram);
-    this.linguagramPanel.show(null, targetEl);
+    this.languageSkill = new LanguageSkill({language: option.value});
+    participant.languageSkills.push(this.languageSkill);
+    this.languageSkillPanel.show(null, targetEl);
   }
 
   isLanguageUsageFocussed() {
@@ -169,19 +169,19 @@ export class SampleEntryComponent implements AfterViewInit {
   }
 
   addLanguageUsage() {
-    this.sample.languageUsages.push(new LanguageUsage());
+    this.sample.languagesUsed.push(new LanguageUsage());
     this.changeDetectorRef.detectChanges();
     this.enforceLangUsagePolicies();
   }
 
   removeLanguageUsage(langUsage) {
-    this.sample.languageUsages = this.sample.languageUsages.filter(item => item !== langUsage);
+    this.sample.languagesUsed = this.sample.languagesUsed.filter(item => item !== langUsage);
     this.enforceLangUsagePolicies();
   }
 
   enforceLangUsagePolicies() {
-    if (this.sample.languageUsages.length > 1 ) {
-      for (let langUsage of this.sample.languageUsages) {
+    if (this.sample.languagesUsed.length > 1 ) {
+      for (let langUsage of this.sample.languagesUsed) {
         if (langUsage.usage === 'all') {
           langUsage.usage = null;
         }
@@ -193,16 +193,16 @@ export class SampleEntryComponent implements AfterViewInit {
           input.options.find(item => item.value === 'all').disabled = true;
         });
     } else {
-      this.sample.languageUsages[0].usage = 'all';
+      this.sample.languagesUsed[0].usage = 'all';
     }
   }
 
   addStudentParticipant() {
     let participant = new StudentParticipant();
-    this.sample.languageUsages.forEach(langUsage => {
-      participant.languages.push(new Linguagram({language: langUsage.lang}));
+    this.sample.languagesUsed.forEach(langUsage => {
+      participant.languageSkills.push(new LanguageSkill({language: langUsage.lang}));
     });
-    participant.languageKeys = participant.languages.map(lang => lang.language);
+    participant.languageKeys = participant.languageSkills.map(lang => lang.language);
     this.sample.students.push(participant);
   }
 
@@ -231,18 +231,18 @@ export class SampleEntryComponent implements AfterViewInit {
     // <HTMLElement>.dataset.value, quite apart from the typescript issues, doesn't work on IE < 11
     event.stopPropagation();
     const langToRemove = (event.target as HTMLElement).getAttribute('data-value');
-    participant.languages = participant.languages.filter(lang => lang.language !== langToRemove);
+    participant.languageSkills = participant.languageSkills.filter(lang => lang.language !== langToRemove);
     participant.languageKeys = participant.languageKeys.filter(lang => lang !== langToRemove);
-    this.linguagramPanel.hide();
+    this.languageSkillPanel.hide();
   }
 
-  addLanguageStandard(linguagram) {
-    linguagram.assessedLevel.push({standard: '', level: ''});
+  addLanguageStandard(languageSkill) {
+    languageSkill.assessedLevel.push({standard: '', level: ''});
   }
 
-  removeLanguageStandard(event: Event, linguagram, assessedLevel) {
+  removeLanguageStandard(event: Event, languageSkill, assessedLevel) {
     event.stopPropagation();
-    linguagram.assessedLevel = linguagram.assessedLevel.filter(item => item !== assessedLevel);
+    languageSkill.assessedLevel = languageSkill.assessedLevel.filter(item => item !== assessedLevel);
 
   }
 
@@ -291,6 +291,10 @@ export class SampleEntryComponent implements AfterViewInit {
 
   saveSample() {
     window.alert('not ready yet!');
+  }
+
+  dump(value) {
+    console.log(value);
   }
 
 }
