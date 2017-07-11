@@ -19,10 +19,10 @@ export const SWITCHTOGGLE_VALUE_ACCESSOR: any = {
     selector: 'ui-switch-toggle',
     template: `
     <div class="switch-toggle">
-      <ng-template ngFor let-item [ngForOf]="options">
+      <ng-template ngFor let-item [ngForOf]="options" let-idx="index">
         <input type="radio"
                [name]="name"
-               [value]="item.value"
+               [value]="idx"
                [checked]="this.value === item.value"
                [id]="(name + '-' + item.value)"
                (change)="handleChange($event)">
@@ -46,7 +46,10 @@ export class SwitchToggleComponent implements ControlValueAccessor  {
   constructor(private cd: ChangeDetectorRef) { }
 
   handleChange(event: Event) {
-    this.value = (event.target as HTMLInputElement).value;
+    // <HTMLInputElement>.input can only be a string; this shenanigans is so that
+    //  values passed into (and, crucially, out of) this component can have other
+    //  types (boolean, number, object, array, etc.)
+    this.value = this.options[+(event.target as HTMLInputElement).value].value;
     this.onModelChange(this.value);
   }
 
