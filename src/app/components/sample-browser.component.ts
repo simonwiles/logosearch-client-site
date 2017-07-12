@@ -188,7 +188,7 @@ export class SampleBrowserComponent {
   }
 
   highlight(text, term) {
-    if (term) {
+    if (text && term) {
       return text.replace(new RegExp('(' + term + ')', 'gi'), '<mark>$1</mark>');
     }
     return text;

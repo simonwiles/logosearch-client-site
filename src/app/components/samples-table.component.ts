@@ -38,6 +38,11 @@ export class SamplesTableComponent {
   constructor(
     public samplesListService: SamplesListService) { }
 
+  filterSubjectArea(key) {
+    this.samplesListService.filters.subjectArea = [key];
+    this.samplesListService.update();
+  }
+
   switchToCarousel(sample) {
     this.samplesListService.selectedItem = sample;
     this.parentComponent.displayType = 'carousel';
