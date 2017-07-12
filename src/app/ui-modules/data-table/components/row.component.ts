@@ -16,10 +16,10 @@ import { DataTableComponent } from './table.component';
       [class.row-even]="index % 2 === 1"
       [class.selected]="selected"
       [class.clickable]="dataTable.selectOnRowClick"
-      (dblclick)="dataTable.rowDoubleClicked(_this, $event)"
-      (click)="dataTable.rowClicked(_this, $event)">
+      (dblclick)="dataTable.rowDoubleClicked(rowComponent, $event)"
+      (click)="dataTable.rowClicked(rowComponent, $event)">
 
-    <td [hide]="!dataTable.expandColumnVisible" (click)="expanded = !expanded; $event.stopPropagation()" class="row-expand-button">
+    <td [hide]="!dataTable.expandColumnVisible" (click)="expandRow($event)" class="row-expand-button">
       <i class="fa fa-caret-right" [hide]="expanded"></i>
       <i class="fa fa-caret-down" [hide]="!expanded"></i>
     </td>
@@ -39,19 +39,20 @@ import { DataTableComponent } from './table.component';
       </div>
       <div *ngIf="column.cellTemplate"
            [ngTemplateOutlet]="column.cellTemplate"
-           [ngOutletContext]="{column: column, row: _this, item: item}">
+           [ngOutletContext]="{column: column, row: rowComponent, item: item}">
       </div>
     </td>
 
   </tr>
 
   <tr *ngIf="dataTable.expandableRows"
-      [hide]="!expanded"
       class="row-expansion">
 
     <td [attr.colspan]="dataTable.columnCount">
-      <div [ngTemplateOutlet]="dataTable.expandTemplate"
-           [ngOutletContext]="{row: _this, item: item}">
+      <div #expansionWrapper [style.height]="(expanded) ? expansionWrapper.scrollHeight+'px' : 0">
+        <div [ngTemplateOutlet]="dataTable.expandTemplate"
+             [ngOutletContext]="{row: rowComponent, item: item}">
+        </div>
       </div>
     </td>
 
@@ -70,6 +71,13 @@ import { DataTableComponent } from './table.component';
     .clickable {
         cursor: pointer;
     }
+    .row-expansion td {
+      height: 0;
+      overflow: hidden;
+    }
+    .row-expansion td > div {
+      transition: height .5s ease;
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -80,8 +88,8 @@ export class DataTableRowComponent implements OnDestroy {
   @Input() dataTable: DataTableComponent;
   @Output() selectedChange = new EventEmitter();
 
-  _this = this; // FIXME is there no template keyword for this in angular 2?
-  expanded: boolean;
+  rowComponent = this;
+  expanded = false;
 
   // row selection:
 
@@ -112,6 +120,18 @@ export class DataTableRowComponent implements OnDestroy {
       return this.dataTable.rowTooltip(this.item, this, this.index);
     }
     return '';
+  }
+
+  expandRow($event) {
+    const dataTableBox = this.dataTable.dataTableBox;
+    if (this.expanded) {
+      this.expanded = false;
+      setTimeout(() => dataTableBox.nativeElement.style.height = dataTableBox.nativeElement.scrollHeight + 'px', 600);
+    } else {
+      dataTableBox.nativeElement.style.height = 'auto';
+      this.expanded = true;
+    }
+    $event.stopPropagation()
   }
 
   ngOnDestroy() {
