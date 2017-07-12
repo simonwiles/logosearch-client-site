@@ -101,15 +101,16 @@ interface IParticipant {
   nickname: string;
   avatar: string;
   gender: string;
-  languageSkills: LanguageSkill[];
 }
 
 interface IAdultParticipant extends IParticipant {
-  role: string;
-  experience: string;
+  isSubmitter: boolean;
+  isTeacher: boolean;
 }
 
 interface IStudentParticipant extends IParticipant {
+  languageKeys: string[];
+  languageSkills: LanguageSkill[];
   gradeLevel: number;
 }
 
@@ -118,8 +119,6 @@ export class Participant implements IParticipant {
   public nickname = '';
   public avatar: string = Participant.getRandomAvatar();
   public gender = null;
-  public languageSkills: LanguageSkill[] = [];
-  public languageKeys: string[] = [];
   public samples?: any[];
 
 
@@ -133,8 +132,22 @@ export class Participant implements IParticipant {
     return `/media/avatars/${colorSet}/${('00' + imageIndex).slice(-2)}.png`;
   }
 
-  constructor(obj?: IParticipant) {
-    Object.assign(this, obj);
+  constructor(obj?: IParticipant) { Object.assign(this, obj); }
+}
+
+export class AdultParticipant extends Participant implements IAdultParticipant {
+  public isSubmitter: boolean;
+  public isTeacher: boolean;
+};
+
+
+export class StudentParticipant extends Participant implements IStudentParticipant {
+  public gradeLevel: number;
+  public languageSkills: LanguageSkill[] = [];
+  public languageKeys: string[] = [];
+
+  constructor(obj?: IStudentParticipant) {
+    super(obj);
     this.languageKeys = this.languageSkills.map(lang => lang.language);
     this.languageSkills = this.languageSkills.map(lang => new LanguageSkill(lang));
   }
@@ -143,16 +156,6 @@ export class Participant implements IParticipant {
     let languageSkill = this.languageSkills.find(lang => lang.language === language);
     return languageSkill && languageSkill.isValid();
   }
-}
-
-export class AdultParticipant extends Participant implements IAdultParticipant {
-  public role: string;
-  public experience: string;
-};
-
-
-export class StudentParticipant extends Participant implements IStudentParticipant {
-  public gradeLevel: number;
 };
 
 export class LanguageSkill {

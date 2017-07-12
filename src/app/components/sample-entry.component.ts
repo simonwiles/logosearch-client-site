@@ -197,23 +197,26 @@ export class SampleEntryComponent implements AfterViewInit {
     }
   }
 
-  addStudentParticipant() {
+  addStudentParticipant($event) {
     let participant = new StudentParticipant();
     this.sample.languagesUsed.forEach(langUsage => {
       participant.languageSkills.push(new LanguageSkill({language: langUsage.lang}));
     });
     participant.languageKeys = participant.languageSkills.map(lang => lang.language);
     this.sample.students.push(participant);
+    $event.target.blur();
   }
 
-  addAdultParticipant() {
+  addAdultParticipant($event) {
     this.sample.adults.push(new AdultParticipant());
+    $event.target.blur();
   }
 
-  lookupParticipants(event, type) {
-    event.stopPropagation();
+  lookupParticipants($event, type) {
+    $event.stopPropagation();
     this.participantLookup.setType(type);
     this.participantLookupPanel.displayModal();
+    $event.target.blur();
   }
 
   addLookedUpParticipants(data) {
@@ -227,7 +230,7 @@ export class SampleEntryComponent implements AfterViewInit {
     }
   }
 
-  clearParticipantLanguage(event: Event, participant: StudentParticipant | AdultParticipant) {
+  clearParticipantLanguage(event: Event, participant: StudentParticipant) {
     // <HTMLElement>.dataset.value, quite apart from the typescript issues, doesn't work on IE < 11
     event.stopPropagation();
     const langToRemove = (event.target as HTMLElement).getAttribute('data-value');

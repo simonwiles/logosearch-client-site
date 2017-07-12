@@ -168,7 +168,7 @@
         </form>
 
         <div class="actions">
-          <button class="button-style" (click)="this.addStudentParticipant()">
+          <button class="button-style" (click)="this.addStudentParticipant($event)">
             <i class="fa fa-plus"></i> Add a new student participant
           </button>
           <button class="button-style" (click)="this.lookupParticipants($event, 'students')">
@@ -179,73 +179,44 @@
         <hr>
 
         <form #adultParticipantsForm="ngForm">
-          <table class="participants-table">
+          <table class="participants-table adult-participants">
             <thead>
-              <th></th>
-              <th>avatar</th>
-              <th>nickname</th>
-              <th>gender</th>
-              <th>language(s)</th>
-              <th>role</th>
-              <th>years of experience</th>
+              <th class="remove"></th>
+              <th class="avatar">avatar</th>
+              <th class="nickname">nickname</th>
+              <th class="gender">gender</th>
+              <th class="is-submitter">is-submitter</th>
+              <th class="is-teacher">is-teacher</th>
             </thead>
             <tbody>
-              <tr #participantRow *ngFor="let participant of sample.adults; let i=index">
+              <tr #participantRow *ngFor="let adult of sample.adults; let i=index">
                 <td class="remove">
-                  <button class="text-style" (click)="sample.adults = removeValue(sample.adults, participant)">
+                  <button class="text-style" (click)="sample.adults = removeValue(sample.adults, adult)">
                     <i class="fa fa-close"></i>
                   </button>
                 </td>
-                <td class="avatar"><img src="{{environment.mediaURL}}{{participant.avatar}}" height="60px"></td>
-                <td class="input-field nickname">
-                  <input [(ngModel)]="participant.nickname" placeholder="Choose a nickname" required name="nickname{{i}}">
+                <td class="avatar"><img src="{{environment.mediaURL}}{{adult.avatar}}" height="60px"></td>
+                <td class="nickname input-field">
+                  <input [(ngModel)]="adult.nickname" placeholder="Choose a nickname" required name="nickname{{i}}">
                   <div class="alert alert-danger">Name is required</div>
                 </td>
-                <td class="input-field">
-                  <select [(ngModel)]="participant.gender" name="gender{{i}}" required>
+                <td class="gender input-field">
+                  <select [(ngModel)]="adult.gender" name="gender{{i}}" required>
                     <option *ngFor="let gender of genders"
                             [value]="gender.value">{{gender.label}}</option>
                   </select>
                 </td>
-                <td class="languages">
-                  <ui-select name="languages{{i}}" required
-                             placeholder="Select One or More Languages..."
-                             #selectComponent
-                             [(ngModel)]="participant.languageKeys"
-                             [options]="langKnowns"
-                             [multiple]="true"
-                             (selected)="newLanguageSkill($event, participant, selectComponent)">
-
-                    <ng-template #pillTemplate let-selection="selection">
-                      <li *ngFor="let option of selection"
-                          [uiTooltip]="(participant.languageSkillIsValid(option.value)) ? 'Click to show the LanguageSkill!' : 'Please click to complete the LanguageSkill!'"
-                          uiTooltipPosition="top"
-                          class="select2-selection__choice"
-                          [class.valid]="participant.languageSkillIsValid(option.value)"
-                          title="{{option.label}}"
-                          [attr.data-value]="option.value"
-                          (click)="editLanguageSkill($event, option, participant)">
-                        <span class="select2-selection__choice__remove"
-                              [attr.data-value]="option.value"
-                              (click)="clearParticipantLanguage($event, participant)">
-                            ×
-                        </span>
-                        {{option.label}}
-                      </li>
-                    </ng-template>
-
-                  </ui-select>
+                <td>
+                  <ui-switch-toggle name="{{'is-submitter-' + i}}"
+                    [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
+                    [(ngModel)]="adult.isSubmitter">
+                  </ui-switch-toggle>
                 </td>
-                <td class="input-field">
-                  <select [(ngModel)]="participant.role" name="role{{i}}" required>
-                    <option>Should</option>
-                    <option>we give</option>
-                    <option>limited</option>
-                    <option>options</option>
-                    <option>here?</option>
-                    <option>Or allow</option>
-                    <option>free-entry?</option>
-                  </select>
+                <td>
+                  <ui-switch-toggle name="{{'is-teacher-' + i}}"
+                    [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
+                    [(ngModel)]="adult.isTeacher">
+                  </ui-switch-toggle>
                 </td>
               </tr>
             </tbody>
@@ -253,7 +224,7 @@
         </form>
 
         <div class="actions">
-          <button class="button-style" (click)="this.addAdultParticipant()">
+          <button class="button-style" (click)="this.addAdultParticipant($event)">
             <i class="fa fa-plus"></i> Add a new adult participant
           </button>
           <button class="button-style" (click)="this.lookupParticipants($event, 'adults')">

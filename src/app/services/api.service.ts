@@ -223,11 +223,9 @@ export class ApiService {
                     .map(
                       (response: Response) => {
                         let data = response.json();
-                        console.log(data.results);
                         data.results = data.results.map(
                           (participant) => new {'students': StudentParticipant, 'adults': AdultParticipant}[participantType](participant)
                         );
-                        console.log(data.results);
                         data.params = _params;
                         return data;
                       }
