@@ -4,9 +4,6 @@ import { BrowserAnimationsModule }      from '@angular/platform-browser/animatio
 import { FormsModule }                  from '@angular/forms';
 import { HttpModule }                   from '@angular/http';
 
-import { DialogModule }                 from './primeng/dialog';
-import { MenubarModule }                from './primeng/menubar';
-
 import { SelectModule }                 from './ui-modules/angular2-select/select.module';
 
 import { AutoCompleteModule }           from './ui-modules/ui-autocomplete/autocomplete.module';
@@ -84,9 +81,6 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     BrowserAnimationsModule,
     FormsModule,
     HttpModule,
-
-    DialogModule,
-    MenubarModule,
 
     SelectModule,
     DataTableModule,

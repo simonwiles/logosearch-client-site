@@ -25,13 +25,12 @@ import { DataTableColumnComponent } from './column.component';
 import { DataTableRowComponent }    from './row.component';
 import { RowCallback,
          IDataTableLabels }         from './types';
-import { TABLE_TEMPLATE }           from './table.template';
 
 
 
 @Component({
   selector: 'ui-data-table',
-  template: TABLE_TEMPLATE,
+  templateUrl: 'table.component.html',
   styles: [`
     .data-table-box {
       position: relative;
@@ -155,7 +154,7 @@ export class DataTableComponent implements OnInit {
 
     this.dataService.updated.subscribe(
       data => {
-        //this.changeDetectorRef.markForCheck();
+        // wait one tick first
         setTimeout(() => this.dataTableBox.nativeElement.style.height = this.dataTable.nativeElement.scrollHeight + 'px', 0);
       }
     );

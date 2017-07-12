@@ -1,4 +1,4 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 
 export interface SortMeta {
     field: string;
@@ -11,7 +11,7 @@ export interface LazyLoadEvent {
     sortField?: string;
     sortOrder?: number;
     multiSortMeta?: SortMeta[];
-    filters?: {[s: string]: FilterMetadata;};
+    filters?: { [s: string]: FilterMetadata; };
 }
 
 export interface FilterMetadata {

@@ -1,8 +1,10 @@
-import {EventEmitter,Injectable} from '@angular/core';
-import {Subject} from 'rxjs/Subject';
-import {Observable} from 'rxjs/Observable';
+import { Observable }   from 'rxjs/Observable';
+import { Subject }      from 'rxjs/Subject';
 
-export {DomHandler} from 'domhandler';
+import { EventEmitter,
+         Injectable }   from '@angular/core';
+
+export { DomHandler }   from 'domhandler';
 
 export interface Confirmation {
     message: string;
