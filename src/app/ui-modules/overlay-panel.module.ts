@@ -11,7 +11,7 @@ import { AfterViewInit,
 
 import { CommonModule }   from '@angular/common';
 
-import { DomHandler }     from '../primeng/domhandler';
+import { DomHandler }     from '../utils/domhandler';
 
 
 @Component({

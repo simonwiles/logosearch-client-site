@@ -7,7 +7,7 @@ import { Directive,
 
 import { CommonModule }   from '@angular/common';
 
-import { DomHandler }     from '../primeng/domhandler';
+import { DomHandler }     from '../utils/domhandler';
 
 @Directive({
   selector: '[uiTooltip]',

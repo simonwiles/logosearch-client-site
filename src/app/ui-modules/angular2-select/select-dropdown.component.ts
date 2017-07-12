@@ -75,7 +75,7 @@ export class SelectDropdownComponent implements AfterViewInit, OnChanges, OnInit
   private MSG_NOT_FOUND = 'No results found';
 
   // Class names.
-  private S2: string = 'select2';
+  private S2 = 'select2';
   private S2_RESULTS: string = this.S2 + '-results';
   private S2_MSG: string = this.S2_RESULTS + '__message';
   private S2_OPTIONS: string = this.S2_RESULTS + '__options';
@@ -83,6 +83,14 @@ export class SelectDropdownComponent implements AfterViewInit, OnChanges, OnInit
   private S2_OPTION_HL: string = this.S2_OPTION + '--highlighted';
   private S2_DISABLED: string = this.S2_OPTION + '--disabled';
 
+
+  private KEYS: any = {
+    TAB: 9,
+    ENTER: 13,
+    ESC: 27,
+    UP: 38,
+    DOWN: 40
+  };
 
   /***************************************************************************
    * Event handlers.
@@ -242,14 +250,6 @@ export class SelectDropdownComponent implements AfterViewInit, OnChanges, OnInit
   /***************************************************************************
    * Keys/scroll.
    **************************************************************************/
-
-  private KEYS: any = {
-    TAB: 9,
-    ENTER: 13,
-    ESC: 27,
-    UP: 38,
-    DOWN: 40
-  };
 
   private handleKeyDown(event: any) {
 

@@ -12,7 +12,7 @@ import { Component,
 import { NG_VALUE_ACCESSOR,
          ControlValueAccessor}  from '@angular/forms';
 
-import { DomHandler }           from '../../primeng/domhandler';
+import { DomHandler }           from '../../utils/domhandler';
 
 export const AUTOCOMPLETE_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,

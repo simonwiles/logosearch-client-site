@@ -2,8 +2,6 @@ import { Component }      from '@angular/core';
 
 import { environment }    from '../environments/environment';
 
-import { Message }        from './primeng/api.interfaces';
-
 import { AboutComponent } from './components/about.component';
 import { LoginComponent } from './components/login.component';
 import { HomeComponent }  from './components/home.component';
@@ -11,6 +9,12 @@ import { HomeComponent }  from './components/home.component';
 import { AuthService }    from './services/auth.service';
 import { PubSubService }  from './services/pubsub.service';
 
+
+export interface Message {
+    severity?: string;
+    summary?: string;
+    detail?: string;
+}
 
 @Component({
   selector: 'lr-root',

@@ -153,8 +153,18 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
   private S2_CONTAINER: string = this.S2 + '-container';
   private S2_SELECTION: string = this.S2 + '-selection';
 
-  onChange = (_: any) => { return undefined; };
-  onTouched = () => { return undefined; };
+  private KEYS: any = {
+    BACKSPACE: 8,
+    TAB: 9,
+    ENTER: 13,
+    ESC: 27,
+    SPACE: 32,
+    UP: 38,
+    DOWN: 40
+  };
+
+  onChange = (_: any) => undefined;
+  onTouched = () => undefined;
 
   constructor(private el: ElementRef) { }
 
@@ -380,9 +390,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
   }
 
   clear() {
-    for (let item in this.optionsDict) {
-      this.optionsDict[item].selected = false;
-    }
+    Object.keys(this.optionsDict).forEach(key => this.optionsDict[key].selected = false);
     this.selection = [];
     this.value = [];
 
@@ -408,9 +416,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
       value = this.multiple ? [] : '';
     }
 
-    for (let item in this.optionsDict) {
-      this.optionsDict[item].selected = false;
-    }
+    Object.keys(this.optionsDict).forEach(key => this.optionsDict[key].selected = false);
 
     if (this.multiple) {
       for (let item of value) {
@@ -434,16 +440,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
   /***************************************************************************
    * Keys.
    **************************************************************************/
-
-  private KEYS: any = {
-    BACKSPACE: 8,
-    TAB: 9,
-    ENTER: 13,
-    ESC: 27,
-    SPACE: 32,
-    UP: 38,
-    DOWN: 40
-  };
 
   handleKeyDown(event: any) {
 
