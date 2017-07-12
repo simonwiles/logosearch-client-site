@@ -1,5 +1,7 @@
 {
   "name": "language-repository",
+  "description": "Language Repository Frontend",
+  "private": true,
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
