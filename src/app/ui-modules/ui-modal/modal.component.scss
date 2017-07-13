@@ -5,7 +5,7 @@ $main-accent: #00f !default;
 $accent-bg: #800080 !default;
 
 .modal-mask {
-  background: rgba($black, .6);
+  background: rgba(141, 150, 165, .71);
   height: 100%;
   left: 0;
   position: absolute;
@@ -24,6 +24,7 @@ $accent-bg: #800080 !default;
 }
 
 .wrapper {
+  box-shadow: 0 7px 9px -4px rgba($black, .2), 0 14px 21px 2px rgba($black, .14), 0 5px 26px 4px rgba($black, .12);
   display: inline-block;
   position: relative;
   text-align: initial;
