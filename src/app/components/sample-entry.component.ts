@@ -137,7 +137,7 @@ export class SampleEntryComponent implements AfterViewInit {
     return true;
   }
 
-  removeValue(arr, value) {
+  removeValue(arr: any[], value: any) {
     return arr.filter(e => e !== value);
   }
 
@@ -290,6 +290,29 @@ export class SampleEntryComponent implements AfterViewInit {
   clearRecording() {
     this.recordingName = '';
     this.recordingUrl = null;
+  }
+
+  supportingFilesSelected(filesList: FileList) {
+    const acceptedFileTypes: string[] = ['image/png', 'image/jpeg', 'image/gif'];
+    const maximumFileSizeInBytes = 2e+6;
+    const rejectedFileType: File[] = [];
+    const rejectedFileSize: File[] = [];
+
+    for (let i = 0; i < filesList.length; ++i) {
+      if (acceptedFileTypes.indexOf(filesList[i].type) === -1) {
+          rejectedFileType.push(filesList[i]);
+          continue;
+      }
+      if (maximumFileSizeInBytes < filesList[i].size) {
+          rejectedFileSize.push(filesList[i]);
+          continue;
+      }
+      this.sample.supportingFiles.push(filesList[i]);
+    }
+
+    console.log(rejectedFileType);
+    console.log(rejectedFileSize);
+
   }
 
   saveSample() {

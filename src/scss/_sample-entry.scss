@@ -50,21 +50,6 @@
     }
   }
 
-  .language-usage {
-    label {
-      color: rgba($black, .5);
-
-      &.focussed {
-        color: $main-accent;
-        font-weight: bold;
-      }
-    }
-
-    > :first-child button {
-      margin: 4px 0 0 8px;
-    }
-  }
-
   .lang-usage-row {
     height: 45px;
 
@@ -227,7 +212,7 @@
 
 .language-skill {
   border: 1px solid $gray;
-  padding: 4px 8px 4px;
+  padding: 4px 8px;
   width: 100%;
 
   th {
@@ -267,7 +252,61 @@
   }
 }
 
-.file-upload {
+.supporting-files {
+
+  .no-supporting-files {
+    color: $gray;
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+
+}
+
+.add-multiple {
+
+  display: flex;
+  position: relative;
+  padding-top: 20px;
+  padding-bottom: 10px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid rgba($black, .24);
+    margin-bottom: 20px;
+  }
+
+  label {
+    color: rgba($black, .5);
+    position: absolute;
+    top: 0;
+
+    &.focussed {
+      color: $main-accent;
+      font-weight: bold;
+    }
+  }
+
+  > div {
+    display: inline-block;
+
+    &.buttons {
+      width: 15%;
+    }
+
+    &:last-child {
+      flex-grow: 1;
+    }
+  }
+
+  button.button-style {
+    margin: 4px auto 0;
+    width: 90%;
+    text-align: left;
+  }
+}
+
+.recording-upload {
   background: $light-blue;
   border-radius: 4px;
   display: flex;

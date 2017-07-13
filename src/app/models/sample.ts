@@ -28,6 +28,7 @@ export interface ISample {
   numScores: number;
 
   recording: any;
+  supportingFiles: File[];
 }
 
 
@@ -82,6 +83,7 @@ export class Sample implements ISample {
   public d2Avg: number;
 
   public recording: any;
+  public supportingFiles: File[] = [];
 
   constructor(obj?: ISample) {
     Object.assign(this, obj);
