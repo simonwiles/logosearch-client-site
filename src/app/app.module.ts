@@ -8,6 +8,7 @@ import { SelectModule }                 from './ui-modules/angular2-select/selec
 
 import { AutoCompleteModule }           from './ui-modules/ui-autocomplete/autocomplete.module';
 import { ModalModule }                  from './ui-modules/ui-modal/modal.module';
+import { NotificationsModule }          from './ui-modules/ui-notifications/notifications.module';
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
@@ -27,7 +28,7 @@ import { AuthConfig }                   from './auth.config';
 
 import { ApiService }                   from './services/api.service';
 import { AuthService }                  from './services/auth.service';
-import { PubSubService }                from './services/pubsub.service';
+import { NotificationsService }         from './services/notifications.service';
 
 import { EvaluationsListService }       from './services/evaluations-list.service';
 import { ParticipantsListService }      from './services/participants-list.service';
@@ -87,6 +88,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
 
     AutoCompleteModule,
     ModalModule,
+    NotificationsModule,
 
     CollapsibleModule,
     OverlayPanelModule,
@@ -102,7 +104,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
 
     ApiService,
     AuthService,
-    PubSubService,
+    NotificationsService,
 
     EvaluationsListService,
     ParticipantsListService,

@@ -1,13 +1,13 @@
-import { Component }      from '@angular/core';
+import { Component }             from '@angular/core';
 
-import { environment }    from '../environments/environment';
+import { environment }           from '../environments/environment';
 
-import { AboutComponent } from './components/about.component';
-import { LoginComponent } from './components/login.component';
-import { HomeComponent }  from './components/home.component';
+import { AboutComponent }        from './components/about.component';
+import { LoginComponent }        from './components/login.component';
+import { HomeComponent }         from './components/home.component';
 
-import { AuthService }    from './services/auth.service';
-import { PubSubService }  from './services/pubsub.service';
+import { AuthService }           from './services/auth.service';
+import { NotificationsService }  from './services/notifications.service';
 
 
 export interface Message {
@@ -24,13 +24,9 @@ export interface Message {
 })
 export class AppComponent {
   public environment = environment;
-  public messages: Message[] = [];
 
   constructor(
     public authService: AuthService,
-    private pubSubService: PubSubService) {
-
-    this.pubSubService.emitter.listen(
-      'message', (messageData) => { this.messages.push(messageData); });
- }
+    public notificationsService: NotificationsService) {
+  }
 }

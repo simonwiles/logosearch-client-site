@@ -17,7 +17,7 @@ import { AdultParticipant,
          StudentParticipant }         from '../models/participants';
 
 import { AuthService }                from './auth.service';
-import { PubSubService }              from './pubsub.service';
+import { NotificationsService }       from './notifications.service';
 
 import { DjangoQueryEncoder }         from '../utils/django-query-encoder';
 
@@ -33,7 +33,7 @@ export class ApiService {
   constructor(
     private http: Http,
     private authService: AuthService,
-    private pubSubService: PubSubService) { }
+    private notificationsService: NotificationsService) { }
 
 
   public getUsers(params?): Observable<any> {
@@ -269,13 +269,13 @@ export class ApiService {
 
 
 
-  public postSample(): Observable<any> {
+  public putSample(sample): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
     const options: RequestOptions = new RequestOptions({
       headers: this.getHeadersWithAuth(this.headers)
     });
 
-    return this.http.post(samplesURI, options)
+    return this.http.put(samplesURI, JSON.stringify(sample), options)
                     .map(response => response.json())
                     .catch(error => this.handleError(error));
 
@@ -285,7 +285,7 @@ export class ApiService {
   private getHeadersWithAuth(headers): Headers {
 
     if (!this.authService.isLoggedIn) {
-      this.pubSubService.error(
+      this.notificationsService.error(
         'Not logged in!',
         'Sorry, you must be logged in to perform this operation!');
     }
@@ -295,7 +295,7 @@ export class ApiService {
         headers.set('Authorization', 'JWT ' + jwt);
         return headers;
       },
-      error => { this.pubSubService.error('Authentication Error!', error.message); }
+      error => { this.notificationsService.error('Authentication Error!', error.message); }
     );
 
     return headers;

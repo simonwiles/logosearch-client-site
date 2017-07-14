@@ -15,7 +15,7 @@ import { JwtHelper }                  from '../utils/jwt';
 
 import { User, IUser }                from '../models/user';
 
-import { PubSubService }              from './pubsub.service';
+import { NotificationsService }       from '../services/notifications.service';
 
 
 
@@ -40,7 +40,7 @@ export class AuthService {
   constructor(
     private http: Http,
     private authConfig: AuthConfig,
-    private pubSubService: PubSubService) {
+    private notificationsService: NotificationsService) {
 
     // check if there's a valid session and a logged-in user
     this.getJWT().subscribe(
@@ -123,7 +123,7 @@ export class AuthService {
       // if the CSRF token is invalid, we have a click-jacking attempt,
       //  or similar -- abort!
       if (!environment.production) {
-        this.pubSubService.error(
+        this.notificationsService.error(
           'CSRF is invalid!',
           'CSRF token mismatch -- authentication cancelled.');
       }
@@ -144,10 +144,12 @@ export class AuthService {
     localStorage.setObject('user', user);
     this.loggedInUser = user;
     this.isLoggedIn = true;
-    this.pubSubService.emitter.emit('userLoggedIn', user);
-    this.pubSubService.info(
+    // this.notificationsService.emitter.emit('userLoggedIn', user);
+    this.notificationsService.success(
       'Successfully Logged In!',
-      'User `' + user.displayAs() + '` has successfully logged in!');
+      'User `' + user.displayAs() + '` has successfully logged in!',
+      {timeout: 2000}
+    );
   }
 
   logout(): void {
@@ -156,8 +158,8 @@ export class AuthService {
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
     this.isLoggedIn = false;
-    this.pubSubService.emitter.emit('userLoggedOut', null);
-    this.pubSubService.info( 'Logged Out!', 'You have been logged out!');
+    // this.notificationsService.emitter.emit('userLoggedOut', null);
+    this.notificationsService.info('Logged Out!', 'You have been logged out!');
   }
 
   generateToken(length): string {
@@ -191,7 +193,7 @@ export class AuthService {
         if (tokenValidity <= environment.jwtRefreshMinValidity) {
 
           if (!environment.production) {
-            this.pubSubService.warn(
+            this.notificationsService.warn(
               'Token About to Expire!',
               'JWT is about to expire -- attempting auto-refresh');
           }
@@ -211,7 +213,7 @@ export class AuthService {
 
       } else {
         // token has expired -- user must be logged out!
-        this.pubSubService.warn(
+        this.notificationsService.warn(
           'Login has expired!',
           'Sorry, your login session has expired -- please log in again!');
         this.logout();

@@ -15,7 +15,8 @@ import { AuthConfig }              from '../auth.config';
 
 import { ApiService }              from '../services/api.service';
 import { AuthService }             from '../services/auth.service';
-import { PubSubService }           from '../services/pubsub.service';
+import { NotificationsService }    from '../services/notifications.service';
+
 import { EvaluationsListService }  from '../services/evaluations-list.service';
 import { SamplesListService }      from '../services/samples-list.service';
 
@@ -58,12 +59,12 @@ export class ProfileComponent implements AfterViewInit, OnDestroy, OnInit {
     private authConfig: AuthConfig,
     private apiService: ApiService,
     private authService: AuthService,
-    private pubSubService: PubSubService,
+    private notificationsService: NotificationsService,
     private evaluationsListService: EvaluationsListService,
     private samplesListService: SamplesListService) {
 
-    this.userLoggedOutListener = this.pubSubService.emitter.listen(
-      'userLoggedOut', () => this.router.navigate(['/']));
+    // this.userLoggedOutListener = this.notificationsService.emitter.listen(
+    //   'userLoggedOut', () => this.router.navigate(['/']));
   }
 
   ngOnInit() {
@@ -149,7 +150,7 @@ export class ProfileComponent implements AfterViewInit, OnDestroy, OnInit {
       response => {
         if (response.status === 204) {
           delete this.userSocial[provider];
-          this.pubSubService.info('Success!', 'The association was successfully deleted!');
+          this.notificationsService.success('The association was successfully deleted!');
           this.showRemoveUserSocialDialog(provider);
           this.dialogDisplay = false;
         }
