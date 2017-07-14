@@ -87,11 +87,60 @@ Storage.prototype.getObject = function(key) {
   return value && JSON.parse(value);
 };
 
-String.prototype.toCamelCase = function(){
+String.prototype.toCamelCase = function() {
   return this.replace(/-[a-z]/g, function(match) { return match.toUpperCase(); });
 };
 
-String.prototype.toKebabCase = function(){
+String.prototype.toKebabCase = function() {
   return this.replace(/[A-Z]/g, function(match) { return '-' + match.toLowerCase(); });
 };
 
+Number.prototype.siUnits = function() {
+  // Handle some special cases
+  if (this === 0) { return '0 Bytes'; }
+  if (this === 1) { return '1 Byte'; }
+  if (this === -1) { return '-1 Byte'; }
+
+  const bytes = Math.abs(this);
+  const orderOfMagnitude = Math.pow(10, 3);
+  const abbreviations = ['Bytes', 'kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(orderOfMagnitude));
+  let result = (bytes / Math.pow(orderOfMagnitude, i));
+
+  // This will get the sign right
+  if (this < 0) { result *= -1; }
+
+  // This bit here is purely for show. it drops the percision on numbers greater than 100 before the units.
+  // it also always shows the full number of bytes if bytes is the unit.
+  if (result >= 99.995 || i === 0) {
+      return result.toFixed(0) + ' ' + abbreviations[i];
+  } else {
+      return result.toFixed(2) + ' ' + abbreviations[i];
+  }
+};
+
+Number.prototype.iecUnits = function() {
+  // Handle some special cases
+  if (this === 0) { return '0 Bytes'; }
+  if (this === 1) { return '1 Byte'; }
+  if (this === -1) { return '-1 Byte'; }
+
+  const bytes = Math.abs(this);
+  const orderOfMagnitude = Math.pow(2, 10);
+  const abbreviations = ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(orderOfMagnitude));
+  let result = (bytes / Math.pow(orderOfMagnitude, i));
+
+  // This will get the sign right
+  if (this < 0) { result *= -1; }
+
+  // This bit here is purely for show. it drops the percision on numbers greater than 100 before the units.
+  // it also always shows the full number of bytes if bytes is the unit.
+  if (result >= 99.995 || i === 0) {
+      return result.toFixed(0) + ' ' + abbreviations[i];
+  } else {
+      return result.toFixed(2) + ' ' + abbreviations[i];
+  }
+};

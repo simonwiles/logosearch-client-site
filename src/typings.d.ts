@@ -21,3 +21,8 @@ interface Storage {
   setObject(key: string, value: any): void;
   getObject(key: string): any;
 }
+
+interface Number {
+  siUnits(): string;
+  iecUnits(): string;
+}
