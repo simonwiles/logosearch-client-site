@@ -108,7 +108,7 @@
     <ui-data-table-column styleClass="column-preview"
                           [sortable]="false">
       <ng-template #dataTableCell let-item="item">
-        <button class="text-style" (click)="showPreview($event)"><i class="fa fa-eye"></i></button>
+        <button class="text-style" (click)="showPreview($event, item)"><i class="fa fa-eye"></i></button>
       </ng-template>
     </ui-data-table-column>
 

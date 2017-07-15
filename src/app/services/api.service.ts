@@ -181,6 +181,8 @@ export class ApiService {
       if (params.hasEll && params.hasEll !== 'any') { _params.set('hasEll', params.hasEll); }
       if (params.hasRecording) { _params.set('hasRecording', params.hasRecording); }
 
+      if (params.person) { _params.set('person', params.person); }
+
     }
     const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
 
