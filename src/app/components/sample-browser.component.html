@@ -14,8 +14,10 @@
         <i class="fa fa-eraser"></i>
         reset filters
       </button>
-      <h3>
-        Showing {{samplesListService.itemCount | uiFormatThousands}} of {{samplesListService.itemTotal | uiFormatThousands}} Total Samples Available
+      <h3 [innerHtml]="{
+        true: uiFormatThousands(samplesListService.itemTotal) + ' Total Samples',
+        false: 'Filtered ' + uiFormatThousands(samplesListService.itemCount) + ' of ' + uiFormatThousands(samplesListService.itemTotal) + ' Total Samples'
+      }[samplesListService.itemCount === samplesListService.itemTotal]">
       </h3>
       <ul class="ui-button-bar">
         <li [ngClass]="{'selected': displayType === 'table'}"><a (click)="displayType = 'table'"><i class="fa fa-th-list"></i></a></li>
@@ -138,7 +140,7 @@
 
       <div class="g filter-headings">
         <div class="u-7-24">Search</div>
-        <div class="u-7-24"># turns</div>
+        <div class="u-7-24">Number of Turns</div>
         <div class="u-10-24">Language Usage</div>
       </div>
 

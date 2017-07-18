@@ -22,6 +22,8 @@ import { SubjectArea,
 import { Gender,
          GradeLevel }                     from '../models/participants';
 
+import { FormatThousands }                from '../ui-modules/ui-pipes/format-thousands.pipe';
+
 
 @Component({
   selector: 'lr-sample-browser',
@@ -70,7 +72,6 @@ import { Gender,
 export class SampleBrowserComponent {
 
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
-  // @Input() showFilters = true;
 
   public genders: any = Object.values(Gender);
   public gradeLevels: any = Object.keys(GradeLevel).map(_ => ({ label: GradeLevel[_], value: _ }));
@@ -99,6 +100,7 @@ export class SampleBrowserComponent {
     this._displayType = displayType;
   }
 
+  public uiFormatThousands = FormatThousands.prototype.transform;
 
   public filters;
   private _subjectAreaCounts: any = {};
