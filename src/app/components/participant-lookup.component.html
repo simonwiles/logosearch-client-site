@@ -20,7 +20,7 @@
       </div>
       <div class="u-2-3">
         <ui-switch-toggle name="submitted-by-filter" #submittedByToggle
-                          [options]="[{label: 'All', value: 'all'}, {label: 'Mine', value: 'own'}, {label: 'Someone Else', value: 'other'}]"
+                          [options]="[{label: 'Mine', value: 'own'}, {label: 'Someone Else', value: 'other'}]"
                           (change)="getParticipants()"
                           value="own">
         </ui-switch-toggle>
