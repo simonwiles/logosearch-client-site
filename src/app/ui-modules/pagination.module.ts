@@ -5,6 +5,8 @@ import { Component,
          Input,
          NgModule }     from '@angular/core';
 
+import { PipesModule }  from './ui-pipes/pipes.module';
+
 import { IApiDataService } from '../services/api-data.service.interface';
 
 @Component({
@@ -28,7 +30,7 @@ import { IApiDataService } from '../services/api-data.service.interface';
 
     <span class="pagination-range">
       {{dataService.offset + 1}}-{{rangeEnd}}
-      of {{dataService.itemCount}}
+      of {{dataService.itemCount | uiFormatThousands}}
     </span>
 
 
@@ -105,7 +107,7 @@ export class PaginationComponent {
 }
 
 @NgModule({
-    imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, PipesModule],
     exports: [PaginationComponent],
     declarations: [PaginationComponent]
 })
