@@ -9,6 +9,7 @@ import { SelectModule }                 from './ui-modules/angular2-select/selec
 import { AutoCompleteModule }           from './ui-modules/ui-autocomplete/autocomplete.module';
 import { ModalModule }                  from './ui-modules/ui-modal/modal.module';
 import { NotificationsModule }          from './ui-modules/ui-notifications/notifications.module';
+import { PipesModule }                  from './ui-modules/ui-pipes/pipes.module';
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
@@ -36,7 +37,6 @@ import { SamplesListService }           from './services/samples-list.service';
 
 import { TranscriptionRendererService } from './services/transcription-renderer.service';
 
-import { FormatThousands }              from './pipes/format-thousands.pipe';
 import { MapToIterable }                from './pipes/map-to-iterable.pipe';
 import { SafePipe }                     from './pipes/safe.pipe';
 
@@ -59,7 +59,6 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     TabPanelComponent,
     TabViewComponent,
 
-    FormatThousands,
     MapToIterable,
     SafePipe,
 
@@ -89,6 +88,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     AutoCompleteModule,
     ModalModule,
     NotificationsModule,
+    PipesModule,
 
     CollapsibleModule,
     OverlayPanelModule,
