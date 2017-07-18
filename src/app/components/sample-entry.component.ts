@@ -30,6 +30,7 @@ import { Sample,
          SubjectArea }                from '../models/sample';
 
 import { ApiService }                 from '../services/api.service';
+import { NotificationsService }       from '../services/notifications.service';
 
 @Component({
   selector: 'lr-sample-entry',
@@ -107,7 +108,8 @@ export class SampleEntryComponent implements AfterViewInit {
   constructor(
     private authConfig: AuthConfig,
     private apiService: ApiService,
-    private changeDetectorRef: ChangeDetectorRef ) { }
+    private changeDetectorRef: ChangeDetectorRef,
+    private notificationsService: NotificationsService ) { }
 
   ngAfterViewInit() {
     // load the Dropbox script
@@ -293,13 +295,47 @@ export class SampleEntryComponent implements AfterViewInit {
   }
 
   supportingFilesSelected(filesList: FileList) {
-    const acceptedFileTypes: string[] = ['image/png', 'image/jpeg', 'image/gif'];
+
+    const acceptedFileTypes: string[] = [
+      // Images
+      'image/png',
+      'image/jpeg',
+      'image/gif',
+
+      // PDF
+      'application/pdf',
+
+      // MS Word
+      'application/msword',  // .doc
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  // .docx
+
+      // MS Excel
+      'application/vnd.ms-excel',  // .xsl, .xla, .xlt
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  // .xslx
+
+      // MS PowerPoint
+      'application/vnd.ms-powerpoint',  // .ppt
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',  // .pptx
+      'application/vnd.openxmlformats-officedocument.presentationml.slideshow',  // .ppsx
+
+      // OpenOffice / LibreOffice
+      'application/vnd.oasis.opendocument.text',  // .odt
+      'application/vnd.oasis.opendocument.spreadsheet',  // .ods
+      'application/vnd.oasis.opendocument.presentation',  // .odp
+
+      // Others
+      'text/plain',
+      'text/csv',
+      'application/rtf',
+    ];
     const maximumFileSizeInBytes = 2e+6;
     const rejectedFileType: File[] = [];
     const rejectedFileSize: File[] = [];
 
     for (let i = 0; i < filesList.length; ++i) {
       if (acceptedFileTypes.indexOf(filesList[i].type) === -1) {
+          // note: browsers just set the mime-type on the basis of the
+          //       file extension, so this is just a sanity check, really
           rejectedFileType.push(filesList[i]);
           continue;
       }
@@ -310,13 +346,48 @@ export class SampleEntryComponent implements AfterViewInit {
       this.sample.supportingFiles.push(filesList[i]);
     }
 
-    console.log(rejectedFileType);
-    console.log(rejectedFileSize);
 
+    if (rejectedFileType.length) {
+      const html = `
+        <div class="notification-title">Files Rejected (wrong type):</div>
+        <div class="notification-content">Allowed types are image files and document files.</div>
+        <div class="notification-content">
+          <ul>
+            ${
+              rejectedFileType.map(
+                f => `<li><i class="fa fa-fw fa-ban"></i> ${f.name} (${f.type})</li>`
+              ).join('')
+            }
+          </ul>
+        </div>
+      `;
+      this.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
+    }
+
+    if (rejectedFileSize.length) {
+      const html = `
+        <div class="notification-title">Files Rejected (too large):</div>
+        <div class="notification-content">
+          Files may be no bigger than ${maximumFileSizeInBytes.siUnits()} / ${maximumFileSizeInBytes.iecUnits()}.
+        </div>
+        <div class="notification-content">
+          <ul>
+            ${
+              rejectedFileSize.map(
+                f => `<li><i class="fa fa-fw fa-ban"></i> ${f.name} (${f.size.siUnits()} / ${f.size.iecUnits()})</li>`
+              ).join('')
+            }
+          </ul>
+        </div>
+      `;
+      this.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
+    }
   }
 
   saveSample() {
-    window.alert('not ready yet!');
+    this.apiService.putSample(this.sample).subscribe(
+      response => console.log(response)
+    );
   }
 
   dump(value) {
