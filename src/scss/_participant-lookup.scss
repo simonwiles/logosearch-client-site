@@ -22,8 +22,13 @@
       background: rgba($light-blue, .4);
     }
 
+    td {
+      padding: 0 4px;
+    }
+
     .select-column-header,
     .column-avatar,
+    .column-numSamples,
     .column-preview {
       text-align: center;
     }
@@ -33,16 +38,20 @@
     }
 
     .column-gender {
-      width: 85px;
+      width: 80px;
+    }
+
+    .column-numSamples {
+      width: 20px;
     }
 
     .column-date {
       white-space: nowrap;
-      width: 110px;
+      width: 100px;
     }
 
     .column-preview {
-      width: 30px;
+      width: 20px;
     }
   }
 

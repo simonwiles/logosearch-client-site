@@ -99,6 +99,12 @@
       <ng-template #dataTableCell let-item="item">{{genders[item.gender].label}}</ng-template>
     </ui-data-table-column>
 
+    <ui-data-table-column header="#"
+                          property="numSamples"
+                          [sortable]="false">
+      <ng-template #dataTableCell let-item="item">{{item.samples.length}}</ng-template>
+    </ui-data-table-column>
+
     <ui-data-table-column header="last used"
                           property="date"
                           [sortable]="true">
