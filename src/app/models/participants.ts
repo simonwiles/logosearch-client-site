@@ -168,9 +168,7 @@ export class LanguageSkill {
   public isPrimaryLanguage?: boolean = null;
   public assessedLevel?: any[] = []; // TODO: typings?
 
-  constructor(obj?) {
-    Object.assign(this, obj);
-  }
+  constructor(obj?) { Object.assign(this, obj); }
 
   isValid(): boolean {
     return (this.speakingProficiency != null && this.listeningProficiency != null);
