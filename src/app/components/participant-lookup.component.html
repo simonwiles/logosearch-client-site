@@ -106,7 +106,7 @@
     </ui-data-table-column>
 
     <ui-data-table-column header="last used"
-                          property="date"
+                          property="lastUsed"
                           [sortable]="true">
       <ng-template #dataTableCell let-item="item">{{item.samples[0][1] | date}}</ng-template>
     </ui-data-table-column>
