@@ -44,7 +44,7 @@
     <table class="participants">
       <tr *ngFor="let participant of sample?.students" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
         <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
-        <td>“{{participant.nickname}}”</td>
+        <td>{{participant.nickname}}</td>
         <td>
           <span class="value-stud"><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></span>
           {{(participant.gender == 'F') ? 'Female' : 'Male' }}
@@ -55,19 +55,19 @@
         <td>
           Speaker of
           <ul class="participant-languages">
-            <li *ngFor="let lang of participant.languages">
+            <li *ngFor="let lang of participant.languageSkills">
               {{languages[lang.language].label}}
               <i *ngIf="lang.isPrimaryLanguage" class="fa fa-home" uiTooltip="{{languages[lang.language].label}} is a primary language of {{participant.nickname}}."></i>
               <i *ngIf="lang.participantIsLearner" class="fa fa-mortar-board" uiTooltip="{{participant.nickname}} is a learner of {{languages[lang.language].label}}."></i>
-              <i *ngIf="lang.assessedLevel" class="fa fa-bar-chart" uiTooltip="{{renderAssessedLevel(lang.assessedLevel)}}."></i>
+              <i *ngIf="lang.assessedLevel.length" class="fa fa-bar-chart" uiTooltip="{{renderAssessedLevel(lang.assessedLevel)}}."></i>
             </li>
           </ul>
         </td>
       </tr>
       <tr *ngFor="let participant of sample?.adults" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
         <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
-        <td>“{{participant.nickname}}”</td>
-        <td>{{participant.role}} <i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></td>
+        <td>{{participant.nickname}}</td>
+        <td><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></td>
       </tr>
     </table>
   </ui-collapsible>
