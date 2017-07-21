@@ -97,7 +97,7 @@ export class Sample implements ISample {
 export class Turn {
 
   public speaker: AdultParticipant|StudentParticipant;
-  public content: string;
+  public content: string = '';
 
   public isEmpty() {
     return (typeof this.speaker === 'undefined' && typeof this.content === 'undefined');
