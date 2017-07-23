@@ -148,7 +148,7 @@ export class StudentParticipant extends Participant implements IStudentParticipa
 
   constructor(obj?: IStudentParticipant) {
     super(obj);
-    if (obj.languageSkills) {
+    if (obj && obj.languageSkills) {
       this.languageKeys = obj.languageSkills.map(lang => lang.language);
       this.languageSkills = obj.languageSkills.map(lang => new LanguageSkill(lang));
     }
