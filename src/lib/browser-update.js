@@ -1,6 +1,6 @@
 /* exported $buoop */
 "use strict";
-var $buoop = {vs:{i:10,f:-4,o:-4,s:8,c:-4},api:4};
+var $buoop = {vs:{i:11,f:-4,o:-4,s:8,c:-4},api:4};
 function $buo_f(){
  var e = document.createElement("script");
  e.src = "//browser-update.org/update.min.js";
