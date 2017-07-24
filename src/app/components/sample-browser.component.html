@@ -15,9 +15,9 @@
         reset filters
       </button>
       <h3 [innerHtml]="{
-        true: uiFormatThousands(samplesListService.itemTotal) + ' Total Samples',
-        false: 'Filtered ' + uiFormatThousands(samplesListService.itemCount) + ' of ' + uiFormatThousands(samplesListService.itemTotal) + ' Total Samples'
-      }[samplesListService.itemCount === samplesListService.itemTotal]">
+        'true': uiFormatThousands(samplesListService.itemTotal) + ' Total Samples',
+        'false': 'Filtered ' + uiFormatThousands(samplesListService.itemCount) + ' of ' + uiFormatThousands(samplesListService.itemTotal) + ' Total Samples'
+      }[(samplesListService.itemCount === samplesListService.itemTotal).toString()]">
       </h3>
       <ul class="ui-button-bar">
         <li [ngClass]="{'selected': displayType === 'table'}"><a (click)="displayType = 'table'"><i class="fa fa-th-list"></i></a></li>
