@@ -306,7 +306,7 @@
               </td>
               <td>{{i + 1}}</td>
               <td class="input-field">
-                <select [(ngModel)]="turn.speaker" (change)="addTurn($event)" class="turn-participant">
+                <select [(ngModel)]="turn.speaker" (change)="addTurn()" class="turn-participant">
                   <option *ngFor="let participant of sample.students"
                           [value]="participant.uuid">{{participant.nickname}}</option>
                   <option *ngFor="let participant of sample.adults"
@@ -314,7 +314,7 @@
                 </select>
               </td>
               <td class="input-field">
-                <input [(ngModel)]="turn.content" placeholder="turn..." required (change)="addTurn($event)">
+                <ui-turn-editor [(ngModel)]="turn.content" placeholder="turn..." required (turnEditorBlur)="addTurn()"></ui-turn-editor>
                 <div class="alert alert-danger">Turn is required</div>
               </td>
             </tr>

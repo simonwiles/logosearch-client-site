@@ -359,3 +359,77 @@
     padding: 0;
   }
 }
+
+@mixin mark-color($color) {
+  background: rgba($color, .2);
+  border-color: $color;
+}
+
+.ui-turn-editor {
+  .editable {
+    @extend %md-input;
+    height: 32px;
+    line-height: 31px;
+    margin: 0;
+    padding: 0;
+
+    mark {
+      border-style: solid none;
+      border-width: 1px;
+      position: relative;
+
+      &::after {
+        background: rgba($black, .7);
+        border-radius: 3px;
+        color: $white;
+        content: attr(data-label);
+        display: none;
+        left: 15px;
+        line-height: 1;
+        padding: 4px;
+        position: absolute;
+        top: -30px;
+        opacity: 0;
+        transition: all .3s ease;
+        white-space: nowrap;
+      }
+
+      &:hover::after {
+        display: inline-block;
+        opacity: 1;
+      }
+    }
+
+    .reading {
+      @include mark-color(green);
+
+      // &::before {
+      //   content: "\f10d"; // "\f104";
+      //   font: normal normal normal 14px/1 FontAwesome;
+      // }
+
+      // &::after {
+      //   content: "\f10e"; // "\f105";
+      //   font: normal normal normal 14px/1 FontAwesome;
+      // }
+    }
+
+    .sentence-frame {
+      @include mark-color(blue);
+    }
+
+    i {
+
+      &::before {
+        color: purple;
+        font-weight: bold;
+        display: inline-block;
+        margin: 0 4px;
+        padding: 2px;
+
+      }
+    }
+
+
+  }
+}

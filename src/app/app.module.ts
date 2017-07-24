@@ -10,6 +10,7 @@ import { AutoCompleteModule }           from './ui-modules/ui-autocomplete/autoc
 import { ModalModule }                  from './ui-modules/ui-modal/modal.module';
 import { NotificationsModule }          from './ui-modules/ui-notifications/notifications.module';
 import { PipesModule }                  from './ui-modules/ui-pipes/pipes.module';
+import { TurnEditorModule }             from './ui-modules/ui-turn-editor/turn-editor.module';
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
@@ -89,6 +90,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     ModalModule,
     NotificationsModule,
     PipesModule,
+    TurnEditorModule,
 
     CollapsibleModule,
     OverlayPanelModule,

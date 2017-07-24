@@ -1,0 +1,52 @@
+$black: #000 !default;
+$white: #fff !default;
+
+.ui-turn-editor {
+  position: relative;
+}
+
+.ui-turn-editor-toolbar {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  top: -30px;
+  right: 0;
+  background: #eaeaea;
+  box-shadow: 0 7px 9px -4px rgba($black, .2), 0 14px 21px 2px rgba($black, .14), 0 5px 26px 4px rgba($black, .12);
+
+  transition: all .3s ease;
+
+  button {
+    background: none;
+    border: 0;
+    border-radius: 2px;
+    // box-shadow: 0 1px 2px 0 rgba($black, .24);
+    box-sizing: border-box;
+    color: $black;
+    cursor: pointer;
+    display: inline-block;
+    flex: 0 0 90px;
+    font: inherit;
+    font-size: 12px;
+    height: 24px;
+    left: 0;
+    line-height: 24px;
+    margin: 0;
+    overflow: visible;
+    padding: 0 6px;
+    position: relative;
+    text-transform: uppercase;
+    top: 0;
+
+    &::-moz-focus-inner {
+      border: 0;
+      padding: 0;
+    }
+
+    &:hover {
+      background: $white;
+    }
+
+  }
+}
+
