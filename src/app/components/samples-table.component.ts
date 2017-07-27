@@ -35,8 +35,19 @@ export class SamplesTableComponent {
   };
 
 
-  constructor(
-    public samplesListService: SamplesListService) { }
+  constructor(public samplesListService: SamplesListService) {
+    // it would be much nicer to do this by using
+    //  [ngClass]="{popout: subjectAreaList.scrollWidth > subjectAreaList.offsetWidth}"
+    //  in the template, but that throws ExpressionChangedAfterItHasBeenCheckedError
+    //  all the time, so...
+    this.samplesListService.updated.subscribe(
+      () => {
+        setTimeout(() => this.subjectAreaLists.forEach(
+          el => { if (el.nativeElement.scrollWidth > el.nativeElement.offsetWidth) { el.nativeElement.classList.add('popout'); } }
+        ), 0);
+      }
+    );
+  }
 
   filterSubjectArea(key) {
     this.samplesListService.filters.subjectArea = [key];
