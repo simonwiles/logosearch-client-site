@@ -8,7 +8,6 @@ interface NodeModule {
 interface Window {
   listenerFn: any;  // required for some shennanigans in src/app/components/login.component.ts
   Dropbox: any;
-  uuid: any;
   DOMParser: any;
 }
 
