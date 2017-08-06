@@ -18,9 +18,9 @@
         <li [routerLinkActive]="['selected']"><a [routerLink]="['/samples']">
           <i class="fa fa-comments"></i> Browse Samples
         </a></li>
-        <li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn"><a [routerLink]="['/my-samples']">
+        <!--li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn"><a [routerLink]="['/my-samples']">
           <i class="fa fa-user-plus"></i> My Samples
-        </a></li>
+        </a></li-->
         <li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn"><a [routerLink]="['/sample-entry']">
           <i class="fa fa-cloud-upload"></i> Submit a Sample
         </a></li>
