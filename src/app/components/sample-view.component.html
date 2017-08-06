@@ -2,7 +2,7 @@
 
   <div class="g">
     <div class="u-1-2">
-      <a class="sample-permalink" href="{{environment.baseURL}}sample/{{sample.uuid}}" uiTooltip="Direct Link to this Sample"><i class="fa fa-link"></i></a>
+      <a class="sample-permalink" [routerLink]="['/sample/'+sample.uuid]" uiTooltip="Direct Link to this Sample"><i class="fa fa-link"></i></a>
       <p class="submission-details">[Submitted by <a [routerLink]="['/user', sample?.submittedBy.uuid]">{{sample?.submittedBy.displayName}}</a> on <span>{{sample?.submittedAt | date}}</span>]</p>
       <!--p>This is a {{sample?.subjectArea}} class with {{sample?.students.length}} students...</p-->
     </div>
