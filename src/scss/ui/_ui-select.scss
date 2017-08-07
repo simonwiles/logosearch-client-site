@@ -107,6 +107,7 @@
 .select2-container--open {
   .select2-dropdown {
     left: 0;
+    box-shadow: 0 7px 9px -4px rgba(0, 0, 0, .2), 0 14px 21px 2px rgba(0, 0, 0, .14), 0 5px 26px 4px rgba(0, 0, 0, .12);
   }
 
   .select2-dropdown--above {
