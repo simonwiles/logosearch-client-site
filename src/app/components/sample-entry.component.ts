@@ -27,7 +27,8 @@ import { AdultParticipant,
 import { Sample,
          LanguageUsage,
          Turn,
-         SubjectArea }                from '../models/sample';
+         SubjectArea,
+         SupportingFile }             from '../models/sample';
 
 import { ApiService }                 from '../services/api.service';
 import { NotificationsService }       from '../services/notifications.service';
@@ -343,7 +344,7 @@ export class SampleEntryComponent implements AfterViewInit {
           rejectedFileSize.push(filesList[i]);
           continue;
       }
-      this.sample.supportingFiles.push(filesList[i]);
+      this.sample.supportingFiles.push(new SupportingFile({file: filesList[i], title: ''}));
     }
 
 
@@ -385,6 +386,7 @@ export class SampleEntryComponent implements AfterViewInit {
   }
 
   saveSample() {
+    console.log(this.sample);
     this.apiService.putSample(this.sample).subscribe(
       response => console.log(response)
     );

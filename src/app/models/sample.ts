@@ -28,7 +28,7 @@ export interface ISample {
   numScores: number;
 
   recording: any;
-  supportingFiles: File[];
+  supportingFiles: SupportingFile[];
 }
 
 
@@ -83,7 +83,7 @@ export class Sample implements ISample {
   public d2Avg: number;
 
   public recording: any;
-  public supportingFiles: File[] = [];
+  public supportingFiles: SupportingFile[] = [];
 
   constructor(obj?: ISample) {
     Object.assign(this, obj);
@@ -108,8 +108,12 @@ export class LanguageUsage {
   public lang: string;
   public usage: string;
 
-  constructor(obj?) {
-    this.lang = (obj) ? obj.lang : null;
-    this.usage = (obj) ? obj.usage : null;
-  }
+  constructor(obj?) { Object.assign(this, obj); }
+}
+
+export class SupportingFile {
+  public file: File | string;
+  public title: string;
+
+  constructor(obj?) { Object.assign(this, obj); }
 }

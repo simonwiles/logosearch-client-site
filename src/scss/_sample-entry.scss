@@ -262,6 +262,28 @@
     display: none;
   }
 
+  .remove {
+    line-height: 32px;
+    text-align: center;
+  }
+
+  .filename {
+    line-height: 32px;
+    position: relative;  // needed for toolips on the span
+
+    span {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+    }
+  }
+
+  .input-field {
+    margin-bottom: 0;
+    padding: 0 20px;
+  }
 }
 
 .add-multiple {
@@ -377,27 +399,6 @@
       border-style: solid none;
       border-width: 1px;
       position: relative;
-
-      &::after {
-        background: rgba($black, .7);
-        border-radius: 3px;
-        color: $white;
-        content: attr(data-label);
-        display: none;
-        left: 15px;
-        line-height: 1;
-        padding: 4px;
-        position: absolute;
-        top: -30px;
-        opacity: 0;
-        transition: all .3s ease;
-        white-space: nowrap;
-      }
-
-      &:hover::after {
-        display: inline-block;
-        opacity: 1;
-      }
     }
 
     .reading {

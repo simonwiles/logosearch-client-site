@@ -44,29 +44,6 @@
           <label for="prompt">Prompt <a id="info-prompt" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
         </div>
 
-
-        <div class="supporting-files add-multiple">
-          <label for="supporting-files">Supporting Files <a id="info-supporting-files" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
-          <div class="buttons">
-            <button (click)="supportingFileInput.click()" class="button-style">
-              <input #supportingFileInput type="file" multiple (change)="supportingFilesSelected(supportingFileInput.files)">
-              <i aria-hidden="true" class="fa fa-fw fa-upload"></i> Choose File(s)
-            </button>
-            <button (click)="getFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-fw fa-dropbox"></i> Dropbox</button>
-          </div>
-          <div>
-            <div class="g suporting-file-row" *ngFor="let supportingFile of sample.supportingFiles; let i=index">
-              <div class="u-1-24">
-                <button (click)="sample.supportingFiles = removeValue(sample.supportingFiles, supportingFile)" class="text-style"><i class="fa fa-close"></i></button>
-              </div>
-              <div class="u-23-24">
-                <span>{{supportingFile.name}}</span>
-              </div>
-            </div>
-            <div class="g no-supporting-files" *ngIf="!sample.supportingFiles?.length"><div class="u-1">[no files attached]</div></div>
-          </div>
-        </div>
-
         <div class="language-usage add-multiple">
           <label [class.focussed]="isLanguageUsageFocussed()">
             Language(s) Used
@@ -107,6 +84,32 @@
             </div>
           </div>
         </div>
+
+        <div class="supporting-files add-multiple">
+          <label for="supporting-files">Supporting Files <a id="info-supporting-files" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
+          <div class="buttons">
+            <button (click)="supportingFileInput.click()" class="button-style">
+              <input #supportingFileInput type="file" multiple (change)="supportingFilesSelected(supportingFileInput.files)">
+              <i aria-hidden="true" class="fa fa-fw fa-upload"></i> Choose File(s)
+            </button>
+            <button (click)="getFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-fw fa-dropbox"></i> Dropbox</button>
+          </div>
+          <div>
+            <div class="g" *ngFor="let supportingFile of sample.supportingFiles; let i=index">
+              <div class="u-1-24 remove">
+                <button (click)="sample.supportingFiles = removeValue(sample.supportingFiles, supportingFile)" class="text-style"><i class="fa fa-close"></i></button>
+              </div>
+              <div class="u-5-24 filename">
+                <span [attr.data-tooltip]="supportingFile.file.name">{{supportingFile.file.name}}</span>
+              </div>
+              <div class="u-18-24 input-field">
+                <input [(ngModel)]="supportingFile.title" placeholder="Please enter a short title/description for this file..." required>
+              </div>
+            </div>
+            <div class="g no-supporting-files" *ngIf="!sample.supportingFiles?.length"><div class="u-1">[no files attached]</div></div>
+          </div>
+        </div>
+
       </div>
     </div>
 
