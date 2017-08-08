@@ -284,6 +284,11 @@ export class TurnEditorComponent implements ControlValueAccessor {
 
     let range = selection.getRangeAt(0);
 
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    // Doing it this way is great, but it will destroy any markup (esp. 'punctuations')
+    //  in the selection, so I'm ditching it for now.  It may be worth revisiting it,
+    //  and reinstating the 'punctuations' in a post-processing operation.
+
     // // adjust selection to exclude leading and trailing white space
     // if (/^\s+/.exec(text)) {
     //   range.setStart(range.startContainer, range.startOffset + /^\s+/.exec(text)[0].length);
@@ -295,23 +300,21 @@ export class TurnEditorComponent implements ControlValueAccessor {
     //   text = selection.toString();
     // }
 
-
-
     // range.deleteContents();
-
     // const frag = range.createContextualFragment(  //  no support for IE < 11!
     //   `<mark class="${annotation.className}" data-label="${annotation.label}">${text}</mark>`
     // );
     // range.insertNode(frag);
+    /////////////////////////////////////////////////////////////////////////////////////////////
 
 
     let newNode = document.createElement('mark');
     newNode.className = annotation.className;
-    newNode.setAttribute('data-label', annotation.label);
+    newNode.setAttribute('data-tooltip', annotation.label);
     // range.surroundContents(newNode);
-
     newNode.appendChild(range.extractContents());
     range.insertNode(newNode)
+
 
     // // Preserve the selection
     // let firstNode = frag.firstChild;
@@ -378,22 +381,14 @@ export class TurnEditorComponent implements ControlValueAccessor {
   }
 
 
-  // ControlValueAccessor boiler-plate ///////
+  //////////////////////////////////////////////
+  // ControlValueAccessor boiler-plate /////////
   onModelChange: Function = () => { return; };
   onModelTouched: Function = () => { return; };
-
-  registerOnChange(fn: Function): void {
-    this.onModelChange = fn;
-  }
-
-  registerOnTouched(fn: Function): void {
-    this.onModelTouched = fn;
-  }
-
-  writeValue(value: any): void {
-    this.value = value;
-  }
-  ////////////////////////////////////////////
+  registerOnChange(fn: Function): void { this.onModelChange = fn; }
+  registerOnTouched(fn: Function): void { this.onModelTouched = fn; }
+  writeValue(value: any): void { this.value = value; }
+  //////////////////////////////////////////////
 }
 
 

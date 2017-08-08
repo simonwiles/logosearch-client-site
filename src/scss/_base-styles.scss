@@ -44,6 +44,32 @@ input[disabled] {
 
 .clickable { @extend %clickable; }
 
+[data-tooltip] {
+  // position: relative;
+
+  &::after {
+    background: rgba($black, .7);
+    border-radius: 3px;
+    color: $white;
+    content: attr(data-tooltip);
+    display: none;
+    left: 25px;
+    line-height: 1;
+    padding: 4px;
+    position: absolute;
+    top: -20px;
+    opacity: 0;
+    text-shadow: none;
+    transition: all .3s ease;
+    white-space: nowrap;
+  }
+
+  &:hover::after {
+    display: inline-block;
+    opacity: 1;
+  }
+}
+
 .u-flex {
   display: inline-flex;
   align-items: center;
