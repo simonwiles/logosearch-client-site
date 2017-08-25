@@ -1,42 +1,29 @@
 import { Component,
-         // EventEmitter,
          Input,
-         NgModule,
-         // Output,
-         // ViewChild
-       }            from '@angular/core';
-
-// import { animate,
-//          state,
-//          style,
-//          transition,
-//          trigger }              from '@angular/core';
+         NgModule }             from '@angular/core';
 
 import { CommonModule }         from '@angular/common';
+import { TooltipModule }        from './tooltip.module';
 
 
 @Component({
-  selector: 'lr-help-button',
+  selector: 'ui-help-button',
   template: `
-    <a class="help-icon" (click)="shown = (shown) ? false : true"><i class="fa fa-info-circle"></i></a>
-    <div *ngIf="shown">
-    </div>
+    <a class="help-icon" [uiTooltip]="helpText" [uiTooltipHTML]="HTML" [uiTooltipPosition]="position"><i class="fa fa-info-circle"></i></a>
   `,
   styles: [`
   `],
   animations: [ ]
 })
 export class HelpButtonComponent {
-
   @Input() helpText: string;
-
-  public shown = false;
-
+  @Input() HTML = false;
+  @Input() position = 'top';
 }
 
 
 @NgModule({
-    imports: [CommonModule],
+    imports: [CommonModule, TooltipModule],
     exports: [HelpButtonComponent],
     declarations: [HelpButtonComponent]
 })

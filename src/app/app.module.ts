@@ -14,6 +14,7 @@ import { TurnEditorModule }             from './ui-modules/ui-turn-editor/turn-e
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
+import { HelpButtonModule }             from './ui-modules/help-button.module';
 import { OverlayPanelModule }           from './ui-modules/overlay-panel.module';
 import { PaginationModule }             from './ui-modules/pagination.module';
 import { RangeSliderModule }            from './ui-modules/range-slider.module';
@@ -93,6 +94,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     TurnEditorModule,
 
     CollapsibleModule,
+    HelpButtonModule,
     OverlayPanelModule,
     PaginationModule,
     ToggleModule,

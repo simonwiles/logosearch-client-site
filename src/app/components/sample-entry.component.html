@@ -21,7 +21,11 @@
       <div id="about" class="panel">
         <div class="input-field labelled">
           <textarea name="context" [(ngModel)]="sample.context" rows="1"></textarea>
-          <label for="context">Context <a id="info-context" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
+          <label for="context">
+            Context
+            <ui-help-button helpText="Describe the program, curriculum, lesson focus and/or sequence."
+                            position="right"></ui-help-button>
+          </label>
         </div>
         <div class="input-field labelled">
           <ui-select #subjectAreaSelect name="subjectArea" required
@@ -32,22 +36,32 @@
                      [allowClear]="true">
           </ui-select>
           <label for="subject-area" [class.focussed]="subjectAreaSelect.hasFocus">
-            Subject Area / Topic <a id="info-subject-area" class="help-icon"><i class="fa fa-info-circle"></i></a>
+            Subject Area / Topic
+            <ui-help-button helpText="Choose all that apply from the dropdown menu."
+                            position="right"></ui-help-button>
           </label>
         </div>
         <div class="input-field labelled">
           <textarea name="objective" [(ngModel)]="sample.objective" rows="1"></textarea>
-          <label for="objective">Objective <a id="info-objective" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
+          <label for="objective">
+            Objective
+            <ui-help-button helpText="Provide what the students were supposed to accomplish during this lesson, conversation or task."
+                            position="right"></ui-help-button>
+          </label>
         </div>
         <div class="input-field labelled">
           <textarea name="prompt" [(ngModel)]="sample.prompt" rows="1"></textarea>
-          <label for="prompt">Prompt <a id="info-prompt" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
+          <label for="prompt">
+            Prompt
+            <ui-help-button helpText="Provide the question(s) or instructions that the student(s) received right before the interaction or activity associated with the language artifact began."
+                            position="right"></ui-help-button>
+          </label>
         </div>
 
         <div class="language-usage add-multiple">
           <label [class.focussed]="isLanguageUsageFocussed()">
             Language(s) Used
-            <a id="info-language-usage"><i class="fa fa-info-circle"></i></a>
+
           </label>
           <div class="buttons">
             <button class="button-style" (click)="addLanguageUsage()"><i class="fa fa-fw fa-plus"></i> Add Language</button>
@@ -86,7 +100,11 @@
         </div>
 
         <div class="supporting-files add-multiple">
-          <label for="supporting-files">Supporting Files <a id="info-supporting-files" class="help-icon"><i class="fa fa-info-circle"></i></a></label>
+          <label for="supporting-files">
+            Stimulus Materials
+            <ui-help-button helpText="Upload up to five files used to stimulate the interaction or lesson."
+                            position="right"></ui-help-button>
+          </label>
           <div class="buttons">
             <button (click)="supportingFileInput.click()" class="button-style">
               <input #supportingFileInput type="file" multiple (change)="supportingFilesSelected(supportingFileInput.files)">
