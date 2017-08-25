@@ -23,9 +23,7 @@ export interface ISample {
 
   transcription: string;
 
-  d1Avg: number;
-  d2Avg: number;
-  numScores: number;
+  numEvaluations: number;
 
   recording: any;
   supportingFiles: SupportingFile[];
@@ -78,9 +76,7 @@ export class Sample implements ISample {
 
   public transcription: string;
 
-  public numScores: number;
-  public d1Avg: number;
-  public d2Avg: number;
+  public numEvaluations: number;
 
   public recording: any;
   public supportingFiles: SupportingFile[] = [];

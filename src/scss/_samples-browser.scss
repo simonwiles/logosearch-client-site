@@ -140,10 +140,10 @@
     &:hover {
       color: $main-accent;
     }
-  }d
+  }
 
   .expand-column-header {
-    width: 20px;
+    width: 22px;
   }
 
   th:last-child {
@@ -182,9 +182,7 @@
     width: 100px;
   }
 
-  .column-submittedAt,
-  .column-d1Avg,
-  .column-d2Avg {
+  .column-submittedAt {
     width: 120px;
   }
 
@@ -212,8 +210,6 @@
 
   .expand-column-header,
   .column-numTurns,
-  .column-d1Avg,
-  .column-d2Avg,
   .column-submittedAt,
   .select-column,
   .select-column-header {
