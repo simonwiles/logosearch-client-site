@@ -79,25 +79,6 @@
   </ui-collapsible>
 
   <hr>
-  <ui-collapsible #evaluationsCollapsible id="test" header="<h2>Evaluations</h2>" [shown]="false" (open)="getEvaluations()">
-    <div *ngFor="let evaluation of evaluations" class="evaluations panel">
-      <table>
-        <tr>
-          <th>Dimension One <span class="value-stud">{{evaluation.d1Score}}</span></th>
-          <th>Dimension Two <span class="value-stud">{{evaluation.d2Score}}</span></th>
-        </tr>
-        <tr>
-          <td *ngIf="evaluation.d1Reason">{{evaluation.d1Reason}}</td>
-          <td *ngIf="!evaluation.d1Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
-          <td *ngIf="evaluation.d2Reason">{{evaluation.d2Reason}}</td>
-          <td *ngIf="!evaluation.d2Reason"><p style="color:rgba(0,0,0,0.54)">[No reasoning supplied]</p></td>
-        </tr>
-        <tfoot>
-          <tr>
-            <td colspan="100%">Evaluation by: <a [routerLink]="['/user', evaluation.submittedBy.uuid]">{{evaluation.submittedBy.displayName}}</a>{{(evaluation.scorerIsSubmitter) ? ' (submitter)': ''}}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </ui-collapsible>
+  <h2>Evaluations</h2>
+  <lr-sample-evaluations [sampleUuid]="sample.uuid"></lr-sample-evaluations>
 </div>

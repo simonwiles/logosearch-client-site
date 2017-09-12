@@ -13,6 +13,7 @@ import { environment }                from '../../environments/environment';
 import { User,
          IUser }                      from '../models/user';
 import { Sample }                     from '../models/sample';
+import { Evaluation }                 from '../models/evaulation';
 import { AdultParticipant,
          StudentParticipant }         from '../models/participants';
 
@@ -119,16 +120,6 @@ export class ApiService {
                     .map(response => new Sample(response.json()))
                     .catch(error => this.handleError(error));
   };
-
-  public getSampleEvaluations(uuid: string): Observable<any> {
-
-    const sampleURI: string = environment.apiURL + 'samples/' + uuid + '/evaluations/';
-    const options: RequestOptions = new RequestOptions({ headers: this.headers });
-
-    return this.http.get(sampleURI, options)
-                    .map(response => response.json())
-                    .catch(error => this.handleError(error));
-  }
 
   public getSamples(params?): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
@@ -250,7 +241,10 @@ export class ApiService {
         _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
       }
 
+      if (params.sample) { _params.set('sample', params.sample); }
+      if (params.tool) { _params.set('tool', params.tool); }
       if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
+      if (params.bySubmitter) { _params.set('bySubmitter', params.bySubmitter); }
 
     }
     const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
@@ -259,9 +253,9 @@ export class ApiService {
                     .map(
                       (response: Response) => {
                         let data = response.json();
-                        // data.results = data.results.map(
-                        //   (sample) => new Sample(sample)
-                        // );
+                        data.results = data.results.map(
+                          evaluation => new Evaluation(evaluation)
+                        );
                         data.params = _params;
                         return data;
                       }

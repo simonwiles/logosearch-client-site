@@ -11,6 +11,7 @@ import { ModalModule }                  from './ui-modules/ui-modal/modal.module
 import { NotificationsModule }          from './ui-modules/ui-notifications/notifications.module';
 import { PipesModule }                  from './ui-modules/ui-pipes/pipes.module';
 import { TurnEditorModule }             from './ui-modules/ui-turn-editor/turn-editor.module';
+import { StarRatingModule }             from './ui-modules/ui-star-rating/star-rating.module';
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
@@ -50,6 +51,7 @@ import { ParticipantLookupComponent }   from './components/participant-lookup.co
 import { ProfileComponent }             from './components/profile.component';
 import { SampleBrowserComponent }       from './components/sample-browser.component';
 import { SampleEntryComponent }         from './components/sample-entry.component';
+import { SampleEvaluationsComponent }   from './components/sample-evaluations.component';
 import { SampleViewComponent }          from './components/sample-view.component';
 import { SamplesCardsComponent }        from './components/samples-cards.component';
 import { SamplesCarouselComponent }     from './components/samples-carousel.component';
@@ -71,6 +73,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     ParticipantLookupComponent,
     ProfileComponent,
     SampleEntryComponent,
+    SampleEvaluationsComponent,
     SampleViewComponent,
     SampleBrowserComponent,
     SamplesCardsComponent,
@@ -92,6 +95,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     NotificationsModule,
     PipesModule,
     TurnEditorModule,
+    StarRatingModule,
 
     CollapsibleModule,
     HelpButtonModule,
@@ -110,7 +114,6 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     AuthService,
     NotificationsService,
 
-    EvaluationsListService,
     ParticipantsListService,
     SamplesListService,
 

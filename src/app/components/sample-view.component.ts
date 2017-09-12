@@ -33,7 +33,7 @@ export class SampleViewComponent implements OnInit, OnChanges {
   languages = Language;
   subjectAreas = SubjectArea;
 
-  evaluations: any[];
+  // evaluations: any[];
 
   public environment = environment;
 
@@ -67,8 +67,8 @@ export class SampleViewComponent implements OnInit, OnChanges {
 
   onSampleLoaded() {
     this.renderedTranscription = this.transcriptionRendererService.renderTranscription(this.sample);
-    delete this.evaluations;
-    this.getEvaluations();
+    // delete this.evaluations;
+    // this.getEvaluations();
   }
 
   loadSample(): void {
@@ -103,12 +103,12 @@ export class SampleViewComponent implements OnInit, OnChanges {
     ).join('\n');
   }
 
-  getEvaluations() {
-    if (typeof this.evaluations === 'undefined') {
-      this.apiService.getSampleEvaluations(this.sample.uuid).subscribe(
-        data => this.evaluations = data.results
-      );
-    }
-  }
+  // getEvaluations() {
+  //   if (typeof this.evaluations === 'undefined') {
+  //     this.apiService.getEvaluations({'sample': this.sample.uuid}).subscribe(
+  //       data => this.evaluations = data.results
+  //     );
+  //   }
+  // }
 }
 

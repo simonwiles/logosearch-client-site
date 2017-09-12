@@ -90,44 +90,6 @@
 
 }
 
-.evaluations {
-
-  background: rgba($light-blue, .2);
-
-  table {
-    width: 100%;
-  }
-
-  .value-stud {
-    display: inline-block;
-    float: right;
-  }
-
-  th,
-  td {
-    vertical-align: text-top;
-    width: 50%;
-  }
-
-  th {
-    text-align: left;
-  }
-
-  tfoot {
-    background: $light-blue;
-
-    td {
-      height: 20px;
-      text-align: right;
-    }
-
-    a {
-      font-weight: bold;
-      // text-shadow: none;
-    }
-  }
-}
-
 .display-main {
   // display: inline-block;
   // width: 100%;

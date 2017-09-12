@@ -1,0 +1,53 @@
+.evaluation {
+
+  background: rgba($light-blue, .2);
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  overflow: hidden;
+
+  header {
+    background: $light-blue;
+    line-height: 1.2em;
+    padding: 4px 10px;
+    font-size: 1.2em;
+
+    > span {
+      display: inline-block;
+      height: 20px;
+
+      &:first-child {
+        font-weight: bold;
+      }
+
+      &:last-child {
+        float: right;
+      }
+    }
+  }
+
+  article {
+    margin: 12px 0;
+    overflow-y: scroll;
+
+    > div {
+      background: #eaeaea;
+      border-radius: 5px;
+      margin: 8px 4px 8px 0;
+      padding: 8px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    p {
+      margin: 4px 0;
+      padding: 0;
+
+      &.no-rationale {
+        color: #777;
+      }
+    }
+  }
+}
