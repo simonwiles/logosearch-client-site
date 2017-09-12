@@ -45,7 +45,7 @@ export class TooltipDirective implements OnDestroy {
     this.container.appendChild(tooltipArrow);
 
     let tooltipText = document.createElement('div');
-    tooltipText.className = 'ui-tooltip-text ui-shadow ui-corner-all';
+    tooltipText.className = 'ui-tooltip-text ui-shadow';
     if (this.uiTooltipHTML) {
       tooltipText.innerHTML = this.uiTooltip;
     } else {

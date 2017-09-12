@@ -4,6 +4,7 @@ $tooltip-color: rgb(76, 76, 76);
 
 .ui-tooltip {
   display: none;
+  max-width: 400px;
   padding: .5em .5em;
   position: absolute;
 
@@ -23,9 +24,10 @@ $tooltip-color: rgb(76, 76, 76);
 
   .ui-tooltip-text {
     background-color: $tooltip-color;
+    border-radius: 5px;
     color: $white;
     padding: .25em .5em;
-    white-space: nowrap;
+    // white-space: nowrap;
   }
 }
 
