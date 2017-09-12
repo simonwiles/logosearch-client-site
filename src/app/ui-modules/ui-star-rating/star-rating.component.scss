@@ -1,0 +1,44 @@
+// @import "compass/css3";
+@import '~scss/definitions';
+
+$black: #000 !default;
+$white: #fff !default;
+$main-accent: #00f !default;
+$accent-bg: #800080 !default;
+
+$unchecked-color: #888;
+$checked-color: #FD4;
+$checked-color: $main-accent;
+
+
+$unchecked-star: '\f006';
+$checked-star: '\f005';
+
+
+.ui-star-rating {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  overflow: hidden;
+
+  input { display: none; }
+
+  label {
+    padding: 2px;
+    color: $unchecked-color;
+    font-size: 1.2em;
+    transition: all .2s;
+  }
+
+  input:checked ~ label:before {
+    content: $checked-star;
+    color: $checked-color;
+    transition: all .25s;
+  }
+
+  input:enabled ~ label:hover { transform: rotate(-15deg) scale(1.3); }
+
+  label:before {
+    content: $unchecked-star;
+    font-family: FontAwesome;
+  }
+}
