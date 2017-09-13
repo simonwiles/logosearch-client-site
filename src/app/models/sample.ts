@@ -25,8 +25,8 @@ export interface ISample {
 
   numEvaluations: number;
 
-  recording: any;
-  supportingFiles: SupportingFile[];
+  recording: FileUpload;
+  supportingFiles: FileUpload[];
 }
 
 
@@ -78,13 +78,13 @@ export class Sample implements ISample {
 
   public numEvaluations: number;
 
-  public recording: any;
-  public supportingFiles: SupportingFile[] = [];
+  public recording: FileUpload;
+  public supportingFiles: FileUpload[] = [];
 
   constructor(obj?: ISample) {
     Object.assign(this, obj);
     this.languagesUsed = this.languagesUsed.map(langUsed => new LanguageUsage(langUsed));
-    if (this.languagesUsed.length === 0) { this.languagesUsed = [new LanguageUsage({lang: 'eng', usage: 'all'})]; }
+    if (this.languagesUsed.length === 0) { this.languagesUsed = [new LanguageUsage({language: 'eng', usage: 'all'})]; }
     this.students = this.students.map(student => new StudentParticipant(student));
     this.adults = this.adults.map(adult => new AdultParticipant(adult));
   }
@@ -101,15 +101,16 @@ export class Turn {
 }
 
 export class LanguageUsage {
-  public lang: string;
+  public language: string;
   public usage: string;
 
   constructor(obj?) { Object.assign(this, obj); }
 }
 
-export class SupportingFile {
+export class FileUpload {
   public file: File | string;
   public title: string;
+  public url: string;
 
   constructor(obj?) { Object.assign(this, obj); }
 }

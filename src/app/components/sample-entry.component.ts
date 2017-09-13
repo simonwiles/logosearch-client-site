@@ -28,7 +28,7 @@ import { Sample,
          LanguageUsage,
          Turn,
          SubjectArea,
-         SupportingFile }             from '../models/sample';
+         FileUpload }             from '../models/sample';
 
 import { ApiService }                 from '../services/api.service';
 import { NotificationsService }       from '../services/notifications.service';
@@ -203,7 +203,7 @@ export class SampleEntryComponent implements AfterViewInit {
   addStudentParticipant($event) {
     let participant = new StudentParticipant();
     this.sample.languagesUsed.forEach(langUsage => {
-      participant.languageSkills.push(new LanguageSkill({language: langUsage.lang}));
+      participant.languageSkills.push(new LanguageSkill({language: langUsage.language}));
     });
     participant.languageKeys = participant.languageSkills.map(lang => lang.language);
     this.sample.students.push(participant);
@@ -252,9 +252,13 @@ export class SampleEntryComponent implements AfterViewInit {
 
   }
 
-  readUrl(event) {
+
+
+  recordingSelected(event) {
     if (event.target.files && event.target.files[0]) {
-      this.recordingName = event.target.files[0];
+      let file = event.target.files[0];
+      this.sample.recording = new FileUpload({file: file, title: ''});
+      this.recordingName = file;
       const reader = new FileReader();
 
       reader.onload = (_event: any) => {
@@ -344,7 +348,7 @@ export class SampleEntryComponent implements AfterViewInit {
           rejectedFileSize.push(filesList[i]);
           continue;
       }
-      this.sample.supportingFiles.push(new SupportingFile({file: filesList[i], title: ''}));
+      this.sample.supportingFiles.push(new FileUpload({file: filesList[i], title: ''}));
     }
 
 

@@ -78,7 +78,7 @@
               <div class="u-12-24">
                 <ui-select #languageUsageSelect
                            name="sampleLanguages" required
-                           [(ngModel)]="langUsage.lang"
+                           [(ngModel)]="langUsage.language"
                            [options]="languageOptions"
                            [allowClear]="false">
                 </ui-select>
@@ -304,7 +304,7 @@
           </div>
           <div>
             <button (click)="fileInput.click()" class="button-style larger">
-              <input #fileInput type="file" (change)="readUrl($event)">
+              <input #fileInput type="file" (change)="recordingSelected($event)">
               Choose File
             </button>
             <button (click)="getFromDropbox()" class="button-style larger dropbox"><i aria-hidden="true" class="fa fa-dropbox"></i> Dropbox</button>
