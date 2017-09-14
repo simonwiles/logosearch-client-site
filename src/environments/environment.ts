@@ -5,9 +5,9 @@
 
 export const environment = {
   production: false,
-  apiURL: 'http://localhost:8000/api/',
-  baseURL: 'http://localhost:4200/',
+  apiURL: 'https://localhost:8000/api/',
+  baseURL: 'https://localhost:4200/',
   baseHref: '/',
   jwtRefreshMinValidity: 30000,
-  mediaURL: 'http://localhost:8000'
+  mediaURL: 'https://localhost:8000'
 };
