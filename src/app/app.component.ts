@@ -18,8 +18,7 @@ export interface Message {
 
 @Component({
   selector: 'lr-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  template: '<router-outlet></router-outlet>',
   entryComponents: [AboutComponent, HomeComponent, LoginComponent]
 })
 export class AppComponent {

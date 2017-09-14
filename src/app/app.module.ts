@@ -44,6 +44,8 @@ import { MapToIterable }                from './pipes/map-to-iterable.pipe';
 import { SafePipe }                     from './pipes/safe.pipe';
 
 import { AppComponent }                 from './app.component';
+import { SiteLayoutComponent }          from './components/site-layout.component';
+
 import { AboutComponent }               from './components/about.component';
 import { HomeComponent }                from './components/home.component';
 import { LoginComponent }               from './components/login.component';
@@ -68,6 +70,8 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     SafePipe,
 
     AppComponent,
+    SiteLayoutComponent,
+
     AboutComponent,
     HomeComponent,
     LmsBridgeComponent,

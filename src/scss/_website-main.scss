@@ -1,18 +1,23 @@
+
+html.site {
+  overflow-y: scroll;
+
+  body:before {
+    box-shadow: 0 0 10px rgba($black, .8);
+    content: '';
+    height: 10px;
+    left: 0;
+    position: fixed;
+    top: -10px;
+    width: 100%;
+    z-index: 100;
+  }
+}
+
 body {
   background-color: $background;
   color: rgba($black, .8);
   font-family: $font-main;
-}
-
-body:before {
-  box-shadow: 0 0 10px rgba($black, .8);
-  content: '';
-  height: 10px;
-  left: 0;
-  position: fixed;
-  top: -10px;
-  width: 100%;
-  z-index: 100;
 }
 
 .center-fix {
