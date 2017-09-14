@@ -265,13 +265,18 @@ export class ApiService {
 
 
 
-  public putSample(sample): Observable<any> {
+  public putSample(sampleJSON, recordingFile, supportingFiles): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
     const options: RequestOptions = new RequestOptions({
-      headers: this.getHeadersWithAuth(this.headers)
+      headers: this.getHeadersWithAuth(new Headers())
     });
 
-    return this.http.put(samplesURI, JSON.stringify(sample), options)
+    let formData = new FormData();
+    formData.append('sample', sampleJSON);
+    formData.append('recordingFile', recordingFile);
+    formData.append('supportingFiles', supportingFiles);
+
+    return this.http.put(samplesURI, formData, options)
                     .map(response => response.json())
                     .catch(error => this.handleError(error));
 

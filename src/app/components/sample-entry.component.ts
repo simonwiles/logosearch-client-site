@@ -389,10 +389,29 @@ export class SampleEntryComponent implements AfterViewInit {
     }
   }
 
+  validateSample() {
+
+    const sampleClone = JSON.parse(JSON.stringify(this.sample));
+    delete sampleClone['language_keys'];
+
+    const sampleJSON = JSON.stringify(sampleClone);
+    const recordingFile = this.sample.recording.file;
+    const supportingFiles = [];
+
+    return {
+      sampleJSON: sampleJSON,
+      recordingFile: recordingFile,
+      supportingFiles: supportingFiles
+    };
+  }
+
   saveSample() {
-    console.log(this.sample);
-    this.apiService.putSample(this.sample).subscribe(
-      response => console.log(response)
+
+    let payload = this.validateSample();
+
+    this.apiService.putSample(payload.sampleJSON, payload.recordingFile, payload.supportingFiles).subscribe(
+      response => console.log(response),
+      error => { this.notificationsService.error('Error!', error.message); }
     );
   }
 
