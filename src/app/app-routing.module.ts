@@ -5,6 +5,7 @@ import { Routes,
 import { AboutComponent }          from './components/about.component';
 import { SampleEntryComponent }    from './components/sample-entry.component';
 import { HomeComponent }           from './components/home.component';
+import { LmsBridgeComponent }      from './components/lms-bridge.component';
 import { LoginComponent }          from './components/login.component';
 import { ProfileComponent }        from './components/profile.component';
 import { SampleBrowserComponent }  from './components/sample-browser.component';
@@ -14,6 +15,7 @@ import { SampleViewComponent }     from './components/sample-view.component';
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'about', component: AboutComponent },
+  { path: 'lms-bridge', component: LmsBridgeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'login/social', component: LoginComponent },
   { path: 'my-samples', component: ProfileComponent, data: { tab: 'samples' } },

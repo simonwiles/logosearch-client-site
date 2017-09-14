@@ -47,6 +47,7 @@ import { AppComponent }                 from './app.component';
 import { AboutComponent }               from './components/about.component';
 import { HomeComponent }                from './components/home.component';
 import { LoginComponent }               from './components/login.component';
+import { LmsBridgeComponent }           from './components/lms-bridge.component';
 import { ParticipantLookupComponent }   from './components/participant-lookup.component';
 import { ProfileComponent }             from './components/profile.component';
 import { SampleBrowserComponent }       from './components/sample-browser.component';
@@ -69,6 +70,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     AppComponent,
     AboutComponent,
     HomeComponent,
+    LmsBridgeComponent,
     LoginComponent,
     ParticipantLookupComponent,
     ProfileComponent,
