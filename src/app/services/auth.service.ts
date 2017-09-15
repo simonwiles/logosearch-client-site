@@ -247,7 +247,7 @@ export class AuthService {
       try {
         errString = (
           (typeof error === 'string') ?
-            error : error.json().error || error.json().non_field_errors[0]);
+            error : error.json().error || error.json().nonFieldErrors[0]);
       } catch (err) {
         errString = 'Unknown server error (' + error.status + ')!';
       }
