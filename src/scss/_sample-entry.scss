@@ -18,8 +18,7 @@
   }
 
   .switch-toggle label {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 14px;
   }
 
   h3 {
@@ -34,9 +33,8 @@
   }
 
   .step-buttons {
-    position: absolute;
-    right: 6%;
-    top: 28px;
+    margin: 0 1%;
+    text-align: right;
 
     .button-style {
       background: mix($accent-bg, $white, 20%);
@@ -96,6 +94,19 @@
   .participants-table {
     width: 100%;
 
+    th {
+      padding: 0 4px;
+    }
+
+    td {
+      padding: 0 2px;
+      font-size: 14px;
+    }
+
+    .input-field > input {
+      font-size: 14px;
+    }
+
     .remove {
       text-align: center;
       padding: 0;
@@ -107,11 +118,17 @@
     }
 
     .nickname {
-      min-width: 270px;
+      min-width: 200px;
     }
 
     .languages {
       width: 100%;
+    }
+
+    .gender {
+      select {
+        width: 100%;
+      }
     }
 
     li:after {
@@ -128,6 +145,10 @@
       color: $invalid-warning;
       // content: '\f06a';  // fa-exclamation-circle
       content: '\f071';  // fa-exclamation-triangle
+    }
+
+    .switch-toggle {
+      max-width: 100px;
     }
   }
 
@@ -159,8 +180,9 @@
 
 .language-skill-panel {
   background: mix($light-blue, $white, 50%);
+  font-size: 14px;
   padding: 5px 20px !important;
-  width: 500px;
+  max-width: 470px;
 
   .toggle-container {
     border: 1px solid $gray;
@@ -223,7 +245,6 @@
     &.active {
       border-color: $main-accent;
       color: $main-accent;
-      font-weight: bold;
     }
 
     i {
@@ -313,7 +334,7 @@
     display: inline-block;
 
     &.buttons {
-      width: 15%;
+      width: 140px;
     }
 
     &:last-child {
@@ -323,8 +344,8 @@
 
   button.button-style {
     margin: 4px auto 0;
-    width: 90%;
     text-align: left;
+    width: 90%;
   }
 }
 
@@ -388,6 +409,8 @@
 }
 
 .ui-turn-editor {
+  font-size: 14px;
+
   .editable {
     @extend %md-input;
     height: 32px;

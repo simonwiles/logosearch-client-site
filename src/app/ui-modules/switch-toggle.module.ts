@@ -18,7 +18,7 @@ export const SWITCHTOGGLE_VALUE_ACCESSOR: any = {
 @Component({
     selector: 'ui-switch-toggle',
     template: `
-    <div class="switch-toggle">
+    <div [ngClass]="'switch-toggle'" [class]="styleClass">
       <ng-template ngFor let-item [ngForOf]="options" let-idx="index">
         <input type="radio"
                [name]="name"
@@ -38,6 +38,7 @@ export class SwitchToggleComponent implements ControlValueAccessor  {
   @Input() name: string;
   @Input() options: any[];
   @Input() value: any;
+  @Input() styleClass: string;
 
   isDisabled: boolean;
   onModelChange: Function = () => { return; };

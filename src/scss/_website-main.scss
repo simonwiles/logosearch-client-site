@@ -15,7 +15,7 @@ html.site {
 }
 
 body {
-  background-color: $background;
+  background-color: transparent;
   color: rgba($black, .8);
   font-family: $font-main;
 }
@@ -34,9 +34,9 @@ body {
   font-size: 2.5em;
   font-weight: bold;
   margin-top: -2em;
-  -webkit-text-decoration: underline dotted rgba($black, .1);
-  text-decoration: underline dotted rgba($black, .1);
-  text-shadow: 0 0 1px rgba($black, 1);
+  -webkit-text-decoration: underline dotted rgba($black, .4);
+  text-decoration: underline dotted rgba($black, .4);
+  width: 100%;
 }
 
 .main-spinner {
@@ -48,9 +48,10 @@ body {
 .page-header,
 .page-content,
 footer {
+  @include border-radius(.3em);
   margin: 15px auto 0;
   max-width: 1400px;
-  padding: 15px;
+  padding: 5px 15px 0;
 }
 
 .page-header {
@@ -65,7 +66,6 @@ footer {
     font-family: $font-header;
     font-size: 3em;
     margin: 0 350px 10px 0;
-    text-shadow: 0 0 1px rgba($black, .6);
 
     a {
       text-decoration: none;
@@ -87,7 +87,6 @@ footer {
 }
 
 .page-content {
-  @include border-radius(.3em);
   background: $panel;
   min-height: 300px;
   text-align: center;

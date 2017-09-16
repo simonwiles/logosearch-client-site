@@ -5,15 +5,16 @@ $black: #000;
 $gray: #909090;
 
 // main colours
-$cardinal: #8d181b;
+$cardinal: #8c1515;
 $orange: #ed7d31;
 $dark-blue: #2b3d50;
 $light-blue: #a8d8eb;
 
+
 // ui colours
-$background: $white;
-$main-accent: $orange;
+$main-accent: $cardinal;
 $accent-bg: mix($main-accent, $white, 80%);
+$accent-bg: $cardinal;
 $accent-disabled: mix($main-accent, $gray, 50%);
 $panel: #eff0f1;
 $alert: #f00;

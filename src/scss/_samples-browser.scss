@@ -24,6 +24,7 @@
   h3 {
     color: $main-accent;
     flex: 1;
+    font-weight: normal;
     margin: 0 8px;
   }
 
@@ -93,7 +94,6 @@
 
 .filter-headings {
   color: $main-accent;
-  font-weight: bold;
   margin-top: 1em;
 }
 
