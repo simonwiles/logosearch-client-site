@@ -8,7 +8,6 @@ export const environment = {
   apiURL: 'https://localhost:8000/api/',
   baseURL: 'https://localhost:4200/',
   baseHref: '/',
-  jwtRefreshMinValidity: 30000,
   mediaURL: 'https://localhost:8000',
   lagunitaHost: 'https://preview.lagunita.stanford.edu'
 };

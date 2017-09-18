@@ -3,7 +3,6 @@ export const environment = {
   apiURL: 'https://lr.simonwiles.net/api/',
   baseURL: 'http://localhost/lr-build/',
   baseHref: '/lr-build/',
-  jwtRefreshMinValidity: 5000,
   mediaURL: 'https://lr.simonwiles.net/',
   lagunitaHost: 'https://preview.lagunita.stanford.edu'
 };

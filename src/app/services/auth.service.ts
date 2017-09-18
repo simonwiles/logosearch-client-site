@@ -23,6 +23,7 @@ import { NotificationsService }       from '../services/notifications.service';
 export class AuthService {
 
   public isLoggedIn = false;
+  public loggedInViaLms = false;
   public loggedInUser: User = new User();
   public redirect_uri: string = environment.baseURL + 'login/social';
 
@@ -84,6 +85,7 @@ export class AuthService {
                     .do(data => {
                       const jwt: string = data.token;
                       delete data.token;
+                      this.loggedInViaLms = true;
                       this.login(jwt, data);
                     })
                     .catch(error => this.handleError(error));
@@ -173,14 +175,14 @@ export class AuthService {
     );
   }
 
-  logout(): void {
+  logout(notify = true): void {
     // destroy the session and inform the application.
 
     localStorage.removeItem('jwt');
     localStorage.removeItem('user');
     this.isLoggedIn = false;
     // this.notificationsService.emitter.emit('userLoggedOut', null);
-    this.notificationsService.info('Logged Out!', 'You have been logged out!');
+    if (notify) { this.notificationsService.info('Logged Out!', 'You have been logged out!'); }
   }
 
   generateToken(length): string {
@@ -208,36 +210,16 @@ export class AuthService {
     try {
       if (!this.jwtHelper.isTokenExpired(jwt, null)) {
 
-        const tokenValidity: number = Math.abs(
-          +new Date() - +this.jwtHelper.getTokenExpirationDate(jwt));
-
-        if (tokenValidity <= environment.jwtRefreshMinValidity) {
-
-          if (!environment.production) {
-            this.notificationsService.warn(
-              'Token About to Expire!',
-              'JWT is about to expire -- attempting auto-refresh');
-          }
-
-          return this.refreshJWT(jwt)
-            .do(data => localStorage.setItem('jwt', data.token));
-
-        } else {
-          // token is valid, and not expired
-          return new Observable<string>(
-            (observer: any) => {
-              observer.next(jwt);
-              observer.complete();
-            }
-          );
-        }
+        const tokenValidity: number = (+this.jwtHelper.getTokenExpirationDate(jwt) - +new Date()) / 1000;
+        // TODO: set some kind of timer that lets the user know when the token is running down?
+        return this.refreshJWT(jwt);
 
       } else {
         // token has expired -- user must be logged out!
-        this.notificationsService.warn(
-          'Login has expired!',
-          'Sorry, your login session has expired -- please log in again!');
-        this.logout();
+        if (!environment.production) {
+          this.notificationsService.warn('Login Expired!', '(Development-only message)', {timeout: 1000});
+        }
+        this.logout(false);
         return this.handleError('JWT has expired!');
       }
 
@@ -253,9 +235,17 @@ export class AuthService {
 
     const apiURI: string = environment.apiURL + 'auth/jwt-refresh/';
     const body: string = JSON.stringify({ 'token': currentToken });
-
+    if (!environment.production) {
+      this.notificationsService.warn('Refreshing JWT...', '(Development-only message)', {timeout: 1000});
+    }
     return this.http.post(apiURI, body, this.requestOptions)
-                    .map(data => data.json())
+                    .map(
+                      data => {
+                        let newJwt = data.json().token;
+                        localStorage.setItem('jwt', newJwt);
+                        return newJwt
+                      }
+                    )
                     .catch(error => this.handleError(error));
   }
 
