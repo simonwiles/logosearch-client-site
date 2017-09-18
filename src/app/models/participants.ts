@@ -7,13 +7,13 @@ export const Gender = {
   F: { label: 'Female', value: 'F' },
   M: { label: 'Male', value: 'M' },
   O: { label: 'Other', value: 'O' },
-  null: { label: 'Unknown', value: null }
+  null: { label: 'Unknown', value: 'U' }
 };
 
 export const GradeLevel = {
-  unknown_elementary:   'Unknown (Elementary-School)',
-  unknown_middleschool: 'Unknown (Middle-School)',
-  unknown_highschool:   'Unknown (High-School)',
+  unknown_elementary:   'Unknown (Elementary)',
+  unknown_middleschool: 'Unknown (Middle)',
+  unknown_highschool:   'Unknown (High)',
   unknown:              'Unknown',
   pre_k:                'Pre-Kindergarden',
   k:                    'Kindergarden',

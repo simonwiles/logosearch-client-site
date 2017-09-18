@@ -9,5 +9,6 @@ export const environment = {
   baseURL: 'https://localhost:4200/',
   baseHref: '/',
   jwtRefreshMinValidity: 30000,
-  mediaURL: 'https://localhost:8000'
+  mediaURL: 'https://localhost:8000',
+  lagunitaHost: 'https://preview.lagunita.stanford.edu'
 };

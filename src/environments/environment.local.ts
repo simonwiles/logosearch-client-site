@@ -4,5 +4,6 @@ export const environment = {
   baseURL: 'http://localhost/lr-build/',
   baseHref: '/lr-build/',
   jwtRefreshMinValidity: 5000,
-  mediaURL: 'https://lr.simonwiles.net/'
+  mediaURL: 'https://lr.simonwiles.net/',
+  lagunitaHost: 'https://preview.lagunita.stanford.edu'
 };

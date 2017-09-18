@@ -68,6 +68,27 @@ export class AuthService {
                     .catch(error => this.handleError(error));
   }
 
+  lmsBridgeLogin(email: string, username: string, displayName: string, extra: any = {}): Observable<any> {
+    // login using email and password to a Django-based account
+
+    const apiURI: string = environment.apiURL + 'auth/lms-login/';
+    const body: string = JSON.stringify({
+      email: email,
+      lmsUsername: username,
+      displayName: displayName,
+      extra: extra
+    });
+
+    return this.http.post(apiURI, body, this.requestOptions)
+                    .map(data => data.json())
+                    .do(data => {
+                      const jwt: string = data.token;
+                      delete data.token;
+                      this.login(jwt, data);
+                    })
+                    .catch(error => this.handleError(error));
+  }
+
   socialLogin(provider: string): void {
     // launch a popup to begin the OAuth flow.
 

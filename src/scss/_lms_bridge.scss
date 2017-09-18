@@ -1,0 +1,33 @@
+html.lms-bridge {
+
+  .panel {
+    margin: 10px 1%;
+    padding: 10px;
+    width: 98%;
+
+    &.sample-entry {
+      background-color: transparent;
+      box-shadow: none;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+  }
+
+  td {
+    padding: 0 2px;
+  }
+
+  .sample-entry {
+    .step-chooser {
+      position: fixed;
+      width: 100%;
+      z-index: 1;
+    }
+
+    > div {
+      margin-top: 30px;
+    }
+  }
+
+}

@@ -15,7 +15,11 @@ import { SampleViewComponent }     from './components/sample-view.component';
 
 
 const routes: Routes = [
-  { path: 'lms-bridge', component: LmsBridgeComponent },
+  { path: 'lms-bridge', component: LmsBridgeComponent,
+    children: [
+      { path: 'sample-entry', component: SampleEntryComponent },
+    ]
+  },
   {
     path: '',
     component: SiteLayoutComponent,

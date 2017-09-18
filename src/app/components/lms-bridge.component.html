@@ -1,0 +1,10 @@
+<div *ngIf="!lmsConnectionEstablished">
+  <span class="loading-text center-fix">Waiting for communication from Lagunita...</span>
+  <i class="main-spinner center-fix fa fa-spin fa-spinner"></i>
+</div>
+
+<div *ngIf="lmsConnectionEstablished">
+  <router-outlet></router-outlet>
+</div>
+
+<ui-notifications [notificationsService]="notificationsService" [options]="{timeout: 5000, position: ['top', 'right']}"></ui-notifications>
