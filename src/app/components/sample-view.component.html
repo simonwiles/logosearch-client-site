@@ -3,13 +3,12 @@
   <div class="g">
     <div class="u-1-2">
       <a class="sample-permalink" [routerLink]="['/sample/'+sample.uuid]" uiTooltip="Direct Link to this Sample"><i class="fa fa-link"></i></a>
-      <p class="submission-details">[Submitted by <a [routerLink]="['/user', sample?.submittedBy.uuid]">{{sample?.submittedBy.displayName}}</a> on <span>{{sample?.submittedAt | date}}</span>]</p>
-      <!--p>This is a {{sample?.subjectArea}} class with {{sample?.students.length}} students...</p-->
+      <p class="submission-details">[Submitted by {{sample?.submittedBy.displayName}} on <span>{{sample?.submittedAt | date}}</span>]</p>
     </div>
     <div class="u-1-2 recording">
       <div>
-        <span *ngIf="!sample.recording">[no audio recording available]</span>
-        <audio *ngIf="sample.recording" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
+        <span *ngIf="!sample.recording.recordingFile">[no audio recording available]</span>
+        <audio *ngIf="sample.recording.recordingFile" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
       </div>
     </div>
   </div>
@@ -80,5 +79,5 @@
 
   <hr>
   <h2>Evaluations</h2>
-  <lr-sample-evaluations [sampleUuid]="sample.uuid"></lr-sample-evaluations>
+  <lr-evaluation-browser [sampleUuid]="sample.uuid"></lr-evaluation-browser>
 </div>

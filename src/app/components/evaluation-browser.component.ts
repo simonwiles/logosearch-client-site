@@ -10,11 +10,11 @@ import { EvaluationsListService }         from '../services/evaluations-list.ser
 
 
 @Component({
-  selector: 'lr-sample-evaluations',
-  templateUrl: './sample-evaluations.component.html',
+  selector: 'lr-evaluation-browser',
+  templateUrl: './evaluation-browser.component.html',
   providers: [EvaluationsListService]
 })
-export class SampleEvaluationsComponent implements OnInit, OnChanges {
+export class EvaluationBrowserComponent implements OnInit, OnChanges {
 
   @Input() sampleUuid: string;
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';

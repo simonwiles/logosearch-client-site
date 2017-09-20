@@ -49,13 +49,13 @@ import { SiteLayoutComponent }          from './components/site-layout.component
 
 import { AboutComponent }               from './components/about.component';
 import { HomeComponent }                from './components/home.component';
+import { EvaluationBrowserComponent }   from './components/evaluation-browser.component';
 import { LoginComponent }               from './components/login.component';
 import { LmsBridgeComponent }           from './components/lms-bridge.component';
 import { ParticipantLookupComponent }   from './components/participant-lookup.component';
 import { ProfileComponent }             from './components/profile.component';
 import { SampleBrowserComponent }       from './components/sample-browser.component';
 import { SampleEntryComponent }         from './components/sample-entry.component';
-import { SampleEvaluationsComponent }   from './components/sample-evaluations.component';
 import { SampleViewComponent }          from './components/sample-view.component';
 import { SamplesCardsComponent }        from './components/samples-cards.component';
 import { SamplesCarouselComponent }     from './components/samples-carousel.component';
@@ -80,7 +80,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     ParticipantLookupComponent,
     ProfileComponent,
     SampleEntryComponent,
-    SampleEvaluationsComponent,
+    EvaluationBrowserComponent,
     SampleViewComponent,
     SampleBrowserComponent,
     SamplesCardsComponent,
