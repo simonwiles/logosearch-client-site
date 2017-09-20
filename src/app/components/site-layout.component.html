@@ -32,9 +32,9 @@
       <a *ngIf="!authService.isLoggedIn" [routerLink]="['/login']">
         <i class="fa fa-sign-in"></i> Login
       </a>
-      <a *ngIf="authService.isLoggedIn" [routerLink]="['/users']">
-        User: <i class="fa fa-user"></i> {{authService.loggedInUser.displayAs()}}
-      </a>
+      <span *ngIf="authService.isLoggedIn">
+        <i class="fa fa-user"></i> {{authService.loggedInUser.displayAs()}}
+      </span>
 
       <a *ngIf="authService.isLoggedIn" (click)="authService.logout()">
         <i class="fa fa-sign-out"></i> Logout

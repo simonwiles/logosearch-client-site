@@ -24,7 +24,7 @@ import { SamplesListService }      from '../services/samples-list.service';
 @Component({
   selector: 'lr-profile',
   templateUrl: './profile.component.html',
-  providers: [SamplesListService]  // IMPORTANT: the ProfileComponent (and child components) will now
+  providers: [SamplesListService, EvaluationsListService]  // IMPORTANT: the ProfileComponent (and child components) will now
                                    //            be using a new instance of SamplesListService!!
 })
 export class ProfileComponent implements AfterViewInit, OnDestroy, OnInit {
