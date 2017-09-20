@@ -1,5 +1,4 @@
-import { EventEmitter,
-         Injectable }  from '@angular/core';
+import { Injectable }  from '@angular/core';
 
 @Injectable()
 export class NotificationsService {
@@ -47,7 +46,6 @@ export class NotificationsService {
       html: html,
       options: options,
       remove: () => this.clear(id)
-      // click: new EventEmitter<{}>()
     }
   }
 

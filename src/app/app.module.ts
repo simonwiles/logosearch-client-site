@@ -32,6 +32,7 @@ import { AuthConfig }                   from './auth.config';
 
 import { ApiService }                   from './services/api.service';
 import { AuthService }                  from './services/auth.service';
+import { MessageBusService }            from './services/message-bus.service';
 import { NotificationsService }         from './services/notifications.service';
 
 import { EvaluationsListService }       from './services/evaluations-list.service';
@@ -118,6 +119,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
 
     ApiService,
     AuthService,
+    MessageBusService,
     NotificationsService,
 
     ParticipantsListService,
