@@ -83,7 +83,7 @@ export class TurnEditorComponent implements ControlValueAccessor {
       className: 'reading',
       icon: 'fa-eraser'
     },
-    sentenceFrame: {
+    'sentence-frame': {
       label: 'Sentence Frame',
       className: 'sentence-frame',
       icon: 'fa-eraser'
@@ -113,6 +113,23 @@ export class TurnEditorComponent implements ControlValueAccessor {
 
   value: string;
 
+  // innerValue: string;
+  // // get accessor
+  // get value(): any {
+  //   console.log('getting:', this.innerValue);
+  //     return this.innerValue;
+  // };
+
+  // // set accessor including call the onchange callback
+  // set value(v: any) {
+  //   console.log('setting:', v);
+  //     if (v !== this.innerValue) {
+  //         this.innerValue = v;
+  //         this.onModelChange(v);
+  //     }
+  // }
+
+
   objectKeys= Object.keys;
   _mutationObserver: MutationObserver;
 
@@ -125,6 +142,11 @@ export class TurnEditorComponent implements ControlValueAccessor {
       mutations => this.updateTurn()
     );
   }
+
+  // ngAfterContentInit() {
+  //   console.log('init turn-editor');
+  //   this.deserializeTurn();
+  // }
 
   onEditableKeyDown($event) {
     if ($event.which === 13) {
@@ -243,24 +265,68 @@ export class TurnEditorComponent implements ControlValueAccessor {
   serializeTurn() {
     const serialized = [];
 
-    const getText = function(parentNode) {
+    const serialize = function(parentNode) {
       parentNode.childNodes.forEach(
         node => {
-          if (node.nodeType === Node.TEXT_NODE) { serialized.push(node.textContent); }
+          if (node.nodeType === Node.TEXT_NODE) { serialized.push(node.textContent); return; }
           if (node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'MARK') {
             serialized.push(`<${node.className}>`);
-            getText(node);
+            serialize(node);
             serialized.push(`</${node.className}>`);
+            return;
           }
           if (node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'I') {
             serialized.push(`<${node.classList[0]}/>`);
+            return;
           }
         }
       );
     };
 
-    getText(this.editable.nativeElement);
+    serialize(this.editable.nativeElement);
     return serialized.join('').replace(/\s+/g, ' ').trim();
+  }
+
+
+  deserializeTurn(value) {
+    let parser = new DOMParser();
+    // parsing according to 'text/xml', so nodeNames are case-sensitive
+    let dom = parser.parseFromString(`<root>${value}</root>`, 'text/xml');
+
+    const annotations = this.annotations;
+    const punctuations = this.punctuations;
+    const toHTML = function(source, targetEl) {
+      source.childNodes.forEach(
+        node => {
+          if (node.nodeType === Node.ELEMENT_NODE && node.nodeName === 'root') { toHTML(node, targetEl); }
+
+          if (node.nodeType === Node.ELEMENT_NODE && annotations.hasOwnProperty(node.nodeName)) {
+            const newNode = document.createElement('mark');
+            newNode.className = annotations[node.nodeName].className;
+            newNode.setAttribute('data-tooltip', annotations[node.nodeName].label);
+            targetEl.appendChild(newNode);
+            toHTML(node, newNode);
+          }
+
+          if (node.nodeType === Node.ELEMENT_NODE && punctuations.hasOwnProperty(node.nodeName)) {
+            const newNode = document.createElement('i');
+            newNode.classList.add(punctuations[node.nodeName].className);
+            newNode.classList.add('fa');
+            newNode.classList.add(punctuations[node.nodeName].icon);
+            newNode.setAttribute('data-tooltip', punctuations[node.nodeName].label);
+            newNode.setAttribute('contenteditable', 'false');
+            targetEl.appendChild(newNode);
+            toHTML(node, newNode);
+          }
+
+          if (node.nodeType === Node.TEXT_NODE) { targetEl.appendChild(node.cloneNode()); }
+        }
+      );
+    }
+
+    let frag = document.createDocumentFragment();
+    toHTML(dom, frag);
+    this.editable.nativeElement.appendChild(frag);
   }
 
   insertPunctuation(punctuation) {
@@ -272,7 +338,7 @@ export class TurnEditorComponent implements ControlValueAccessor {
     selection.collapse(selection.focusNode, selection.focusOffset);
     const range = selection.getRangeAt(0);
     const frag = range.createContextualFragment(  //  no support for IE < 11!
-      `<i class="${punctuation.className} fa ${punctuation.icon}" contenteditable="false"> </i>`
+      `<i class="${punctuation.className} fa ${punctuation.icon}" contenteditable="false" data-tooltip="${punctuation.label}"> </i>`
     );
     range.insertNode(frag);
   }
@@ -387,7 +453,10 @@ export class TurnEditorComponent implements ControlValueAccessor {
   onModelTouched: Function = () => { return; };
   registerOnChange(fn: Function): void { this.onModelChange = fn; }
   registerOnTouched(fn: Function): void { this.onModelTouched = fn; }
-  writeValue(value: any): void { this.value = value; }
+  writeValue(value: any): void {
+    if (value) { this.deserializeTurn(value); }
+    this.value = value;
+  }
   //////////////////////////////////////////////
 }
 
