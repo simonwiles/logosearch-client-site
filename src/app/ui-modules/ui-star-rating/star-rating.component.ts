@@ -47,9 +47,6 @@ export class StarRatingComponent implements ControlValueAccessor {
 
   }
 
-  ngOnInit() {
-  }
-
   handleChange(event: Event) {
     // <HTMLInputElement>.input can only be a string; this shenanigans is so that
     //  values passed into (and, crucially, out of) this component can have other

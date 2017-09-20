@@ -2,7 +2,10 @@
 export const EvaluationTools = {
   '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5' : {
     'name': 'Conversation Analysis Tool',
-    'description': 'Please note that this tool should be used to observe and formatively assess *two-person academic conversations*. The tool was not created with individual speakers or groups of students in mind. The tool works best with student conversations that have been recorded and transcribed, although teachers are welcome to take notes directly on the tool or adapt it to meet their needs.',
+    'description': '\
+Please note that this tool should be used to observe and formatively assess *two-person academic conversations*. \
+The tool was not created with individual speakers or groups of students in mind. The tool works best with student conversations that \
+have been recorded and transcribed, although teachers are welcome to take notes directly on the tool or adapt it to meet their needs.',
 
     'dimensions': {
 
@@ -16,15 +19,20 @@ export const EvaluationTools = {
           },
           '2': {
             'label': 'Attempting interaction',
-            'rubric': 'Students rarely start and stop their conversational turns appropriately, or one student talks too much during most turns.'
+            'rubric': '\
+Students rarely start and stop their conversational turns appropriately, or one student talks too much during most turns.'
           },
           '3': {
             'label': 'Inconsistent evidence',
-            'rubric': 'Students engage in some appropriate conversational turns, but at times either student might interrupt, pause mid-turn, not talk when appropriate, talk too much during one or several turns, or display other awkward behaviors.'
+            'rubric': '\
+Students engage in some appropriate conversational turns, but at times either student might interrupt, pause mid-turn, \
+not talk when appropriate, talk too much during one or several turns, or display other awkward behaviors.'
           },
           '4': {
             'label': 'Strong evidence',
-            'rubric': 'Students appropriately (speaking one at a time, not interrupting, etc.) start and stop their conversational turns throughout the interaction, and they contribute more or less equally.'
+            'rubric': '\
+Students appropriately (speaking one at a time, not interrupting, etc.) start and stop their conversational turns throughout \
+the interaction, and they contribute more or less equally.'
           }
         },
         'is_optional': true
@@ -44,7 +52,8 @@ export const EvaluationTools = {
           },
           '3': {
             'label': 'Inconsistent evidence',
-            'rubric': 'Half or more of the conversational turns build on previous turns to adequately build up an idea, which may be incomplete or lack clarity.'
+            'rubric': '\
+Half or more of the conversational turns build on previous turns to adequately build up an idea, which may be incomplete or lack clarity.'
           },
           '4': {
             'label': 'Strong evidence',
@@ -68,11 +77,13 @@ export const EvaluationTools = {
           },
           '3': {
             'label': 'Inconsistent evidence',
-            'rubric': 'Half or more of the conversational turns sufficiently focus on the lesson objectives, but this focus may be superficial or lack clarity.'
+            'rubric': '\
+Half or more of the conversational turns sufficiently focus on the lesson objectives, but this focus may be superficial or lack clarity.'
           },
           '4': {
             'label': 'Strong evidence',
-            'rubric': 'Half or more of the conversational turns effectively focus on the lesson objectives and show depth or fostering of the intended learning.'
+            'rubric': '\
+Half or more of the conversational turns effectively focus on the lesson objectives and show depth or fostering of the intended learning.'
           }
         },
         'is_optional': false
