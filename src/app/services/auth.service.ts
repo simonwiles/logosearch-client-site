@@ -45,8 +45,30 @@ export class AuthService {
 
     // check if there's a valid session and a logged-in user
     this.getJWT().subscribe(
-      jwt => { this.login(jwt, localStorage.getObject('user')); },
-      _error => { console.log('not logged in'); return undefined; }  // TODO:
+      jwt => {
+        try {
+          if (!this.jwtHelper.isTokenExpired(jwt, null)) {
+            const tokenValidity: number = (+this.jwtHelper.getTokenExpirationDate(jwt) - +new Date()) / 1000;
+            // TODO: set some kind of timer that lets the user know when the token is running down?
+            this.refreshJWT(jwt);
+          } else {
+            // token has expired -- user must be logged out!
+            if (!environment.production) {
+              this.notificationsService.warn('Login Expired!', '(Development-only message)', {timeout: 1000});
+            }
+            this.logout(false);
+            this.handleError('JWT has expired!');
+          }
+          this.login(jwt, localStorage.getObject('user'));
+        } catch (err) {
+          // problem with the stored token
+          this.logout();
+          this.handleError('JWT is invalid!');
+        }
+      },
+      error => {
+        console.log(error);
+      }
     );
   }
 
@@ -205,29 +227,14 @@ export class AuthService {
 
   getJWT(): Observable<any> {
     const jwt: string = localStorage.getItem('jwt');
-    if (jwt === null) { return this.handleError('No JWT present!'); }
+    if (jwt === null) { return this.handleError('JWT not present!'); }
 
-    try {
-      if (!this.jwtHelper.isTokenExpired(jwt, null)) {
-
-        const tokenValidity: number = (+this.jwtHelper.getTokenExpirationDate(jwt) - +new Date()) / 1000;
-        // TODO: set some kind of timer that lets the user know when the token is running down?
-        return this.refreshJWT(jwt);
-
-      } else {
-        // token has expired -- user must be logged out!
-        if (!environment.production) {
-          this.notificationsService.warn('Login Expired!', '(Development-only message)', {timeout: 1000});
-        }
-        this.logout(false);
-        return this.handleError('JWT has expired!');
+    return new Observable<string>(
+      (observer: any) => {
+        observer.next(jwt);
+        observer.complete();
       }
-
-    } catch (err) {
-      // problem with the stored token
-      this.logout();
-      return this.handleError('JWT is invalid!');
-    }
+    );
   }
 
   refreshJWT(currentToken): Observable<any> {
@@ -243,7 +250,7 @@ export class AuthService {
                       data => {
                         let newJwt = data.json().token;
                         localStorage.setItem('jwt', newJwt);
-                        return newJwt
+                        return newJwt;
                       }
                     )
                     .catch(error => this.handleError(error));
