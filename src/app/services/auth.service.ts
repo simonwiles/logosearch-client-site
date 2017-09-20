@@ -51,6 +51,7 @@ export class AuthService {
             const tokenValidity: number = (+this.jwtHelper.getTokenExpirationDate(jwt) - +new Date()) / 1000;
             // TODO: set some kind of timer that lets the user know when the token is running down?
             this.refreshJWT(jwt);
+            this.login(jwt, localStorage.getObject('user'));
           } else {
             // token has expired -- user must be logged out!
             if (!environment.production) {
@@ -59,7 +60,6 @@ export class AuthService {
             this.logout(false);
             this.handleError('JWT has expired!');
           }
-          this.login(jwt, localStorage.getObject('user'));
         } catch (err) {
           // problem with the stored token
           this.logout();
