@@ -20,7 +20,8 @@
         "styles.scss"
       ],
       "scripts": [
-        "lib/browser-update.js"
+        "lib/browser-update.js",
+        "lib/resize-listener.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {

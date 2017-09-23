@@ -9,6 +9,8 @@ interface Window {
   listenerFn: any;  // required for some shennanigans in src/app/components/login.component.ts
   Dropbox: any;
   DOMParser: any;
+  addResizeListener: any;
+  removeResizeListener: any;
 }
 
 interface String {
