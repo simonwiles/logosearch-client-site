@@ -114,4 +114,12 @@
   }
 }
 
+.evaluations-browser {
+  position: relative;
 
+  .pagination {
+    position: absolute;
+    top: -30px;
+    right: 30px;
+  }
+}
