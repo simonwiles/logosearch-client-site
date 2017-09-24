@@ -4,5 +4,6 @@ export const environment = {
   baseURL: 'https://lr.simonwiles.net/',
   baseHref: '/',
   mediaURL: 'https://lr.simonwiles.net/',
-  lagunitaHost: 'https://preview.lagunita.stanford.edu'
+  lagunitaHost: 'https://lagunita.stanford.edu',
+  lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu'
 };

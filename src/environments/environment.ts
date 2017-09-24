@@ -9,5 +9,6 @@ export const environment = {
   baseURL: 'https://localhost:4200/',
   baseHref: '/',
   mediaURL: 'https://localhost:8000',
-  lagunitaHost: 'https://preview.lagunita.stanford.edu'
+  lagunitaHost: 'https://lagunita.stanford.edu',
+  lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu'
 };
