@@ -15,6 +15,7 @@ import { JwtHelper }                  from '../utils/jwt';
 
 import { User, IUser }                from '../models/user';
 
+import { MessageBusService }          from '../services/message-bus.service';
 import { NotificationsService }       from '../services/notifications.service';
 
 
@@ -41,6 +42,7 @@ export class AuthService {
   constructor(
     private http: Http,
     private authConfig: AuthConfig,
+    private messageBusService: MessageBusService,
     private notificationsService: NotificationsService) {
 
     // check if there's a valid session and a logged-in user
@@ -50,13 +52,11 @@ export class AuthService {
           if (!this.jwtHelper.isTokenExpired(jwt, null)) {
             const tokenValidity: number = (+this.jwtHelper.getTokenExpirationDate(jwt) - +new Date()) / 1000;
             // TODO: set some kind of timer that lets the user know when the token is running down?
-            this.refreshJWT(jwt);
-            this.login(jwt, localStorage.getObject('user'));
+            this.refreshJWT(jwt).subscribe(
+              newJwt => this.login(newJwt, localStorage.getObject('user'), false)
+            );
           } else {
             // token has expired -- user must be logged out!
-            if (!environment.production) {
-              this.notificationsService.warn('Login Expired!', '(Development-only message)', {timeout: 1000});
-            }
             this.logout(false);
             this.handleError('JWT has expired!');
           }
@@ -108,7 +108,7 @@ export class AuthService {
                       const jwt: string = data.token;
                       delete data.token;
                       this.loggedInViaLms = true;
-                      this.login(jwt, data);
+                      this.login(jwt, data, false);
                     })
                     .catch(error => this.handleError(error));
   }
@@ -180,7 +180,7 @@ export class AuthService {
     }
   }
 
-  login(jwt, userData): void {
+  login(jwt, userData, notify = true): void {
     // we have the JWT and the user data; store them and inform the application.
 
     const user: User = new User(<IUser>userData);
@@ -189,7 +189,8 @@ export class AuthService {
     localStorage.setObject('user', user);
     this.loggedInUser = user;
     this.isLoggedIn = true;
-    // this.notificationsService.emitter.emit('userLoggedIn', user);
+    this.messageBusService.emit('userLoggedIn', user);
+    if (!notify) { return; }
     this.notificationsService.success(
       'Successfully Logged In!',
       'User `' + user.displayAs() + '` has successfully logged in!',
@@ -242,9 +243,6 @@ export class AuthService {
 
     const apiURI: string = environment.apiURL + 'auth/jwt-refresh/';
     const body: string = JSON.stringify({ 'token': currentToken });
-    if (!environment.production) {
-      this.notificationsService.warn('Refreshing JWT...', '(Development-only message)', {timeout: 1000});
-    }
     return this.http.post(apiURI, body, this.requestOptions)
                     .map(
                       data => {

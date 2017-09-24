@@ -314,7 +314,7 @@ export class ApiService {
       try {
         errString = (
           (typeof error === 'string') ?
-            error : error.json().detail || error.json().non_field_errors[0]);
+            error : error.json().detail || error.json().error);
       } catch (err) {
         errString = `Unknown server error: ${error.status}!`;
       }
@@ -322,7 +322,7 @@ export class ApiService {
 
     if (!environment.production) {
       console.warn(errString);
-      throw error;
+      // throw error;
     }
 
     return new Observable<string>(
