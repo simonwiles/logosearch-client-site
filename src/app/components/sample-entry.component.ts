@@ -3,8 +3,13 @@ import { Observable }                 from 'rxjs/Observable';
 import { AfterViewInit,
          ChangeDetectorRef,
          Component,
+         ElementRef,
+         OnInit,
          ViewChild,
          ViewChildren }               from '@angular/core';
+
+import { ActivatedRoute,
+         Router }                     from '@angular/router';
 
 import { animate,
          style,
@@ -25,12 +30,13 @@ import { AdultParticipant,
          LanguageStandardLevels }     from '../models/participants';
 
 import { Sample,
+         FileUpload,
          LanguageUsage,
-         Turn,
          SubjectArea,
-         FileUpload }             from '../models/sample';
+         Turn }                       from '../models/sample';
 
 import { ApiService }                 from '../services/api.service';
+import { MessageBusService }          from '../services/message-bus.service';
 import { NotificationsService }       from '../services/notifications.service';
 
 @Component({
@@ -55,7 +61,7 @@ import { NotificationsService }       from '../services/notifications.service';
     ])
   ]
 })
-export class SampleEntryComponent implements AfterViewInit {
+export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   public environment = environment;
 
@@ -110,7 +116,17 @@ export class SampleEntryComponent implements AfterViewInit {
     private authConfig: AuthConfig,
     private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
-    private notificationsService: NotificationsService ) { }
+    private elementRef: ElementRef,
+    private messageBusService: MessageBusService,
+    private notificationsService: NotificationsService,
+    private route: ActivatedRoute,
+    private router: Router) { }
+
+  ngOnInit() {
+    this.route.queryParams.subscribe(params => {
+      this.sample.collectionSource = params;
+    });
+  }
 
   ngAfterViewInit() {
     // load the Dropbox script
@@ -124,6 +140,10 @@ export class SampleEntryComponent implements AfterViewInit {
         'load', () => window.Dropbox.appKey = this.authConfig.oauthProviders.dropboxOauth2.authParams.client_id);
       document.body.appendChild(dropboxScriptTag);
     }
+  }
+
+  ngAfterContentInit() {
+    this.messageBusService.emit('sampleEntryLoaded', this);
   }
 
   doStepChange(value): void {
@@ -257,7 +277,7 @@ export class SampleEntryComponent implements AfterViewInit {
   recordingSelected(event) {
     if (event.target.files && event.target.files[0]) {
       let file = event.target.files[0];
-      this.sample.recording = new FileUpload({file: file, title: ''});
+      this.sample.recording.file = new FileUpload({file: file, title: ''});
       this.recordingName = file;
       const reader = new FileReader();
 
@@ -297,43 +317,13 @@ export class SampleEntryComponent implements AfterViewInit {
   clearRecording() {
     this.recordingName = '';
     this.recordingUrl = null;
+    this.sample.recording = null;
   }
 
-  supportingFilesSelected(filesList: FileList) {
 
-    const acceptedFileTypes: string[] = [
-      // Images
-      'image/png',
-      'image/jpeg',
-      'image/gif',
+  validateSelectedFiles(filesList: FileList, acceptedFileTypes: string[], maximumFileSizeInBytes: number): File[] {
 
-      // PDF
-      'application/pdf',
-
-      // MS Word
-      'application/msword',  // .doc
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  // .docx
-
-      // MS Excel
-      'application/vnd.ms-excel',  // .xsl, .xla, .xlt
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  // .xslx
-
-      // MS PowerPoint
-      'application/vnd.ms-powerpoint',  // .ppt
-      'application/vnd.openxmlformats-officedocument.presentationml.presentation',  // .pptx
-      'application/vnd.openxmlformats-officedocument.presentationml.slideshow',  // .ppsx
-
-      // OpenOffice / LibreOffice
-      'application/vnd.oasis.opendocument.text',  // .odt
-      'application/vnd.oasis.opendocument.spreadsheet',  // .ods
-      'application/vnd.oasis.opendocument.presentation',  // .odp
-
-      // Others
-      'text/plain',
-      'text/csv',
-      'application/rtf',
-    ];
-    const maximumFileSizeInBytes = 2e+6;
+    const validFiles: File[] = [];
     const rejectedFileType: File[] = [];
     const rejectedFileSize: File[] = [];
 
@@ -348,7 +338,7 @@ export class SampleEntryComponent implements AfterViewInit {
           rejectedFileSize.push(filesList[i]);
           continue;
       }
-      this.sample.supportingFiles.push(new FileUpload({file: filesList[i], title: ''}));
+      validFiles.push(filesList[i]);
     }
 
 
@@ -387,32 +377,100 @@ export class SampleEntryComponent implements AfterViewInit {
       `;
       this.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
     }
+
+    return validFiles;
+  }
+
+
+  supportingFilesSelected(filesList: FileList) {
+    const acceptedFileTypes: string[] = [
+      // Images
+      'image/png',
+      'image/jpeg',
+      'image/gif',
+
+      // PDF
+      'application/pdf',
+
+      // MS Word
+      'application/msword',  // .doc
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  // .docx
+
+      // MS Excel
+      'application/vnd.ms-excel',  // .xsl, .xla, .xlt
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  // .xslx
+
+      // MS PowerPoint
+      'application/vnd.ms-powerpoint',  // .ppt
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',  // .pptx
+      'application/vnd.openxmlformats-officedocument.presentationml.slideshow',  // .ppsx
+
+      // OpenOffice / LibreOffice
+      'application/vnd.oasis.opendocument.text',  // .odt
+      'application/vnd.oasis.opendocument.spreadsheet',  // .ods
+      'application/vnd.oasis.opendocument.presentation',  // .odp
+
+      // Others
+      'text/plain',
+      'text/csv',
+      'application/rtf',
+    ];
+    const maximumFileSizeInBytes = 2e+6;
+
+    this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes).forEach(
+      file => this.sample.supportingFiles.push(new FileUpload({file: file, title: ''}))
+    );
+
   }
 
   validateSample() {
 
-    const sampleClone = JSON.parse(JSON.stringify(this.sample));
-    delete sampleClone['language_keys'];
-
-    const sampleJSON = JSON.stringify(sampleClone);
-    const recordingFile = this.sample.recording.file;
-    const supportingFiles = [];
-
-    return {
-      sampleJSON: sampleJSON,
-      recordingFile: recordingFile,
-      supportingFiles: supportingFiles
+    const validated = {
+      sampleJSON: null,
+      recordingFile: null,
+      supportingFiles: [],
     };
+
+    const sampleClone = JSON.parse(JSON.stringify(this.sample));
+
+
+    sampleClone.students.forEach(student => delete student['languageKeys']);
+
+    if (this.sample.recording.noAudioAvailable) {
+      // this.sample.recording.noAudioExplanation must be completed
+      sampleClone.noRecordingReason = this.sample.recording.noAudioExplanation;
+      delete sampleClone.recording;
+    } else {
+      validated.recordingFile = this.sample.recording.file;
+    }
+
+    sampleClone.turns = sampleClone.turns.filter(turn => turn.hasOwnProperty('speaker') && turn['content']);
+
+    validated.sampleJSON = JSON.stringify(sampleClone);
+
+    return validated;
   }
 
   saveSample() {
 
-    let payload = this.validateSample();
+    let validated = this.validateSample();
 
-    this.apiService.putSample(payload.sampleJSON, payload.recordingFile, payload.supportingFiles).subscribe(
-      response => console.log(response),
-      error => { this.notificationsService.error('Error!', error.message); }
+    this.apiService.putSample(validated.sampleJSON, validated.recordingFile, validated.supportingFiles).subscribe(
+      sample => {
+        console.log(sample);
+        this.messageBusService.emit('sampleSaved', sample);
+        this.router.navigate(['../sample', sample.uuid], {relativeTo: this.route});
+      },
+      error => { console.log(error); this.notificationsService.error('Error!', error.message); }
     );
+  }
+
+  loadSample(sampleObj: Sample, update = false) {
+    if (update) {
+      this.sample = Object.assign(this.sample, sampleObj);
+    } else {
+      this.sample = new Sample(sampleObj);
+    }
   }
 
   dump(value) {

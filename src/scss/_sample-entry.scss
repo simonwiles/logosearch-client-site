@@ -131,6 +131,10 @@
       }
     }
 
+    .grade-level {
+      min-width: 160px;
+    }
+
     li:after {
       font: normal normal normal 14px/1 FontAwesome;
     }
@@ -350,44 +354,62 @@
 }
 
 .recording-upload {
-  background: $light-blue;
-  border-radius: 4px;
-  display: flex;
-  float: right;
-  padding: 8px;
-  text-shadow: none;
-  width: 50%;
 
-  > div {
-    display: flex;
-    flex-direction: column;
-    min-width: 1px;
-  }
+  display: flex;
+  position: relative;
+  padding: 20px;
+  background: mix($light-blue, $white, 50%);
+  border-radius: 8px;
+  margin-bottom: 20px;
 
   > div:first-child {
-    flex: 0 1 auto;
+    flex: 1 1 auto;
+    overflow: hidden;
   }
 
-  > div:nth-child(2) {
-    flex: 2 1 auto;
+  .buttons {
+    display: inline-block;
+    flex: 0 0 auto;
+    text-align: right;
+    width: 140px;
+  }
+
+  .button-style {
+    margin: 4px auto 0;
+    text-align: left;
+    width: 90%;
+  }
+
+  .recording {
+    align-items: center;
+    background-color: $white;
+    border-radius: 4px;
+    border: 1px solid $main-accent;
+    display: flex;
+    margin: 4px 0 8px 0;
     padding: 0 4px;
 
-    span {
-      color: rgba($black, .56);
-      margin: 4px 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    button {
+      margin: -2px 2px 0 0;
     }
   }
 
-  > div:last-child {
-    flex: 0 0 auto;
+  .recording-title {
+    flex: 1 1;
+    margin: 4px 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-    button {
-      flex: 0 0 auto;
-      margin: 2px 0;
+  .no-audio-available {
+    input[type='checkbox'] {
+      margin-right: 8px;
     }
+  }
+
+  .input-field {
+    margin-bottom: 0;
   }
 
   input[type='file'] {

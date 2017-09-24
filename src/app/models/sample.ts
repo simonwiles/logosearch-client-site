@@ -25,8 +25,10 @@ export interface ISample {
 
   numEvaluations: number;
 
-  recording: FileUpload;
+  recording: Recording;
   supportingFiles: FileUpload[];
+
+  collectionSource: any;
 }
 
 
@@ -78,8 +80,10 @@ export class Sample implements ISample {
 
   public numEvaluations: number;
 
-  public recording: FileUpload;
+  public recording: Recording = new Recording();
   public supportingFiles: FileUpload[] = [];
+
+  public collectionSource: any;
 
   constructor(obj?: ISample) {
     Object.assign(this, obj);
@@ -113,4 +117,11 @@ export class FileUpload {
   public url: string;
 
   constructor(obj?) { Object.assign(this, obj); }
+}
+
+export class Recording {
+  public file: FileUpload;
+  public includesAdditionalContext: boolean;
+  public noAudioAvailable: boolean;
+  public noAudioExplanation: string;
 }

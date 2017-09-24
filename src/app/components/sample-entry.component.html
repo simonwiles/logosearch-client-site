@@ -149,7 +149,7 @@
               <th class="nickname">nickname</th>
               <th>gender</th>
               <th class="languages">language(s)</th>
-              <th>grade level</th>
+              <th class="grade-level">grade level</th>
             </thead>
             <tbody>
               <tr #participantRow *ngFor="let participant of sample.students; let i=index">
@@ -291,20 +291,42 @@
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
 
       <div class="panel">
+
         <div class="recording-upload">
-          <div>
-            <button (click)="clearRecording()" class="text-style" [disabled]="!recordingName"><i class="fa fa-close"></i></button>
+           <div>
+            <div *ngIf="!sample.recording.file" class="no-audio-available">
+              <label for="no-audio-available">
+                <input name="no-audio-available" type="checkbox" [(ngModel)]="sample.recording.noAudioAvailable">
+                {{ (sample.recording.noAudioAvailable) ?
+                    'Please provide a brief explanation of why no audio file is available:' :
+                    'Please upload a file, or check here if one is not available.' }}
+                <ui-help-button helpText="Please supply an audio file if at all possible. [More text here!]"
+                                position="top"></ui-help-button>
+              </label>
+            </div>
+            <div class="input-field">
+              <textarea *ngIf="sample.recording.noAudioAvailable" [(ngModel)]="sample.recording.noAudioExplanation"></textarea>
+            </div>
+            <div *ngIf="sample.recording.file" class="recording">
+              <button (click)="clearRecording()" class="text-style" [disabled]="!recordingName" data-tooltip="Clear Selection">
+                <i class="fa fa-close"></i>
+              </button>
+              <span class="recording-title">{{getRecordingName()}}</span>
+              <audio *ngIf="recordingUrl" [src]="recordingUrl | uiSafe: 'url'" controls></audio>
+            </div>
+            <div *ngIf="sample.recording.file">
+              <input name="includes-additional-context" type="checkbox"/>
+              <label for="includes-additional-context">
+                Check here if the audio recording includes material that goes beyond what is transcribed below
+              </label>
+            </div>
           </div>
-          <div>
-            <span>{{getRecordingName()}}</span>
-            <audio *ngIf="recordingUrl" [src]="recordingUrl | uiSafe: 'url'" controls></audio>
-          </div>
-          <div>
-            <button (click)="fileInput.click()" class="button-style larger">
+          <div class="buttons" *ngIf="!sample.recording.noAudioAvailable">
+            <button (click)="fileInput.click()" class="button-style">
               <input #fileInput type="file" (change)="recordingSelected($event)">
               Choose File
             </button>
-            <button (click)="getFromDropbox()" class="button-style larger dropbox"><i aria-hidden="true" class="fa fa-dropbox"></i> Dropbox</button>
+            <button (click)="getFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-dropbox"></i> Dropbox</button>
           </div>
         </div>
 
@@ -349,9 +371,9 @@
 
   </div>
 
-  <!--ui-collapsible header="diagnostic" [shown]="false">
+  <ui-collapsible header="diagnostic" [shown]="false">
     <pre>{{sample | json}}</pre>
-  </ui-collapsible-->
+  </ui-collapsible>
 
 </div>
 
