@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
       <img class="main-image" src="assets/img/homepage_kids_1400x783.jpg">
 
 
-      <div class="g items">
+      <!--div class="g items">
         <div class="u-1-3">
           <img src="assets/img/homepage-research.png">
           <br>Research
@@ -35,9 +35,7 @@ import { Component } from '@angular/core';
           <img src="assets/img/homepage-collaborators.png">
           <br>Collaborators
         </div>
-      </div>
-
-
+      </div-->
 
     </div>
   `

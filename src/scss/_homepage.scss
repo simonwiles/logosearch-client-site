@@ -1,11 +1,15 @@
 .homepage {
   background-color: $white;
   margin: -15px;
-  padding-bottom: 1em;
+  padding: 15px 0;
   text-align: center;
 
   .main-image {
-    width: 1200px;
+    filter: grayscale(1) brightness(.9) contrast(1.2);
+    width: 90%;
+    border-radius: 1%;
+    // box-shadow: 0 0 2px $black;
+    @extend %shadow-z-1;
   }
 
   .items {
