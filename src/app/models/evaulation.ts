@@ -19,7 +19,7 @@ export class Evaluation {
   public sample: string;
 
   public tool: string;
-  public scores: Score[];
+  public scores: Score[] = [];
 
 
   constructor(obj?: IEvaluation) {
@@ -30,9 +30,9 @@ export class Evaluation {
 
 
 export class Score {
-  public rationale: string;
+  public rationale: string = '';
   public dimension: string;
-  public score: number;
+  public score: number = 0;
 
   constructor(obj?) {
     Object.assign(this, obj);

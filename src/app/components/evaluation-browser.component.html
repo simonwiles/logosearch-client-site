@@ -1,47 +1,48 @@
-<div class="pagination ui-helper-clearfix">
-  <ui-pagination [dataService]="evaluationsListService"
-                 paginationLimitLabel="Samples per page:"
-                 [paginationLimitOptions]="[4, 10, 20]">
-  </ui-pagination>
-</div>
-<div class="cards ui-helper-clearfix">
-
-  <div *ngFor="let evaluation of evaluationsListService.items" class="evaluation mini-panel">
-    <header>
-      <span>{{ evaluationTools[evaluation.tool].name }}</span>
-      <span>
-        <a [routerLink]="['/user', evaluation.submittedBy.uuid]">{{evaluation.submittedBy.displayName}}</a>
-        {{(evaluation.evaluatorIsSampleSubmitter) ? ' (submitter)': ''}}
-      </span>
-    </header>
-
-    <article>
-      <div *ngFor="let dimension of evaluation.scores; let index=index" class="dimension">
-        <p>
-          <strong>Dimension {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}:
-          {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].title }}</strong>
-        </p>
-        <p>
-          <ui-star-rating
-            [name]="evaluation.uuid + index"
-            [readonly]="true"
-            [(ngModel)]="dimension.score"
-            [options]="['1','2','3','4']">
-          </ui-star-rating> -
-          <strong>
-            {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].label}}
-          </strong>
-          <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].rubric"></ui-help-button>
-        </p>
-        <p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
-        <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p>
-      </div>
-    </article>
+<div class="evaluations-browser">
+  <div class="pagination ui-helper-clearfix">
+    <ui-pagination [dataService]="evaluationsListService"
+                   paginationLimitLabel="Samples per page:"
+                   [paginationLimitOptions]="[4, 10, 20]">
+    </ui-pagination>
   </div>
+  <div class="cards ui-helper-clearfix">
 
-  <div *ngIf="!evaluationsListService.items.length" [innerHtml]="noItemsMsgHtml"></div>
+    <div *ngFor="let evaluation of evaluationsListService.items" class="evaluation mini-panel">
+      <header>
+        <span>{{ evaluationTools[evaluation.tool].name }}</span>
+        <span class="submitted-by">
+          {{evaluation.submittedBy.displayName}} {{(evaluation.evaluatorIsSampleSubmitter) ? ' (submitter)': ''}}
+        </span>
+      </header>
 
-  <div class="reload-mask" *ngIf="evaluationsListService.reloading">
-    <i class="fa fa-spin fa-spinner"></i>
+      <article>
+        <div *ngFor="let dimension of evaluation.scores; let index=index" class="dimension">
+          <p>
+            <strong>Dimension {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}:
+            {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].title }}</strong>
+          </p>
+          <p>
+            <ui-star-rating
+              [name]="evaluation.uuid + index"
+              [readonly]="true"
+              [(ngModel)]="dimension.score"
+              [options]="['1','2','3','4']">
+            </ui-star-rating> -
+            <strong>
+              {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].label}}
+            </strong>
+            <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].rubric"></ui-help-button>
+          </p>
+          <p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
+          <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p>
+        </div>
+      </article>
+    </div>
+
+    <div *ngIf="!evaluationsListService.items.length" [innerHtml]="noItemsMsgHtml"></div>
+
+    <div class="reload-mask" *ngIf="evaluationsListService.reloading">
+      <i class="fa fa-spin fa-spinner"></i>
+    </div>
   </div>
 </div>

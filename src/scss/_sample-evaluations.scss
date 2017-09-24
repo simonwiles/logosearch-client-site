@@ -3,10 +3,13 @@
   background: rgba($light-blue, .2);
   display: flex;
   flex-direction: column;
-  height: 300px;
   overflow: hidden;
 
-  header {
+  @extend %shadow-z-1;
+  margin: 1em 1%;
+  padding: 10px;
+
+  > header {
     background: $light-blue;
     line-height: 1.2em;
     padding: 4px 10px;
@@ -20,15 +23,14 @@
         font-weight: bold;
       }
 
-      &:last-child {
+      &.submitted-by {
         float: right;
       }
     }
   }
 
   article {
-    margin: 12px 0;
-    overflow-y: scroll;
+    margin: 12px 0 8px;
 
     > div {
       background: #eaeaea;
@@ -41,13 +43,27 @@
       }
     }
 
-    p {
+    header {
+      font-weight: bold;
       margin: 4px 0;
-      padding: 0;
 
-      &.no-rationale {
-        color: #777;
-      }
+      padding: 0;
+      text-decoration: underline;
+
     }
   }
+
+  .ui-star-rating {
+    margin: 2px 0 8px;
+  }
+
+
+  &.mini-panel {
+    height: 300px;
+
+    article {
+      overflow-y: scroll;
+    }
+  }
+
 }

@@ -1,0 +1,41 @@
+<div *ngIf="evaluation" class="evaluation">
+  <header>
+    <span>{{ evaluationTool.name }}</span>
+    <span *ngIf="evaluation.submittedBy">
+      {{evaluation.submittedBy.displayName}}
+      {{(evaluation.evaluatorIsSampleSubmitter) ? ' (submitter)': ''}}
+    </span>
+  </header>
+
+  <article>
+    <p>{{evaluationTool.description}}</p>
+    <div *ngFor="let dimension of evaluation.scores; let index=index" class="dimension">
+      <header>
+        Dimension {{ evaluationTool.dimensions[dimension.dimension].index }}{{(evaluationTool.dimensions[dimension.dimension].isOptional) ? ' (optional)': ''}}:
+        {{ evaluationTool.dimensions[dimension.dimension].title }}
+      </header>
+      <ui-star-rating
+        [name]="evaluation.uuid + index"
+        [(ngModel)]="dimension.score"
+        [options]="['1','2','3','4']">
+      </ui-star-rating> -
+      <strong>
+        {{evaluationTool.dimensions[dimension.dimension].levels[dimension.score]?.label}}
+      </strong>
+      <ui-help-button [helpText]="evaluationTool.dimensions[dimension.dimension].levels[dimension.score]?.rubric"></ui-help-button>
+
+      <div class="input-field labelled">
+        <textarea name="context" [(ngModel)]="dimension.rationale" rows="1"></textarea>
+        <label for="context">
+          Rationale
+          <ui-help-button helpText="Please explain the reasoning behind your score."
+                          position="right"></ui-help-button>
+        </label>
+      </div>
+
+      <!--p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
+      <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p-->
+    </div>
+  </article>
+</div>
+

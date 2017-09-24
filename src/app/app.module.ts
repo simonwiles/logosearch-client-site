@@ -56,6 +56,7 @@ import { ParticipantLookupComponent }   from './components/participant-lookup.co
 import { ProfileComponent }             from './components/profile.component';
 import { SampleBrowserComponent }       from './components/sample-browser.component';
 import { SampleEntryComponent }         from './components/sample-entry.component';
+import { SampleEvaluationComponent }    from './components/sample-evaluation.component';
 import { SampleViewComponent }          from './components/sample-view.component';
 import { SamplesCardsComponent }        from './components/samples-cards.component';
 import { SamplesCarouselComponent }     from './components/samples-carousel.component';
@@ -82,6 +83,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     SampleEntryComponent,
     EvaluationBrowserComponent,
     SampleViewComponent,
+    SampleEvaluationComponent,
     SampleBrowserComponent,
     SamplesCardsComponent,
     SamplesCarouselComponent,

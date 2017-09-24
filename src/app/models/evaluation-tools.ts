@@ -35,7 +35,7 @@ Students appropriately (speaking one at a time, not interrupting, etc.) start an
 the interaction, and they contribute more or less equally.'
           }
         },
-        'is_optional': true
+        'isOptional': true
       },
 
       '6fef8291-4cf3-41b2-aaef-192198b5b381': {
@@ -60,7 +60,7 @@ Half or more of the conversational turns build on previous turns to adequately b
             'rubric': 'Half or more of the conversational turns build on previous turns to effectively build up a clear and complete idea.'
           }
         },
-        'is_optional': false
+        'isOptional': false
       },
 
       '30722dae-d3c3-45d2-8c80-e98795956d5e': {
@@ -86,7 +86,7 @@ Half or more of the conversational turns sufficiently focus on the lesson object
 Half or more of the conversational turns effectively focus on the lesson objectives and show depth or fostering of the intended learning.'
           }
         },
-        'is_optional': false
+        'isOptional': false
       }
 
     }
