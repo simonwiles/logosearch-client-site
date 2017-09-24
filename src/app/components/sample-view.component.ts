@@ -28,6 +28,7 @@ export class SampleViewComponent implements OnInit, OnChanges {
   @Input() sample: Sample;
   @Input() panelClass = 'panel';
   @Input() highlight: string;
+  @Input() showEvaluations = true;
 
   gradeLevels = GradeLevel;
   languages = Language;

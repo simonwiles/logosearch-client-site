@@ -77,7 +77,7 @@
     <div [innerHtml]="renderedTranscription"></div>
   </ui-collapsible>
 
-  <hr>
-  <h2>Evaluations</h2>
-  <lr-evaluation-browser [sampleUuid]="sample.uuid"></lr-evaluation-browser>
+  <hr *ngIf="showEvaluations">
+  <h2 *ngIf="showEvaluations">Evaluations</h2>
+  <lr-evaluation-browser *ngIf="showEvaluations" [sampleUuid]="sample.uuid"></lr-evaluation-browser>
 </div>
