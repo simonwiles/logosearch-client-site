@@ -39,10 +39,10 @@ export const INPUT_VALUE_ACCESSOR: any = {
 
   <div #toolbar class="ui-turn-editor-toolbar">
 
-    <button *ngFor="let action of objectKeys(punctuations)"
+    <!--button *ngFor="let action of objectKeys(punctuations)"
             (mousedown)="toolbarButtonClick($event, action)">
       <i *ngIf="punctuations[action].icon" [class]="'fa ' + punctuations[action].icon"></i>
-    </button>
+    </button-->
 
     <button *ngFor="let action of objectKeys(annotations)"
             (mousedown)="toolbarButtonClick($event, action)">
