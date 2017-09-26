@@ -441,8 +441,14 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       sampleClone.noRecordingReason = this.sample.recording.noAudioExplanation;
       delete sampleClone.recording;
     } else {
-      validated.recordingFile = this.sample.recording.file;
+      validated.recordingFile = this.sample.recording.file.file;
     }
+
+    this.sample.supportingFiles.forEach(
+      supportingFile => {
+        validated.supportingFiles.push(supportingFile.file);
+      }
+    );
 
     sampleClone.turns = sampleClone.turns.filter(turn => turn.hasOwnProperty('speaker') && turn['content']);
 
@@ -467,7 +473,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   loadSample(sampleObj: Sample, update = false) {
     if (update) {
-      this.sample = Object.assign(this.sample, sampleObj);
+      this.sample = Object.assign(this.sample, new Sample(sampleObj));
     } else {
       this.sample = new Sample(sampleObj);
     }

@@ -274,12 +274,12 @@ export class ApiService {
     let formData = new FormData();
     formData.append('sample', sampleJSON);
     formData.append('recordingFile', recordingFile);
-    formData.append('supportingFiles', supportingFiles);
+    supportingFiles.forEach(
+      supportingFile => formData.append('supportingFiles', supportingFile));
 
     return this.http.put(samplesURI, formData, options)
                     .map(response => response.json())
                     .catch(error => this.handleError(error));
-
   }
 
 
