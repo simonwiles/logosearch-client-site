@@ -26,13 +26,13 @@ export class LmsBridgeComponent implements OnInit {
   private remoteHost: string;
 
   constructor(
+    public notificationsService: NotificationsService,
     private changeDetectorRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService,
     private authService: AuthService,
-    private messageBusService: MessageBusService,
-    private notificationsService: NotificationsService) {
+    private messageBusService: MessageBusService) {
 
     document.querySelector('html').classList.add('lms-bridge');
   }

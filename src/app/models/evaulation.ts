@@ -30,9 +30,9 @@ export class Evaluation {
 
 
 export class Score {
-  public rationale: string = '';
+  public rationale = '';
   public dimension: string;
-  public score: number = 0;
+  public score = 0;
 
   constructor(obj?) {
     Object.assign(this, obj);
