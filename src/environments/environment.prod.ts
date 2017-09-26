@@ -5,5 +5,9 @@ export const environment = {
   baseHref: '/',
   mediaURL: 'https://lr.simonwiles.net/',
   lagunitaHost: 'https://lagunita.stanford.edu',
-  lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu'
+  lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu',
+
+  maxRecordingFileSize: 10e+6,
+  maxSupportingFileSize: 2e+6,
+  maxSupportingFileCount: 5
 };

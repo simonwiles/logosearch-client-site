@@ -1,7 +1,7 @@
 <div class="panel sample-entry" #sampleEntryContainer>
 
   <ui-switch-toggle name="step-chooser"
-                    [options]="[{label: 'About', value: 'about'}, {label: 'Participants', value: 'participants'}, {label: 'Transcription', value: 'transcription'}]"
+                    [options]="[{label: 'About', value: 'about'}, {label: 'Participants', value: 'participants'}, {label: 'Conversation', value: 'conversation'}]"
                     [(ngModel)]="step"
                     styleClass="step-chooser">
   </ui-switch-toggle>
@@ -107,7 +107,9 @@
               <input #supportingFileInput type="file" multiple (change)="supportingFilesSelected(supportingFileInput.files)">
               <i aria-hidden="true" class="fa fa-fw fa-upload"></i> Choose File(s)
             </button>
-            <button (click)="getFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-fw fa-dropbox"></i> Dropbox</button>
+            <button (click)="getSupportingFilesFromDropbox()" class="button-style dropbox">
+              <i aria-hidden="true" class="fa fa-fw fa-dropbox"></i> Dropbox
+            </button>
           </div>
           <div>
             <div class="g" *ngFor="let supportingFile of sample.supportingFiles; let i=index">
@@ -115,7 +117,7 @@
                 <button (click)="sample.supportingFiles = removeValue(sample.supportingFiles, supportingFile)" class="text-style"><i class="fa fa-close"></i></button>
               </div>
               <div class="u-5-24 filename">
-                <span [attr.data-tooltip]="supportingFile.file.name">{{supportingFile.file.name}}</span>
+                <span [attr.data-tooltip]="supportingFile.name">{{supportingFile.name}}</span>
               </div>
               <div class="u-18-24 input-field">
                 <input [(ngModel)]="supportingFile.title" placeholder="Please enter a short title/description for this file..." required>
@@ -278,14 +280,14 @@
 
       <div class="step-buttons">
         <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-        <button class="button-style" (click)="step = 'transcription'">Next <i class="fa fa-arrow-circle-right"></i></button>
+        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
     </div>
 
 <!-- ################################################################################################################# -->
 
-    <div *ngIf="step == 'transcription'"
+    <div *ngIf="step == 'conversation'"
          [@slideForwardBack]="stepDirection"
          (@slideForwardBack.start)="sampleEntryContainer.style.overflow = 'hidden'"
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
@@ -308,11 +310,12 @@
               <textarea *ngIf="sample.recording.noAudioAvailable" [(ngModel)]="sample.recording.noAudioExplanation"></textarea>
             </div>
             <div *ngIf="sample.recording.file" class="recording">
-              <button (click)="clearRecording()" class="text-style" [disabled]="!recordingName" data-tooltip="Clear Selection">
+              <button (click)="clearRecording()" class="text-style" data-tooltip="Clear Selection">
                 <i class="fa fa-close"></i>
               </button>
-              <span class="recording-title">{{getRecordingName()}}</span>
-              <audio *ngIf="recordingUrl" [src]="recordingUrl | uiSafe: 'url'" controls></audio>
+              <span class="recording-title">{{sample.recording.file.title}}</span>
+              <img *ngIf="!sample.recording.file.url" src="data:image/gif;base64,R0lGODlhgAAPAPEAAIwVFd27u////wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQFCgAAACwAAAAAgAAPAAACo4wfoIC33NKKUtF3Z8RbN/55CEiNonMaJGp1bfiaMQvBtXzTpZuradUDZmY+opA3DK6KwaQTCbU9pVHc1LrDUrfarq765Ya9u+VRzLyO12lwG10yy39zY11Jz9t/6jf5/HfXB8hGWKaHt6eYyDgo6BaH6CgJ+QhnmWWoiVnI6ddJmbkZGkgKujhplNpYafr5OooqGst66Uq7OpjbKmvbW/p7UAAAIfkEBQoAAQAsAAAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwLAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALBYAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsIQAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwsAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALDcAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsQgAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxNAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALFgAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsYwAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxuAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALHkAAAAHAA8AAAIIhI+py+0PoywAOw">
+              <audio *ngIf="sample.recording.file.url" [src]="sample.recording.file.url | uiSafe: 'url'" controls></audio>
             </div>
             <div *ngIf="sample.recording.file">
               <input name="includes-additional-context" type="checkbox"/>
@@ -326,7 +329,7 @@
               <input #fileInput type="file" (change)="recordingSelected($event)">
               Choose File
             </button>
-            <button (click)="getFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-dropbox"></i> Dropbox</button>
+            <button (click)="getRecordingFromDropbox()" class="button-style dropbox"><i aria-hidden="true" class="fa fa-dropbox"></i> Dropbox</button>
           </div>
         </div>
 

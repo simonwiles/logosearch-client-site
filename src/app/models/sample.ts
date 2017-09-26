@@ -114,6 +114,7 @@ export class LanguageUsage {
 export class FileUpload {
   public file: File | string;
   public title: string;
+  public name: string;
   public url: string;
 
   constructor(obj?) { Object.assign(this, obj); }

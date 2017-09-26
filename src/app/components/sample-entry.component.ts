@@ -103,9 +103,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   @ViewChild('participantLookup') participantLookup;
   @ViewChild('participantLookupPanel') participantLookupPanel;
 
-  recordingName: any;  // string or object returned from Dropbox
-  recordingUrl: any;
-
   // Get references to dynamically-generated elements, mainly for DOM-manipulation purposes:
   @ViewChildren('participantRow') participantRows;
   @ViewChildren('languageUsageSelect') languageUsageSelects;
@@ -142,12 +139,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  ngAfterContentInit() {
-    this.messageBusService.emit('sampleEntryLoaded', this);
-  }
-
   doStepChange(value): void {
-    if (['about', 'participants', 'transcription'].indexOf(value) > ['about', 'participants', 'transcription'].indexOf(this._step)) {
+    if (['about', 'participants', 'conversation'].indexOf(value) > ['about', 'participants', 'conversation'].indexOf(this._step)) {
       this.stepDirection = 'forward';
     } else {
       this.stepDirection = 'back';
@@ -272,29 +265,42 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   }
 
-
-
   recordingSelected(event) {
+    const acceptedFileTypes: string[] = [
+      // Audio
+      'audio/flac',    // flac
+      'audio/mpeg',    // mp3
+      'audio/mp3',     // mp3
+      'audio/mp4',     // mp4 audio
+      'audio/ogg',     // OGG Vorbis
+      'audio/vnd.wav'  // wav
+    ];
+    const maximumFileSizeInBytes = environment.maxRecordingFileSize;
+
     if (event.target.files && event.target.files[0]) {
-      let file = event.target.files[0];
-      this.sample.recording.file = new FileUpload({file: file, title: ''});
-      this.recordingName = file;
-      const reader = new FileReader();
 
-      reader.onload = (_event: any) => {
-        this.recordingUrl = _event.target.result;
-      };
-
-      reader.readAsDataURL(event.target.files[0]);
+      let file =  this.validateSelectedFiles(event.target.files, acceptedFileTypes, maximumFileSizeInBytes)[0];
+      if (file) {
+        this.sample.recording.file = new FileUpload({file: file, title: file.name});
+        this.sample.recording.file.url = URL.createObjectURL(file);
+      }
     }
   }
 
-  getFromDropbox() {
+  getRecordingFromDropbox() {
     const sampleEntryComponent = this;
+    const recording = this.sample.recording;
+
     const handleFiles = function(files) {
-      sampleEntryComponent.recordingUrl = files[0].link;
-      sampleEntryComponent.recordingName = files[0].name;
+      const file = sampleEntryComponent.validateFilesFromDropbox(files, environment.maxRecordingFileSize)[0];
+      if (file) {
+        recording.file = new FileUpload({
+          url: file.link,
+          title: file.name
+        });
+      }
     };
+
     window.Dropbox.choose({
       success: (files) => handleFiles(files),
       //  cancel: function() { },
@@ -304,22 +310,43 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     });
   }
 
-  getRecordingName() {
-    if (!this.recordingName) {
-      return '[no file chosen]';
-    }
-    if (typeof this.recordingName === 'string') {
-      return this.recordingName.split(/[\/\\]/).pop();
-    }
-    return this.recordingName.name;
-  }
-
   clearRecording() {
-    this.recordingName = '';
-    this.recordingUrl = null;
     this.sample.recording = null;
   }
 
+  validateFilesFromDropbox(files, maximumFileSizeInBytes) {
+    const validFiles = [];
+    const rejectedFileSize = [];
+
+    for (let i = 0; i < files.length; ++i) {
+      if (maximumFileSizeInBytes < files[i].bytes) {
+          rejectedFileSize.push(files[i]);
+          continue;
+      }
+      validFiles.push(files[i]);
+    }
+
+    if (rejectedFileSize.length) {
+      const html = `
+        <div class="notification-title">Files Rejected (too large):</div>
+        <div class="notification-content">
+          Files may be no bigger than ${maximumFileSizeInBytes.siUnits()} / ${maximumFileSizeInBytes.iecUnits()}.
+        </div>
+        <div class="notification-content">
+          <ul>
+            ${
+              rejectedFileSize.map(
+                f => `<li><i class="fa fa-fw fa-ban"></i> ${f.name} (${f.bytes.siUnits()} / ${f.bytes.iecUnits()})</li>`
+              ).join('')
+            }
+          </ul>
+        </div>
+      `;
+      this.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
+    }
+
+    return validFiles;
+  }
 
   validateSelectedFiles(filesList: FileList, acceptedFileTypes: string[], maximumFileSizeInBytes: number): File[] {
 
@@ -415,12 +442,82 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       'text/csv',
       'application/rtf',
     ];
-    const maximumFileSizeInBytes = 2e+6;
+    const maximumFileSizeInBytes = environment.maxSupportingFileSize;
+    const rejectedTooMany: File[] = [];
 
     this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes).forEach(
-      file => this.sample.supportingFiles.push(new FileUpload({file: file, title: ''}))
+      supportingFile => {
+        if (this.sample.supportingFiles.length < environment.maxSupportingFileCount) {
+          this.sample.supportingFiles.push(new FileUpload({file: supportingFile, title: '', name: supportingFile.name}));
+        } else {
+          rejectedTooMany.push(supportingFile);
+        }
+      }
     );
 
+    if (rejectedTooMany.length) {
+      const html = `
+        <div class="notification-title">Files Rejected (too many):</div>
+        <div class="notification-content">
+          No more than ${environment.maxSupportingFileCount} files may be selected.
+        </div>
+        <div class="notification-content">
+          <ul>
+            ${
+              rejectedTooMany.map(
+                f => `<li><i class="fa fa-fw fa-ban"></i> ${f.name}</li>`
+              ).join('')
+            }
+          </ul>
+        </div>
+      `;
+      this.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
+    }
+  }
+
+  getSupportingFilesFromDropbox() {
+    const sampleEntryComponent = this;
+    const supportingFiles = this.sample.supportingFiles;
+
+    const handleFiles = function(files) {
+      const rejectedTooMany = [];
+      sampleEntryComponent.validateFilesFromDropbox(files, environment.maxSupportingFileSize).forEach(
+        supportingFile => {
+          if (supportingFiles.length < sampleEntryComponent.environment.maxSupportingFileCount) {
+            supportingFiles.push(new FileUpload({name: supportingFile.name, title: '', url: supportingFile.link}));
+          } else {
+            rejectedTooMany.push(supportingFile);
+          }
+        }
+      );
+
+      if (rejectedTooMany.length) {
+        const html = `
+          <div class="notification-title">Files Rejected (too many):</div>
+          <div class="notification-content">
+            No more than ${environment.maxSupportingFileCount} files may be selected.
+          </div>
+          <div class="notification-content">
+            <ul>
+              ${
+                rejectedTooMany.map(
+                  f => `<li><i class="fa fa-fw fa-ban"></i> ${f.name}</li>`
+                ).join('')
+              }
+            </ul>
+          </div>
+        `;
+        sampleEntryComponent.notificationsService.html(html, 'error', {timeout: 0, showCloseButton: true});
+      }
+    };
+
+    window.Dropbox.choose({
+      success: files => handleFiles(files),
+      //  cancel: function() { },
+      linkType: 'direct',
+      multiselect: true,
+      extensions: ['images', 'documents', 'text'],
+    });
   }
 
   validateSample() {
@@ -441,12 +538,19 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       sampleClone.noRecordingReason = this.sample.recording.noAudioExplanation;
       delete sampleClone.recording;
     } else {
-      validated.recordingFile = this.sample.recording.file.file;
+      if (this.sample.recording.file.file) {
+        validated.recordingFile = this.sample.recording.file.file;
+        delete sampleClone.recording.file.url;
+      }
     }
 
     this.sample.supportingFiles.forEach(
-      supportingFile => {
-        validated.supportingFiles.push(supportingFile.file);
+      (supportingFile: FileUpload) => {
+        if (supportingFile.file) {
+          validated.supportingFiles.push(supportingFile.file);
+        } else {
+          validated.supportingFiles.push(supportingFile.url);
+        }
       }
     );
 
@@ -458,7 +562,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   saveSample() {
-
     let validated = this.validateSample();
 
     this.apiService.putSample(validated.sampleJSON, validated.recordingFile, validated.supportingFiles).subscribe(
@@ -478,10 +581,4 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       this.sample = new Sample(sampleObj);
     }
   }
-
-  dump(value) {
-    console.log(value);
-  }
-
 }
-
