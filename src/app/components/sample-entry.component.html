@@ -388,7 +388,11 @@
   <table class="language-skill">
     <tr>
       <th [class.active]="languageSkill.speakingProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Speaking <i class="fa" [ngClass]="{'fa-check-circle': languageSkill.speakingProficiency, 'fa-exclamation-circle': !languageSkill.speakingProficiency}"></i>
+        Speaking <i class="fa"
+                    [ngClass]="{
+                      'fa-check-circle': languageSkill.speakingProficiency,
+                      'fa-exclamation-circle': !languageSkill.speakingProficiency
+                    }"></i>
       </th>
       <td>
         <ui-range-slider [(ngModel)]="languageSkill.speakingProficiency"
@@ -411,7 +415,11 @@
     </tr>
     <tr>
       <th [class.active]="languageSkill.listeningProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Listening <i class="fa" [ngClass]="{'fa-check-circle': languageSkill.listeningProficiency, 'fa-exclamation-circle': !languageSkill.listeningProficiency}"></i>
+        Listening <i class="fa"
+                     [ngClass]="{
+                       'fa-check-circle': languageSkill.listeningProficiency,
+                       'fa-exclamation-circle': !languageSkill.listeningProficiency
+                     }"></i>
       </th>
       <td>
         <ui-range-slider [(ngModel)]="languageSkill.listeningProficiency"
