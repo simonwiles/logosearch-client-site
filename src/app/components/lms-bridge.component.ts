@@ -144,10 +144,7 @@ export class LmsBridgeComponent implements OnInit {
           'lmsUser': lagunitaUser
         }
       ).subscribe(
-        data => {
-          this.lmsConnectionEstablished = true;
-          this.changeDetectorRef.detectChanges();
-        },
+        data => this.onConnectionEstablished(data),
         error => {
           this.spinnerText = 'Authentication Error!';
           console.log(error);
@@ -155,5 +152,41 @@ export class LmsBridgeComponent implements OnInit {
     );
   }
 
+  onConnectionEstablished(data) {
+    this.lmsConnectionEstablished = true;
+    this.changeDetectorRef.detectChanges();
+
+    // This block hooks up a MutationObserver to watch for the introduction of (or changes to)
+    //  overlay-panel components.  These are positioned absolutely, and so won't affect document.scrollHeight;
+    //  the result is that the iframe won't resize to accommodate them, and they become unusable, so here
+    //  we manually post the necessary height to the the parent window.
+    const remoteHost = this.remoteHost;
+    const mutationObserver = new MutationObserver(
+      mutations => {
+        mutations.forEach(
+          mutation => {
+            if (Array.from(document.querySelectorAll('.ui-overlaypanel')).some(elem => elem.contains(mutation.target))) {
+              setTimeout(
+                () => {
+                  const panel = (mutation.target as HTMLElement).closest('.ui-overlaypanel') as HTMLElement;
+                  window.parent.postMessage(
+                    JSON.stringify({'command': 'setHeight', value: panel.offsetTop + panel.offsetHeight}),
+                    remoteHost
+                  )
+                }, 0
+              );
+            } else if (mutation.target.nodeName === 'UI-OVERLAY-PANEL') {
+              // in case the panel has been removed...
+              window.parent.postMessage(
+                JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
+                remoteHost
+              )
+            }
+          }
+        );
+      }
+    );
+    mutationObserver.observe(document.querySelector('.router-outlet'), { childList: true, subtree: true });
+  }
 }
 
