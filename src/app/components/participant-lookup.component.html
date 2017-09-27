@@ -85,7 +85,7 @@
     <ui-data-table-column header="avatar"
                           property="avatar"
                           [sortable]="false">
-      <ng-template #dataTableCell let-item="item"><img src="{{environment.mediaURL}}{{item.avatar}}" height="30px"></ng-template>
+      <ng-template #dataTableCell let-item="item"><img src="{{environment.mediaURL}}{{item.avatar}}" height="30px" alt="Avatar for {{item.nickname}}"></ng-template>
     </ui-data-table-column>
 
     <ui-data-table-column header="nickname"

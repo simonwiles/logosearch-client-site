@@ -25,7 +25,8 @@ export class TranscriptionRendererService {
       <tr class="p_${turn.attributes.spkr.nodeValue}">
         <th>${i + 1}</th>
         <td class="transcription-participant">
-          <img src="${environment.mediaURL}${participants[turn.attributes.spkr.nodeValue].avatar}" height="25px">
+          <img src="${environment.mediaURL}${participants[turn.attributes.spkr.nodeValue].avatar}" height="25px"
+               alt="Avatar for ${participants[turn.attributes.spkr.nodeValue].nickname}">
           ${participants[turn.attributes.spkr.nodeValue].nickname}
         </td>
         <td>${turnContent}</td>

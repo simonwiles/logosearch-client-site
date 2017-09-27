@@ -43,7 +43,7 @@
   <ui-collapsible header="<h2>Participants</h2>" [shown]="true">
     <table class="participants">
       <tr *ngFor="let participant of sample?.students" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
-        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
+        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px" alt="Avatar for {{participant.nickname}}"></td>
         <td>{{participant.nickname}}</td>
         <td>
           <span class="value-stud"><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></span>
@@ -65,7 +65,7 @@
         </td>
       </tr>
       <tr *ngFor="let participant of sample?.adults" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
-        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px"></td>
+        <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px" alt="Avatar for {{participant.nickname}}"></td>
         <td>{{participant.nickname}}</td>
         <td><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></td>
       </tr>
