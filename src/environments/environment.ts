@@ -8,7 +8,7 @@ export const environment = {
   apiURL: 'https://localhost:8000/api/',
   baseURL: 'https://localhost:4200/',
   baseHref: '/',
-  mediaURL: 'https://localhost:8000',
+  mediaURL: 'https://localhost:8000/media/',
   lagunitaHost: 'https://lagunita.stanford.edu',
   lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu',
 

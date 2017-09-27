@@ -129,7 +129,7 @@ export class Participant implements IParticipant {
     let participantIndex = Math.floor(Math.random() * (max - min + 1)) + min;
     let colorSet = colorSets[(participantIndex % colorSets.length)];
     let imageIndex = Array.from(Array(maxIndex + 1).keys()).slice(1)[(Math.floor((participantIndex - 1) / colorSets.length))];
-    return `/media/avatars/${colorSet}/${('00' + imageIndex).slice(-2)}.png`;
+    return `avatars/${colorSet}/${('00' + imageIndex).slice(-2)}.png`;
   }
 
   constructor(obj?: IParticipant) { Object.assign(this, obj); }
