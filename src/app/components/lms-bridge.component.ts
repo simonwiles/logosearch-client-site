@@ -69,7 +69,7 @@ export class LmsBridgeComponent implements OnInit {
   dataReceived(data) {
     const [course, session, assignment, type] = data.assignmentIdToken.split(':');
     this.remoteHost = data.remoteHost;
-    if (course !== data.openEdXCourseId) {
+    if (course !== data.openEdXCourseId.split(':').pop()) {
       this.spinnerText = 'Configuration Error!';
       console.log('course mismatch!');
       return;
