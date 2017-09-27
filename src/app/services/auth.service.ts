@@ -67,7 +67,7 @@ export class AuthService {
         }
       },
       error => {
-        console.log(error);
+        this.logout(false);
       }
     );
   }
