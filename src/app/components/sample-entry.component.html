@@ -378,7 +378,7 @@
 
   </div>
 
-  <ui-collapsible header="diagnostic" [shown]="false">
+  <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
     <pre>{{sample | json}}</pre>
   </ui-collapsible>
 
