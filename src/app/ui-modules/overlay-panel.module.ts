@@ -36,7 +36,6 @@ import { DomHandler }     from '../utils/domhandler';
   `,
   styles: [`
   .ui-overlaypanel {
-    display: none;
     margin: 0;
     padding: 0;
     position: absolute;
@@ -88,18 +87,18 @@ export class OverlayPanelComponent {
   }
 
   getContainer() {
-    let container = this.el.nativeElement.children[0];
-    container.style.zIndex = ++DomHandler.zindex;
+    this.container = this.el.nativeElement.children[0];
+    this.container.style.zIndex = ++DomHandler.zindex;
 
     if (this.appendTo) {
       if (this.appendTo === 'body') {
-        document.body.appendChild(container);
+        document.body.appendChild(this.container);
       } else {
-        this.domHandler.appendChild(container, this.appendTo);
+        this.domHandler.appendChild(this.container, this.appendTo);
       }
     }
 
-    return container;
+    return this.container;
   }
 
   toggle(event, target?) {
@@ -119,11 +118,17 @@ export class OverlayPanelComponent {
     setTimeout(() => {
       let container = this.getContainer()
       container.style.zIndex = ++DomHandler.zindex;
-      this.domHandler.absolutePosition(container, elementTarget);
-      container.style.display = 'block';
+
+      let top = elementTarget.offsetHeight + elementTarget.getBoundingClientRect().top + this.domHandler.getWindowScrollTop();
+      let left = elementTarget.getBoundingClientRect().left + this.domHandler.getWindowScrollLeft()
+                  + elementTarget.offsetWidth - container.offsetWidth;
+
+      container.style.top = top + 'px';
+      container.style.left = left + 'px';
+
       this.domHandler.fadeIn(container, 250);
+      this.onAfterShow.emit(null);
     });
-    this.onAfterShow.emit(null);
   }
 
   hide() {
