@@ -275,11 +275,13 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       'audio/ogg',     // OGG Vorbis
       'audio/vnd.wav'  // wav
     ];
+    const acceptedFileTypesString = 'audio files';
     const maximumFileSizeInBytes = environment.maxRecordingFileSize;
 
     if (event.target.files && event.target.files[0]) {
 
-      let file =  this.validateSelectedFiles(event.target.files, acceptedFileTypes, maximumFileSizeInBytes)[0];
+      let file =  this.validateSelectedFiles(
+        event.target.files, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString)[0];
       if (file) {
         this.sample.recording.file = new FileUpload({file: file, title: file.name});
         this.sample.recording.file.url = URL.createObjectURL(file);
@@ -348,7 +350,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     return validFiles;
   }
 
-  validateSelectedFiles(filesList: FileList, acceptedFileTypes: string[], maximumFileSizeInBytes: number): File[] {
+  validateSelectedFiles(
+    filesList: FileList, acceptedFileTypes: string[], maximumFileSizeInBytes: number, acceptedFileTypesString: string): File[] {
 
     const validFiles: File[] = [];
     const rejectedFileType: File[] = [];
@@ -372,7 +375,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     if (rejectedFileType.length) {
       const html = `
         <div class="notification-title">Files Rejected (wrong type):</div>
-        <div class="notification-content">Allowed types are image files and document files.</div>
+        <div class="notification-content">Allowed types are ${acceptedFileTypesString}.</div>
         <div class="notification-content">
           <ul>
             ${
@@ -442,10 +445,11 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       'text/csv',
       'application/rtf',
     ];
+    const acceptedFileTypesString = 'image files and document files';
     const maximumFileSizeInBytes = environment.maxSupportingFileSize;
     const rejectedTooMany: File[] = [];
 
-    this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes).forEach(
+    this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString).forEach(
       supportingFile => {
         if (this.sample.supportingFiles.length < environment.maxSupportingFileCount) {
           this.sample.supportingFiles.push(new FileUpload({file: supportingFile, title: '', name: supportingFile.name}));
