@@ -537,15 +537,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     sampleClone.students.forEach(student => delete student['languageKeys']);
 
-    if (this.sample.recording.noAudioAvailable) {
-      // this.sample.recording.noAudioExplanation must be completed
-      sampleClone.noRecordingReason = this.sample.recording.noAudioExplanation;
-      delete sampleClone.recording;
-    } else {
-      if (this.sample.recording.file.file) {
-        validated.recordingFile = this.sample.recording.file.file;
-        delete sampleClone.recording.file.url;
-      }
+    if (this.sample.recording.file && this.sample.recording.file.file) {
+      validated.recordingFile = this.sample.recording.file.file;
+      delete sampleClone.recording.file.url;
     }
 
     this.sample.supportingFiles.forEach(
@@ -570,7 +564,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     this.apiService.putSample(validated.sampleJSON, validated.recordingFile, validated.supportingFiles).subscribe(
       sample => {
-        console.log(sample);
         this.messageBusService.emit('sampleSaved', sample);
         this.router.navigate(['../sample', sample.uuid], {relativeTo: this.route});
       },
