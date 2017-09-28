@@ -104,12 +104,5 @@ export class SampleViewComponent implements OnInit, OnChanges {
     ).join('\n');
   }
 
-  // getEvaluations() {
-  //   if (typeof this.evaluations === 'undefined') {
-  //     this.apiService.getEvaluations({'sample': this.sample.uuid}).subscribe(
-  //       data => this.evaluations = data.results
-  //     );
-  //   }
-  // }
 }
 
