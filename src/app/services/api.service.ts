@@ -310,6 +310,8 @@ export class ApiService {
       errString = 'No response from server!';
     } else if (error.status === 404) {
       errString = 'Resource not found!';
+    } else if (error.status === 400) {
+      errString = 'Bad Request:' + error.json().body;
     } else {
       try {
         errString = (
@@ -321,7 +323,7 @@ export class ApiService {
     }
 
     if (!environment.production) {
-      console.warn(errString);
+      console.warn('error:', error);
       // throw error;
     }
 
