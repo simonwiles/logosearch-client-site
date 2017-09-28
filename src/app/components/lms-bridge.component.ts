@@ -125,8 +125,11 @@ export class LmsBridgeComponent implements OnInit {
     }
   }
 
-  sendData(message) {
-    parent.postMessage(message, this.remoteHost);
+  sendData(sampleUuid) {
+    window.parent.postMessage(
+      JSON.stringify({'command': 'submit', value: sampleUuid}),
+      this.remoteHost
+    );
   }
 
   logInUser(lagunitaUser) {
