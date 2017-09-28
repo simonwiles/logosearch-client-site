@@ -1,7 +1,9 @@
 import { NgModule }                     from '@angular/core';
+
 import { BrowserModule }                from '@angular/platform-browser';
 import { BrowserAnimationsModule }      from '@angular/platform-browser/animations';
-import { FormsModule }                  from '@angular/forms';
+import { FormsModule,
+         ReactiveFormsModule }          from '@angular/forms';
 import { HttpModule }                   from '@angular/http';
 
 import { SelectModule }                 from './ui-modules/angular2-select/select.module';
@@ -93,7 +95,10 @@ import { SamplesTableComponent }        from './components/samples-table.compone
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+
     FormsModule,
+    ReactiveFormsModule,
+
     HttpModule,
 
     SelectModule,

@@ -8,6 +8,8 @@ import { AfterViewInit,
          ViewChild,
          ViewChildren }               from '@angular/core';
 
+import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
+
 import { ActivatedRoute,
          Router }                     from '@angular/router';
 
@@ -79,11 +81,17 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   public set step(value) {
 
-    if (this.doStepValidation(value)) {
+    if (this.doStepValidation(this._step)) {
       this.doStepChange(value);
-    }
-    this.changeDetectorRef.markForCheck();
+    } else {
+      this.notificationsService.error(
+        'Form is not complete!',
+        'Please complete the necessary information before moving on!');
+      this._step = this._step;
+      this.changeDetectorRef.detectChanges();  // force change detection to run so that stepDirection is updated properly in the DOM
 
+    }
+    this.changeDetectorRef.markForCheck()
   }
 
   public languageStandardLevels = LanguageStandardLevels;
@@ -109,15 +117,34 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   @ViewChildren('languageUsageRangeInput') languageUsageRangeInputs;
 
 
+  aboutForm: FormGroup = this.builder.group({
+    context: new FormControl('', Validators.required),
+    subjectArea: new FormControl('', Validators.required),
+    objective: new FormControl('', Validators.required),
+    prompt: new FormControl('', Validators.required),
+    languagesUsed: new FormArray([
+      this.builder.group({
+        language: new FormControl('eng', Validators.required),
+        usage: new FormControl('all', Validators.required)
+      })
+    ], Validators.minLength(1)),
+    supportingFiles: new FormArray([]),
+  });
+
+
   constructor(
-    private authConfig: AuthConfig,
-    private apiService: ApiService,
     private changeDetectorRef: ChangeDetectorRef,
     private elementRef: ElementRef,
-    private messageBusService: MessageBusService,
-    private notificationsService: NotificationsService,
+
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+
+    private builder: FormBuilder,
+
+    private authConfig: AuthConfig,
+    private apiService: ApiService,
+    private messageBusService: MessageBusService,
+    private notificationsService: NotificationsService) { }
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -150,6 +177,19 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   doStepValidation(value): boolean {
+
+    const markAllTouched = function(fg) {
+      Object.keys(fg.controls).forEach(field => {
+        const control = fg.get(field);
+        control.markAsTouched();
+        if (control.controls) { markAllTouched(control); }
+      });
+    }
+
+    if (value === 'about') {
+      markAllTouched(this.aboutForm);
+      return this.aboutForm.valid;
+    }
     return true;
   }
 
@@ -185,22 +225,31 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   addLanguageUsage() {
-    this.sample.languagesUsed.push(new LanguageUsage());
+    (this.aboutForm.get('languagesUsed') as FormArray).push(
+      this.builder.group({
+        language: new FormControl(null, Validators.required),
+        usage: new FormControl(null, Validators.required)
+      })
+    );
+
     this.changeDetectorRef.detectChanges();
     this.enforceLangUsagePolicies();
+    return false;
   }
 
-  removeLanguageUsage(langUsage) {
-    this.sample.languagesUsed = this.sample.languagesUsed.filter(item => item !== langUsage);
+  removeLanguageUsage(i) {
+    (this.aboutForm.get('languagesUsed') as FormArray).removeAt(i);
+    this.changeDetectorRef.detectChanges();
     this.enforceLangUsagePolicies();
+    return false;
   }
 
   enforceLangUsagePolicies() {
-    if (this.sample.languagesUsed.length > 1 ) {
-      for (let langUsage of this.sample.languagesUsed) {
-        if (langUsage.usage === 'all') {
-          langUsage.usage = null;
-        }
+    const languagesUsed: FormArray = (this.aboutForm.get('languagesUsed') as FormArray);
+    if (languagesUsed.length > 1) {
+      for (let langUsage of languagesUsed.controls) {
+        const usageControl = (langUsage as FormGroup).controls.usage;
+        if (usageControl.value === 'all') { usageControl.setValue(null); }
       }
       this.languageUsageRangeInputs.forEach(
         input => {
@@ -209,7 +258,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
           input.options.find(item => item.value === 'all').disabled = true;
         });
     } else {
-      this.sample.languagesUsed[0].usage = 'all';
+      (languagesUsed.controls[0] as FormGroup).controls.usage.setValue('all');
     }
   }
 
@@ -449,10 +498,20 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     const maximumFileSizeInBytes = environment.maxSupportingFileSize;
     const rejectedTooMany: File[] = [];
 
+    const supportingFiles: FormArray = (this.aboutForm.get('supportingFiles') as FormArray);
     this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString).forEach(
       supportingFile => {
-        if (this.sample.supportingFiles.length < environment.maxSupportingFileCount) {
-          this.sample.supportingFiles.push(new FileUpload({file: supportingFile, title: '', name: supportingFile.name}));
+        if (supportingFiles.length < environment.maxSupportingFileCount) {
+          supportingFiles.push(
+            // new FileUpload({file: supportingFile, title: '', name: supportingFile.name})
+
+            this.builder.group({
+              file: new FormControl(supportingFile),
+              title: new FormControl(null, Validators.required),
+              name: new FormControl(supportingFile.name, Validators.required),
+            })
+
+          );
         } else {
           rejectedTooMany.push(supportingFile);
         }
@@ -578,4 +637,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       this.sample = new Sample(sampleObj);
     }
   }
+
+  formSubmit() {
+    console.log(this.aboutForm.value);
+  }
+
 }

@@ -27,6 +27,14 @@
   }
 }
 
+%md-input-invalid {
+
+  ~ label {
+    color: $invalid-warning !important;
+    font-weight: bold;
+  }
+}
+
 %md-input {
   @extend %md-input-blurred;
   border-radius: 0;
@@ -248,6 +256,8 @@ input.text-style {
     width: 100%;
 
     &.ng-invalid.ng-touched {
+      @extend %md-input-invalid;
+
       border-color: $alert;
       border-width: 2px;
 
@@ -267,6 +277,17 @@ input.text-style {
   > input,
   > select {
     height: 32px;
+  }
+
+  > ui-select {
+    &.ng-invalid.ng-touched {
+      @extend %md-input-invalid;
+
+      .select2-selection {
+        border-color: $invalid-warning;
+        border-width: 2px;
+      }
+    }
   }
 
   .alert {

@@ -6,18 +6,23 @@
                     styleClass="step-chooser">
   </ui-switch-toggle>
 
-<!-- ################################################################################################################# -->
-
   <div>
+
+<!-- ################################################################################################################# -->
 
     <div *ngIf="step == 'about'"
          [@slideForwardBack]="stepDirection"
          (@slideForwardBack.start)="sampleEntryContainer.style.overflow = 'hidden'"
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
 
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
+      </div>
+
+      <form [formGroup]="aboutForm" (ngSubmit)="formSubmit()">
       <div id="about" class="panel">
         <div class="input-field labelled">
-          <textarea name="context" [(ngModel)]="sample.context" rows="1"></textarea>
+          <textarea name="context" formControlName="context" rows="1"></textarea>
           <label for="context">
             Context
             <ui-help-button helpText="Describe the program, curriculum, lesson focus and/or sequence."
@@ -25,8 +30,9 @@
           </label>
         </div>
         <div class="input-field labelled">
-          <ui-select #subjectAreaSelect name="subjectArea" required
-                     [(ngModel)]="sample.subjectArea"
+          <ui-select #subjectAreaSelect name="subjectArea"
+                     name="subjectArea"
+                     formControlName="subjectArea"
                      [options]="subjectAreas"
                      [multiple]="true"
                      placeholder="Please choose one or more subject areas"
@@ -39,7 +45,7 @@
           </label>
         </div>
         <div class="input-field labelled">
-          <textarea name="objective" [(ngModel)]="sample.objective" rows="1"></textarea>
+          <textarea name="objective" formControlName="objective" rows="1"></textarea>
           <label for="objective">
             Objective
             <ui-help-button helpText="Provide what the students were supposed to accomplish during this lesson, conversation or task."
@@ -47,7 +53,7 @@
           </label>
         </div>
         <div class="input-field labelled">
-          <textarea name="prompt" [(ngModel)]="sample.prompt" rows="1"></textarea>
+          <textarea name="prompt" formControlName="prompt" rows="1"></textarea>
           <label for="prompt">
             Prompt
             <ui-help-button helpText="Provide the question(s) or instructions that the student(s) received right before the interaction or activity associated with the language artifact began."
@@ -64,33 +70,36 @@
             <button class="button-style" (click)="addLanguageUsage()"><i class="fa fa-fw fa-plus"></i> Add Language</button>
           </div>
           <div>
-            <div class="g lang-usage-row" *ngFor="let langUsage of sample.languagesUsed; let i=index">
-              <div class="u-1-24">
-                <button class="text-style"
-                        [disabled]="sample.languagesUsed.length <= 1"
-                        (click)="removeLanguageUsage(langUsage)">
-                  <i class="fa fa-close"></i>
-                </button>
-              </div>
-              <div class="u-12-24">
-                <ui-select #languageUsageSelect
-                           name="sampleLanguages" required
-                           [(ngModel)]="langUsage.language"
-                           [options]="languageOptions"
-                           [allowClear]="false">
-                </ui-select>
-              </div>
-              <div class="u-11-24 language-usage-usage" [class.invalid]="!langUsage.usage">
-                <ui-range-slider #languageUsageRangeInput
-                  [disabled]="sample.languagesUsed.length <= 1"
-                  [options]="[
-                    {label: 'Minimal', value: 'min'},
-                    {label: 'Some', value: 'some'},
-                    {label: 'Substantial', value: 'subst'},
-                    {label: 'All', value: 'all'}
-                  ]"
-                  [(ngModel)]="langUsage.usage">
-                </ui-range-slider>
+            <div formArrayName="languagesUsed" *ngFor="let langUsage of aboutForm.get('languagesUsed').controls; let i=index">
+              <div class="g lang-usage-row" [formGroupName]="i">
+                <div class="u-1-24">
+                  <button class="text-style"
+                          [disabled]="aboutForm.get('languagesUsed').controls.length <= 1"
+                          (click)="removeLanguageUsage(i)">
+                    <i class="fa fa-close"></i>
+                  </button>
+                </div>
+                <div class="u-12-24">
+                  <ui-select #languageUsageSelect
+                             name="sampleLanguages"
+                             formControlName="language"
+                             [options]="languageOptions"
+                             [allowClear]="false">
+                  </ui-select>
+                </div>
+                {{ aboutForm.controls.languagesUsed.controls[i].usage }}
+                <div class="u-11-24 language-usage-usage" [class.invalid]="!aboutForm.get('languagesUsed').controls[i].controls.usage.valid">
+                  <ui-range-slider #languageUsageRangeInput
+                    [readonly]="aboutForm.get('languagesUsed').controls.length <= 1"
+                    [options]="[
+                      {label: 'Minimal', value: 'min'},
+                      {label: 'Some', value: 'some'},
+                      {label: 'Substantial', value: 'subst'},
+                      {label: 'All', value: 'all'}
+                    ]"
+                    formControlName="usage">
+                  </ui-range-slider>
+                </div>
               </div>
             </div>
           </div>
@@ -112,27 +121,27 @@
             </button>
           </div>
           <div>
-            <div class="g" *ngFor="let supportingFile of sample.supportingFiles; let i=index">
-              <div class="u-1-24 remove">
-                <button (click)="sample.supportingFiles = removeValue(sample.supportingFiles, supportingFile)" class="text-style"><i class="fa fa-close"></i></button>
-              </div>
-              <div class="u-5-24 filename">
-                <span [attr.data-tooltip]="supportingFile.name">{{supportingFile.name}}</span>
-              </div>
-              <div class="u-18-24 input-field">
-                <input [(ngModel)]="supportingFile.title" placeholder="Please enter a short title/description for this file..." required>
+            <div formArrayName="supportingFiles" *ngFor="let supportingFile of aboutForm.get('supportingFiles').controls; let i=index">
+              <div class="g" [formGroupName]="i">
+                <div class="u-1-24 remove">
+                  <button (click)="aboutForm.get('supportingFiles').removeAt(i)" class="text-style"><i class="fa fa-close"></i></button>
+                </div>
+                <div class="u-5-24 filename">
+                  <span [attr.data-tooltip]="aboutForm.get('supportingFiles').controls[i].controls.name.value">
+                    {{aboutForm.get('supportingFiles').controls[i].controls.name.value}}
+                  </span>
+                </div>
+                <div class="u-18-24 input-field">
+                  <input formControlName="title" placeholder="Please enter a short title/description for this file...">
+                </div>
               </div>
             </div>
-            <div class="g no-supporting-files" *ngIf="!sample.supportingFiles?.length"><div class="u-1">[no files attached]</div></div>
+            <div class="g no-supporting-files" *ngIf="!aboutForm.get('supportingFiles').controls.length"><div class="u-1">[no files attached]</div></div>
           </div>
         </div>
 
       </div>
-
-      <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
-      </div>
-
+      </form>
     </div>
 
 <!-- ################################################################################################################# -->
@@ -141,6 +150,11 @@
          [@slideForwardBack]="stepDirection"
          (@slideForwardBack.start)="sampleEntryContainer.style.overflow = 'hidden'"
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
+
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
+      </div>
 
       <div class="panel">
         <form #participantsForm="ngForm">
@@ -164,17 +178,17 @@
                   <img src="{{environment.mediaURL}}{{participant.avatar}}" height="60px" alt="Avatar for {{participant.nickname}}">
                 </td>
                 <td class="input-field nickname">
-                  <input [(ngModel)]="participant.nickname" placeholder="Choose a nickname" required name="nickname{{i}}">
+                  <input [(ngModel)]="participant.nickname" placeholder="Choose a nickname" name="nickname{{i}}">
                   <div class="alert alert-danger">Name is required</div>
                 </td>
                 <td class="input-field">
-                  <select [(ngModel)]="participant.gender" name="gender{{i}}" required>
+                  <select [(ngModel)]="participant.gender" name="gender{{i}}">
                     <option *ngFor="let gender of genders"
                             [value]="gender.value">{{gender.label}}</option>
                   </select>
                 </td>
                 <td class="languages">
-                  <ui-select name="languages{{i}}" required
+                  <ui-select name="languages{{i}}"
                              placeholder="Select One or More Languages..."
                              #selectComponent
                              [(ngModel)]="participant.languageKeys"
@@ -203,7 +217,7 @@
                   </ui-select>
                 </td>
                 <td class="input-field">
-                  <select [(ngModel)]="participant.gradeLevel" name="gradeLevel{{i}}" required>
+                  <select [(ngModel)]="participant.gradeLevel" name="gradeLevel{{i}}">
                     <option *ngFor="let gradeLevel of gradeLevels"
                             [value]="gradeLevel.value">{{gradeLevel.label}}</option>
                   </select>
@@ -245,11 +259,11 @@
                   <img src="{{environment.mediaURL}}{{adult.avatar}}" height="60px" alt="Avatar for {{adult.nickname}}">
                 </td>
                 <td class="nickname input-field">
-                  <input [(ngModel)]="adult.nickname" placeholder="Choose a nickname" required name="nickname{{i}}">
+                  <input [(ngModel)]="adult.nickname" placeholder="Choose a nickname" name="nickname{{i}}">
                   <div class="alert alert-danger">Name is required</div>
                 </td>
                 <td class="gender input-field">
-                  <select [(ngModel)]="adult.gender" name="gender{{i}}" required>
+                  <select [(ngModel)]="adult.gender" name="gender{{i}}">
                     <option *ngFor="let gender of genders"
                             [value]="gender.value">{{gender.label}}</option>
                   </select>
@@ -282,11 +296,6 @@
 
       </div>
 
-      <div class="step-buttons">
-        <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
-      </div>
-
     </div>
 
 <!-- ################################################################################################################# -->
@@ -295,6 +304,11 @@
          [@slideForwardBack]="stepDirection"
          (@slideForwardBack.start)="sampleEntryContainer.style.overflow = 'hidden'"
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
+
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'participants'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
+      </div>
 
       <div class="panel">
 
@@ -361,7 +375,7 @@
                 </select>
               </td>
               <td class="input-field">
-                <ui-turn-editor [(ngModel)]="turn.content" placeholder="turn..." required (turnEditorBlur)="addTurn()"></ui-turn-editor>
+                <ui-turn-editor [(ngModel)]="turn.content" placeholder="turn..." (turnEditorBlur)="addTurn()"></ui-turn-editor>
                 <div class="alert alert-danger">Turn is required</div>
               </td>
             </tr>
@@ -369,16 +383,13 @@
         </table>
       </div>
 
-      <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-        <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
-      </div>
-
     </div>
 
   </div>
 
   <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
+    <pre>{{aboutForm.value | json}}</pre>
+    <hr>
     <pre>{{sample | json}}</pre>
   </ui-collapsible>
 
@@ -525,7 +536,7 @@
         <div>
           <div *ngFor="let standard of languageSkill.assessedLevel">
             <div class="input-field">
-              <select required [(ngModel)]="standard.standard">
+              <select [(ngModel)]="standard.standard">
                 <option value="" disabled selected >standard...</option>
                 <option value="access">ACCESS/WIDA</option>
                 <option value="azella">AZELLA</option>
@@ -539,7 +550,7 @@
               </select>
             </div>
             <div class="input-field">
-              <select required [(ngModel)]="standard.level" placeholder="level">
+              <select [(ngModel)]="standard.level" placeholder="level">
                 <option value="" disabled selected>level...</option>
                 <option *ngFor="let level of languageStandardLevels[standard.standard]"
                         [value]="level">{{level}}</option>
