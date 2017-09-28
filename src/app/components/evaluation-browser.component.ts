@@ -17,7 +17,7 @@ import { EvaluationsListService }         from '../services/evaluations-list.ser
 export class EvaluationBrowserComponent implements OnInit, OnChanges {
 
   @Input() sampleUuid: string;
-  @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
+  @Input() noItemsMsgHtml = '<p class="no-items-msg">No evalutions found that match the current criteria!</p>';
 
   public evaluationTools = EvaluationTools;
 

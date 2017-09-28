@@ -1,4 +1,7 @@
-<div class="evaluations-browser">
+<div class="evaluations-browser" *ngIf="!evaluationsListService.items.length">
+  <p style="color: rgba(0, 0, 0, .54)">No evaluations have been submitted for this sample yet.</p>
+</div>
+<div class="evaluations-browser" *ngIf="evaluationsListService.items.length">
   <div class="pagination ui-helper-clearfix">
     <ui-pagination [dataService]="evaluationsListService"
                    paginationLimitLabel="Samples per page:"
