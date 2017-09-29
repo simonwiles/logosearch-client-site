@@ -103,6 +103,21 @@
       font-size: 14px;
     }
 
+    .alert {
+      padding-left: 20px;
+      transition: all .2s ease;
+
+      &.hidden {
+        font-size: 0;
+        height: 0;
+      }
+    }
+
+    tbody.ng-invalid.ng-touched {
+     .alert { color: $invalid-warning; font-weight: bold;}
+    }
+
+
     .input-field > input {
       font-size: 14px;
     }

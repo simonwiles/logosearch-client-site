@@ -29,6 +29,15 @@
 
 %md-input-invalid {
 
+  border-color: $alert;
+  border-width: 2px;
+
+  ~ .alert {
+    color: $alert;
+    display: block;
+    font-size: .7em;
+  }
+
   ~ label {
     color: $invalid-warning !important;
     font-weight: bold;
@@ -257,15 +266,6 @@ input.text-style {
 
     &.ng-invalid.ng-touched {
       @extend %md-input-invalid;
-
-      border-color: $alert;
-      border-width: 2px;
-
-      ~ .alert {
-        color: $alert;
-        display: block;
-        font-size: .7em;
-      }
     }
   }
 
@@ -277,6 +277,11 @@ input.text-style {
   > input,
   > select {
     height: 32px;
+
+    &.ng-invalid.ng-touched {
+      @extend %md-input-invalid;
+    }
+
   }
 
   > ui-select {
@@ -294,8 +299,4 @@ input.text-style {
     display: none;
   }
 }
-
-
-
-
 
