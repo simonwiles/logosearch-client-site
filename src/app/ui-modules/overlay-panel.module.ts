@@ -36,6 +36,7 @@ import { DomHandler }     from '../utils/domhandler';
   `,
   styles: [`
   .ui-overlaypanel {
+    display: none;
     margin: 0;
     padding: 0;
     position: absolute;
@@ -119,13 +120,14 @@ export class OverlayPanelComponent {
       let container = this.getContainer()
       container.style.zIndex = ++DomHandler.zindex;
 
+      container.style.display = 'block';
+
       let top = elementTarget.offsetHeight + elementTarget.getBoundingClientRect().top + this.domHandler.getWindowScrollTop();
       let left = elementTarget.getBoundingClientRect().left + this.domHandler.getWindowScrollLeft()
                   + elementTarget.offsetWidth - container.offsetWidth;
 
       container.style.top = top + 'px';
       container.style.left = left + 'px';
-
       this.domHandler.fadeIn(container, 250);
       this.onAfterShow.emit(null);
     });
