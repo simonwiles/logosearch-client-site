@@ -1,0 +1,167 @@
+<form *ngIf="linguagramForm" [formGroup]="linguagramForm" novalidate>
+  <p>
+    Please indicate your evaluation of
+    {{(participantNickname) ? participantNickname : 'this student'}}'s
+    <span class="accent">{{languages[linguagramForm.controls.language.value].label}}</span>:
+  </p>
+  <table class="language-skill">
+    <tr>
+      <th [class.active]="linguagramForm.controls.speakingProficiency.value" uiTooltip="Required" uiTooltipPosition="left">
+        Speaking <i class="fa"
+                    [ngClass]="{
+                      'fa-check-circle': linguagramForm.controls.speakingProficiency.value,
+                      'fa-exclamation-circle': !linguagramForm.controls.speakingProficiency.value
+                    }"></i>
+      </th>
+      <td>
+        <ui-range-slider [formControl]="linguagramForm.controls['speakingProficiency']"
+                         [options]="[
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
+                         ]">
+        </ui-range-slider>
+      </td>
+      <td>
+        <button class="text-style"
+                [disabled]="!linguagramForm.controls.speakingProficiency.value"
+                (click)="linguagramForm.controls.speakingProficiency.setValue(null)">
+          <i class="fa fa-close"></i>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <th [class.active]="linguagramForm.controls.listeningProficiency.value" uiTooltip="Required" uiTooltipPosition="left">
+        Listening <i class="fa"
+                     [ngClass]="{
+                       'fa-check-circle': linguagramForm.controls.listeningProficiency.value,
+                       'fa-exclamation-circle': !linguagramForm.controls.listeningProficiency.value
+                     }"></i>
+      </th>
+      <td>
+        <ui-range-slider [formControl]="linguagramForm.controls['listeningProficiency']"
+                         [options]="[
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
+                         ]">
+        </ui-range-slider>
+      </td>
+      <td>
+        <button class="text-style"
+                [disabled]="!linguagramForm.controls.listeningProficiency.value"
+                (click)="linguagramForm.controls.listeningProficiency.setValue(null)">
+          <i class="fa fa-close"></i>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <th [class.active]="linguagramForm.controls.readingProficiency.value">Reading</th>
+      <td>
+        <ui-range-slider [formControl]="linguagramForm.controls['readingProficiency']"
+                         [options]="[
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
+                         ]">
+        </ui-range-slider>
+      </td>
+      <td>
+        <button class="text-style"
+                [disabled]="!linguagramForm.controls.readingProficiency.value"
+                (click)="linguagramForm.controls.readingProficiency.setValue(null)">
+          <i class="fa fa-close"></i>
+        </button>
+      </td>
+    </tr>
+    <tr>
+      <th [class.active]="linguagramForm.controls.writingProficiency.value">Writing</th>
+      <td>
+        <ui-range-slider [formControl]="linguagramForm.controls['writingProficiency']"
+                         [options]="[
+                           {label: 'One', value: 1},
+                           {label: 'Two', value: 2},
+                           {label: 'Three', value: 3},
+                           {label: 'Four', value: 4},
+                           {label: 'Five', value: 5}
+                         ]">
+        </ui-range-slider>
+      </td>
+      <td>
+        <button class="text-style"
+                [disabled]="!linguagramForm.controls.writingProficiency.value"
+                (click)="linguagramForm.controls.writingProficiency.setValue(null)">
+          <i class="fa fa-close"></i>
+        </button>
+      </td>
+    </tr>
+  </table>
+
+  <div class="g toggle-container">
+    <div class="u-2-3">
+      {{languages[linguagramForm.controls.language.value].label}} is a
+      <span class="accent" uiTooltip="[Guidance on what we mean by “primary language” goes here]"><i class="fa fa-home"></i> Primary Language</span>?
+    </div>
+    <div class="u-1-3">
+      <ui-switch-toggle name="primary-language"
+                        [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
+                        [formControl]="linguagramForm.controls['isPrimaryLanguage']">
+      </ui-switch-toggle>
+    </div>
+  </div>
+  <div class="toggle-container">
+    <div class="g">
+      <div class="u-2-3">
+        {{(participantNickname) ? participantNickname : 'This student'}} is a {{languages[linguagramForm.controls.language.value].label}}
+        <span class="accent" uiTooltip="[Guidance on what we mean by “learner” goes here]"><i class="fa fa-mortar-board"></i> Learner</span>?
+      </div>
+      <div class="u-1-3">
+        <ui-switch-toggle name="is-learner"
+                          [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
+                          [formControl]="linguagramForm.controls['participantIsLearner']">
+        </ui-switch-toggle>
+      </div>
+    </div>
+
+    <div *ngIf="linguagramForm.controls.participantIsLearner.value === true && linguagramForm.controls.language.value === 'eng'" class="standards">
+      <p>Please add one (or more) Standardized Test score(s), if available.</p>
+
+      <div>
+        <button class="button-style" (click)="addLanguageStandard()"><i class="fa fa-plus"></i> Add a Score</button>
+        <div>
+          <div formArrayName="assessedLevel" *ngFor="let standard of linguagramForm.controls['assessedLevel'].controls; let i=index">
+            <div class="input-field" [formGroupName]="i">
+              <select formControlName="standard">
+                <option value="" disabled selected >standard...</option>
+                <option value="access">ACCESS/WIDA</option>
+                <option value="azella">AZELLA</option>
+                <option value="celdt">CELDT</option>
+                <option value="cella">CELLA</option>
+                <option value="elpa21">ELPA21</option>
+                <option value="las">LAS</option>
+                <option value="nyseslat">NYSESLAT</option>
+                <option value="selp">SELP</option>
+                <option value="telpas">TELPAS</option>
+              </select>
+            </div>
+            <div class="input-field" [formGroupName]="i">
+              <select formControlName="level" placeholder="level">
+                <option value="" disabled selected>level...</option>
+                <option *ngFor="let level of languageStandardLevels[linguagramForm.controls['assessedLevel'].controls[i].controls.standard.value]"
+                        [value]="level">{{level}}</option>
+              </select>
+            </div>
+            <button class="text-style" (click)="linguagramForm.get('assessedLevel').removeAt(i); $event.stopPropagation()"><i class="fa fa-close"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</form>
