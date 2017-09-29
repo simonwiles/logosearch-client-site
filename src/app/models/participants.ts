@@ -61,11 +61,11 @@ export const LanguageStandardLevels = {
     'Proficient'
   ],
   'elpa21': [
-    'Level 1 (Beginning)',
-    'Level 2 (Early Intermediate)',
-    'Level 3 (Intermediate)',
-    'Level 4 (Early Advanced)',
-    'Level 5 (Advanced)'
+    'Beginning (1)',
+    'Early Intermediate (2)',
+    'Intermediate (3)',
+    'Early Advanced (4)',
+    'Advanced (5)'
   ],
   'las': [
     'Beginning',
