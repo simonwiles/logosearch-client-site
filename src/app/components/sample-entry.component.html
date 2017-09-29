@@ -19,7 +19,7 @@
         <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
-      <form [formGroup]="aboutForm" (ngSubmit)="formSubmit()">
+      <form [formGroup]="aboutForm" novalidate>
       <div id="about" class="panel">
         <div class="input-field labelled">
           <textarea name="context" formControlName="context" rows="1"></textarea>
@@ -70,36 +70,37 @@
             <button class="button-style" (click)="addLanguageUsage()"><i class="fa fa-fw fa-plus"></i> Add Language</button>
           </div>
           <div>
-            <div formArrayName="languagesUsed" *ngFor="let langUsage of aboutForm.get('languagesUsed').controls; let i=index">
-              <div class="g lang-usage-row" [formGroupName]="i">
-                <div class="u-1-24">
-                  <button class="text-style"
-                          [disabled]="aboutForm.get('languagesUsed').controls.length <= 1"
-                          (click)="removeLanguageUsage(i)">
-                    <i class="fa fa-close"></i>
-                  </button>
-                </div>
-                <div class="u-12-24">
-                  <ui-select #languageUsageSelect
-                             name="sampleLanguages"
-                             formControlName="language"
-                             [options]="languageOptions"
-                             [allowClear]="false">
-                  </ui-select>
-                </div>
-                {{ aboutForm.controls.languagesUsed.controls[i].usage }}
-                <div class="u-11-24 language-usage-usage" [class.invalid]="!aboutForm.get('languagesUsed').controls[i].controls.usage.valid">
-                  <ui-range-slider #languageUsageRangeInput
-                    [readonly]="aboutForm.get('languagesUsed').controls.length <= 1"
-                    [options]="[
-                      {label: 'Minimal', value: 'min'},
-                      {label: 'Some', value: 'some'},
-                      {label: 'Substantial', value: 'subst'},
-                      {label: 'All', value: 'all'}
-                    ]"
-                    formControlName="usage">
-                  </ui-range-slider>
-                </div>
+            <div class="g lang-usage-row"
+                 formArrayName="languagesUsed"
+                 *ngFor="let langUsage of aboutForm.get('languagesUsed').controls; let i=index">
+              <div class="u-1-24">
+                <button class="text-style"
+                        [disabled]="aboutForm.get('languagesUsed').controls.length <= 1"
+                        (click)="removeLanguageUsage(i)">
+                  <i class="fa fa-close"></i>
+                </button>
+              </div>
+              <div class="u-12-24"  [formGroupName]="i">
+                <ui-select #languageUsageSelect
+                           name="sampleLanguages"
+                           formControlName="language"
+                           [options]="languageOptions"
+                           [allowClear]="false">
+                </ui-select>
+              </div>
+              <div class="u-11-24 language-usage-usage"
+                   [formGroupName]="i"
+                   [class.invalid]="!aboutForm.get('languagesUsed').controls[i].controls.usage.valid">
+                <ui-range-slider #languageUsageRangeInput
+                  [readonly]="aboutForm.get('languagesUsed').controls.length <= 1"
+                  [options]="[
+                    {label: 'Minimal', value: 'min'},
+                    {label: 'Some', value: 'some'},
+                    {label: 'Substantial', value: 'subst'},
+                    {label: 'All', value: 'all'}
+                  ]"
+                  formControlName="usage">
+                </ui-range-slider>
               </div>
             </div>
           </div>
@@ -121,19 +122,17 @@
             </button>
           </div>
           <div>
-            <div formArrayName="supportingFiles" *ngFor="let supportingFile of aboutForm.get('supportingFiles').controls; let i=index">
-              <div class="g" [formGroupName]="i">
-                <div class="u-1-24 remove">
-                  <button (click)="aboutForm.get('supportingFiles').removeAt(i)" class="text-style"><i class="fa fa-close"></i></button>
-                </div>
-                <div class="u-5-24 filename">
-                  <span [attr.data-tooltip]="aboutForm.get('supportingFiles').controls[i].controls.name.value">
-                    {{aboutForm.get('supportingFiles').controls[i].controls.name.value}}
-                  </span>
-                </div>
-                <div class="u-18-24 input-field">
-                  <input formControlName="title" placeholder="Please enter a short title/description for this file...">
-                </div>
+            <div class="g" formArrayName="supportingFiles" *ngFor="let supportingFile of aboutForm.get('supportingFiles').controls; let i=index">
+              <div class="u-1-24 remove">
+                <button (click)="aboutForm.get('supportingFiles').removeAt(i)" class="text-style"><i class="fa fa-close"></i></button>
+              </div>
+              <div class="u-5-24 filename" [formGroupName]="i">
+                <span [attr.data-tooltip]="aboutForm.get('supportingFiles').controls[i].controls.name.value">
+                  {{aboutForm.get('supportingFiles').controls[i].controls.name.value}}
+                </span>
+              </div>
+              <div class="u-18-24 input-field" [formGroupName]="i">
+                <input formControlName="title" placeholder="Please enter a short title/description for this file...">
               </div>
             </div>
             <div class="g no-supporting-files" *ngIf="!aboutForm.get('supportingFiles').controls.length"><div class="u-1">[no files attached]</div></div>
@@ -156,76 +155,77 @@
         <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
+      <form [formGroup]="participantsForm" novalidate>
       <div class="panel">
-        <form #participantsForm="ngForm">
-          <table class="participants-table">
-            <thead>
-              <th class="remove"></th>
-              <th class="avatar">avatar</th>
-              <th class="nickname">nickname</th>
-              <th>gender</th>
-              <th class="languages">language(s)</th>
-              <th class="grade-level">grade level</th>
-            </thead>
-            <tbody>
-              <tr #participantRow *ngFor="let participant of sample.students; let i=index">
-                <td class="remove">
-                  <button class="text-style" (click)="sample.students = removeValue(sample.students, participant)">
-                    <i class="fa fa-close"></i>
-                  </button>
-                </td>
-                <td class="avatar">
-                  <img src="{{environment.mediaURL}}{{participant.avatar}}" height="60px" alt="Avatar for {{participant.nickname}}">
-                </td>
-                <td class="input-field nickname">
-                  <input [(ngModel)]="participant.nickname" placeholder="Choose a nickname" name="nickname{{i}}">
-                  <div class="alert alert-danger">Name is required</div>
-                </td>
-                <td class="input-field">
-                  <select [(ngModel)]="participant.gender" name="gender{{i}}">
-                    <option *ngFor="let gender of genders"
-                            [value]="gender.value">{{gender.label}}</option>
-                  </select>
-                </td>
-                <td class="languages">
-                  <ui-select name="languages{{i}}"
-                             placeholder="Select One or More Languages..."
-                             #selectComponent
-                             [(ngModel)]="participant.languageKeys"
-                             [options]="langKnowns"
-                             [multiple]="true"
-                             (selected)="newLanguageSkill($event, participant, selectComponent)">
+        <table class="participants-table">
+          <thead>
+            <th class="remove"></th>
+            <th class="avatar">avatar</th>
+            <th class="nickname">nickname</th>
+            <th>gender</th>
+            <th class="languages">language(s)</th>
+            <th class="grade-level">grade level</th>
+          </thead>
 
-                    <ng-template #pillTemplate let-selection="selection">
-                      <li *ngFor="let option of selection"
-                          [uiTooltip]="(participant.languageSkillIsValid(option.value)) ? 'Click to show the LanguageSkill!' : 'Please click to complete the LanguageSkill!'"
-                          uiTooltipPosition="top"
-                          class="select2-selection__choice"
-                          [class.valid]="participant.languageSkillIsValid(option.value)"
-                          title="{{option.label}}"
-                          [attr.data-value]="option.value"
-                          (click)="editLanguageSkill($event, option, participant)">
-                        <span class="select2-selection__choice__remove"
-                              [attr.data-value]="option.value"
-                              (click)="clearParticipantLanguage($event, participant)">
-                            ×
-                        </span>
-                        {{option.label}}
-                      </li>
-                    </ng-template>
+          <tbody formArrayName="students">
+            <tr>
+              <td class="alert" [class.hidden]="participantsForm.get('students').controls.length >= 2" colspan="6">Please enter at least 2 students.</td>
+            </tr>
+            <tr *ngFor="let student of participantsForm.get('students').controls; let i=index">
+              <td class="remove">
+                <button class="text-style" (click)="participantsForm.get('students').removeAt(i)">
+                  <i class="fa fa-close"></i>
+                </button>
+              </td>
+              <td class="avatar">
+                <img src="{{environment.mediaURL}}{{student.controls.avatar.value}}" height="60px" alt="Avatar for {{student.nickname}}">
+              </td>
+              <td class="input-field nickname" [formGroupName]="i">
+                <input formControlName="nickname" placeholder="Choose a nickname">
+                <!--div class="alert alert-danger">Name is required</div-->
+              </td>
+              <td class="input-field" [formGroupName]="i">
+                <select formControlName="gender">
+                  <option *ngFor="let gender of genders"
+                          [value]="gender.value">{{gender.label}}</option>
+                </select>
+              </td>
+              <td class="input-field languages" [formGroupName]="i">
+                <ui-select placeholder="Select One or More Languages..."
+                           #selectComponent
+                           [options]="langKnowns"
+                           [multiple]="true"
+                           (selected)="newLanguageSkill($event.value, student, selectComponent)">
 
-                  </ui-select>
-                </td>
-                <td class="input-field">
-                  <select [(ngModel)]="participant.gradeLevel" name="gradeLevel{{i}}">
-                    <option *ngFor="let gradeLevel of gradeLevels"
-                            [value]="gradeLevel.value">{{gradeLevel.label}}</option>
-                  </select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </form>
+                  <ng-template #pillTemplate let-selection="selection">
+                    <li *ngFor="let option of selection"
+                        [class.valid]="languageSkillIsValid(student, option.value)"
+                        [uiTooltip]="(languageSkillIsValid(student, option.value)) ? 'Click to show.' : 'Please click to complete.'"
+                        uiTooltipPosition="top"
+                        class="select2-selection__choice"
+                        title="{{option.label}}"
+                        [attr.data-value]="option.value"
+                        (click)="editLanguageSkill($event, option, student)">
+                      <span class="select2-selection__choice__remove"
+                            [attr.data-value]="option.value"
+                            (click)="clearParticipantLanguage($event, student)">
+                          ×
+                      </span>
+                      {{option.label}}
+                    </li>
+                  </ng-template>
+
+                </ui-select>
+              </td>
+              <td class="input-field" [formGroupName]="i">
+                <select formControlName="gradeLevel">
+                  <option *ngFor="let gradeLevel of gradeLevels"
+                          [value]="gradeLevel.value">{{gradeLevel.label}}</option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <div class="actions">
           <button class="button-style" (click)="this.addStudentParticipant($event)">
@@ -238,52 +238,50 @@
 
         <hr>
 
-        <form #adultParticipantsForm="ngForm">
-          <table class="participants-table adult-participants">
-            <thead>
-              <th class="remove"></th>
-              <th class="avatar">avatar</th>
-              <th class="nickname">nickname</th>
-              <th class="gender">gender</th>
-              <th class="is-submitter">is-submitter</th>
-              <th class="is-teacher">is-teacher</th>
-            </thead>
-            <tbody>
-              <tr #participantRow *ngFor="let adult of sample.adults; let i=index">
-                <td class="remove">
-                  <button class="text-style" (click)="sample.adults = removeValue(sample.adults, adult)">
-                    <i class="fa fa-close"></i>
-                  </button>
-                </td>
-                <td class="avatar">
-                  <img src="{{environment.mediaURL}}{{adult.avatar}}" height="60px" alt="Avatar for {{adult.nickname}}">
-                </td>
-                <td class="nickname input-field">
-                  <input [(ngModel)]="adult.nickname" placeholder="Choose a nickname" name="nickname{{i}}">
-                  <div class="alert alert-danger">Name is required</div>
-                </td>
-                <td class="gender input-field">
-                  <select [(ngModel)]="adult.gender" name="gender{{i}}">
-                    <option *ngFor="let gender of genders"
-                            [value]="gender.value">{{gender.label}}</option>
-                  </select>
-                </td>
-                <td>
-                  <ui-switch-toggle name="{{'is-submitter-' + i}}"
-                    [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
-                    [(ngModel)]="adult.isSubmitter">
-                  </ui-switch-toggle>
-                </td>
-                <td>
-                  <ui-switch-toggle name="{{'is-teacher-' + i}}"
-                    [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
-                    [(ngModel)]="adult.isTeacher">
-                  </ui-switch-toggle>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </form>
+        <table class="participants-table adult-participants">
+          <thead>
+            <th class="remove"></th>
+            <th class="avatar">avatar</th>
+            <th class="nickname">nickname</th>
+            <th class="gender">gender</th>
+            <th class="is-submitter">is-submitter</th>
+            <th class="is-teacher">is-teacher</th>
+          </thead>
+          <tbody>
+            <tr  formArrayName="adults" *ngFor="let adult of participantsForm.get('adults').controls; let i=index">
+              <td class="remove">
+                <button class="text-style" (click)="participantsForm.get('adults').removeAt(i)">
+                  <i class="fa fa-close"></i>
+                </button>
+              </td>
+              <td class="avatar">
+                <img src="{{environment.mediaURL}}{{adult.controls.avatar.value}}" height="60px" alt="Avatar for {{adult.controls.nickname.value}}">
+              </td>
+              <td class="nickname input-field" [formGroupName]="i">
+                <input formControlName="nickname" placeholder="Choose a nickname">
+                <!--div class="alert alert-danger">Name is required</div-->
+              </td>
+              <td class="gender input-field" [formGroupName]="i">
+                <select formControlName="gender">
+                  <option *ngFor="let gender of genders"
+                          [value]="gender.value">{{gender.label}}</option>
+                </select>
+              </td>
+              <td [formGroupName]="i">
+                <ui-switch-toggle name="{{'is-submitter-' + i}}"
+                  [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
+                  formControlName="isSubmitter">
+                </ui-switch-toggle>
+              </td>
+              <td [formGroupName]="i">
+                <ui-switch-toggle name="{{'is-teacher-' + i}}"
+                  [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}]"
+                  formControlName="isTeacher">
+                </ui-switch-toggle>
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <div class="actions">
           <button class="button-style" (click)="this.addAdultParticipant($event)">
@@ -295,6 +293,7 @@
         </div>
 
       </div>
+      </form>
 
     </div>
 
@@ -390,6 +389,8 @@
   <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
     <pre>{{aboutForm.value | json}}</pre>
     <hr>
+    <pre>{{participantsForm.value | json}}</pre>
+    <hr>
     <pre>{{sample | json}}</pre>
   </ui-collapsible>
 
@@ -397,173 +398,8 @@
 
 <!-- ################################################################################################################# -->
 
-<ui-overlay-panel #languageSkillPanel [dismissable]="true" [showCloseIcon]="true" styleClass="language-skill-panel">
-  <p *ngIf="languageSkill">
-    Please indicate your evaluation of
-    {{(selectedParticipant?.nickname) ? selectedParticipant?.nickname : 'this student'}}'s
-    <span class="accent">{{languages[languageSkill.language].label}}</span>:
-  </p>
-  <table class="language-skill">
-    <tr>
-      <th [class.active]="languageSkill.speakingProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Speaking <i class="fa"
-                    [ngClass]="{
-                      'fa-check-circle': languageSkill.speakingProficiency,
-                      'fa-exclamation-circle': !languageSkill.speakingProficiency
-                    }"></i>
-      </th>
-      <td>
-        <ui-range-slider [(ngModel)]="languageSkill.speakingProficiency"
-                         [options]="[
-                           {label: 'One', value: 1},
-                           {label: 'Two', value: 2},
-                           {label: 'Three', value: 3},
-                           {label: 'Four', value: 4},
-                           {label: 'Five', value: 5}
-                         ]">
-        </ui-range-slider>
-      </td>
-      <td>
-        <button class="text-style"
-                [disabled]="!languageSkill.speakingProficiency"
-                (click)="languageSkill.speakingProficiency = null">
-          <i class="fa fa-close"></i>
-        </button>
-      </td>
-    </tr>
-    <tr>
-      <th [class.active]="languageSkill.listeningProficiency" uiTooltip="Required" uiTooltipPosition="left">
-        Listening <i class="fa"
-                     [ngClass]="{
-                       'fa-check-circle': languageSkill.listeningProficiency,
-                       'fa-exclamation-circle': !languageSkill.listeningProficiency
-                     }"></i>
-      </th>
-      <td>
-        <ui-range-slider [(ngModel)]="languageSkill.listeningProficiency"
-                         [options]="[
-                           {label: 'One', value: 1},
-                           {label: 'Two', value: 2},
-                           {label: 'Three', value: 3},
-                           {label: 'Four', value: 4},
-                           {label: 'Five', value: 5}
-                         ]">
-        </ui-range-slider>
-      </td>
-      <td>
-        <button class="text-style"
-                [disabled]="!languageSkill.listeningProficiency"
-                (click)="languageSkill.listeningProficiency = null">
-          <i class="fa fa-close"></i>
-        </button>
-      </td>
-    </tr>
-    <tr>
-      <th [class.active]="languageSkill.readingProficiency">Reading</th>
-      <td>
-        <ui-range-slider [(ngModel)]="languageSkill.readingProficiency"
-                         [options]="[
-                           {label: 'One', value: 1},
-                           {label: 'Two', value: 2},
-                           {label: 'Three', value: 3},
-                           {label: 'Four', value: 4},
-                           {label: 'Five', value: 5}
-                         ]">
-        </ui-range-slider>
-      </td>
-      <td>
-        <button class="text-style"
-                [disabled]="!languageSkill.readingProficiency"
-                (click)="languageSkill.readingProficiency = null">
-          <i class="fa fa-close"></i>
-        </button>
-      </td>
-    </tr>
-    <tr>
-      <th [class.active]="languageSkill.writingProficiency">Writing</th>
-      <td>
-        <ui-range-slider [(ngModel)]="languageSkill.writingProficiency"
-                         [options]="[
-                           {label: 'One', value: 1},
-                           {label: 'Two', value: 2},
-                           {label: 'Three', value: 3},
-                           {label: 'Four', value: 4},
-                           {label: 'Five', value: 5}
-                         ]">
-        </ui-range-slider>
-      </td>
-      <td>
-        <button class="text-style"
-                [disabled]="!languageSkill.writingProficiency"
-                (click)="languageSkill.writingProficiency = null">
-          <i class="fa fa-close"></i>
-        </button>
-      </td>
-    </tr>
-  </table>
-
-  <div class="g toggle-container">
-    <div class="u-2-3">
-      {{languages[languageSkill.language].label}} is a
-      <span class="accent" uiTooltip="[Guidance on what we mean by “primary language” goes here]"><i class="fa fa-home"></i> Primary Language</span>?
-    </div>
-    <div class="u-1-3">
-      <ui-switch-toggle name="primary-language"
-                        [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
-                        [(ngModel)]="languageSkill.isPrimaryLanguage">
-      </ui-switch-toggle>
-    </div>
-  </div>
-  <div class="toggle-container">
-    <div class="g">
-      <div class="u-2-3">
-        {{(selectedParticipant?.nickname) ? selectedParticipant?.nickname : 'This student'}} is a {{languages[languageSkill.language].label}}
-        <span class="accent" uiTooltip="[Guidance on what we mean by “learner” goes here]"><i class="fa fa-mortar-board"></i> Learner</span>?
-      </div>
-      <div class="u-1-3">
-        <ui-switch-toggle name="is-learner"
-                          [options]="[{label: 'Yes', value: true}, {label: 'No', value: false}, {label: '??', value: null}]"
-                          [(ngModel)]="languageSkill.participantIsLearner">
-        </ui-switch-toggle>
-      </div>
-    </div>
-
-    <div *ngIf="languageSkill.participantIsLearner === true && languageSkill.language === 'eng'" class="standards">
-      <p>Please add one (or more) Standardized Test score(s), if available.</p>
-
-      <div>
-        <button class="button-style" (click)="addLanguageStandard(languageSkill)"><i class="fa fa-plus"></i> Add a Score</button>
-        <div>
-          <div *ngFor="let standard of languageSkill.assessedLevel">
-            <div class="input-field">
-              <select [(ngModel)]="standard.standard">
-                <option value="" disabled selected >standard...</option>
-                <option value="access">ACCESS/WIDA</option>
-                <option value="azella">AZELLA</option>
-                <option value="celdt">CELDT</option>
-                <option value="cella">CELLA</option>
-                <option value="elpa21">ELPA21</option>
-                <option value="las">LAS</option>
-                <option value="nyseslat">NYSESLAT</option>
-                <option value="selp">SELP</option>
-                <option value="telpas">TELPAS</option>
-              </select>
-            </div>
-            <div class="input-field">
-              <select [(ngModel)]="standard.level" placeholder="level">
-                <option value="" disabled selected>level...</option>
-                <option *ngFor="let level of languageStandardLevels[standard.standard]"
-                        [value]="level">{{level}}</option>
-              </select>
-            </div>
-            <button class="text-style" (click)="removeLanguageStandard($event, languageSkill, standard)"><i class="fa fa-close"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
+<ui-overlay-panel #languageSkillPanel [dismissable]="true" [showCloseIcon]="true" styleClass="language-skill-panel" (onBeforeHide)="linguagramComponent.reset()">
+  <lr-linguagram #linguagramComponent></lr-linguagram> <!-- [linguagramForm]="languageSkill" [participant]="selectedParticipant" -->
 </ui-overlay-panel>
 
 <!-- ################################################################################################################# -->

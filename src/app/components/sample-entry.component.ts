@@ -1,3 +1,5 @@
+import * as uuid from 'uuid';
+
 import { Observable }                 from 'rxjs/Observable';
 
 import { AfterViewInit,
@@ -28,8 +30,7 @@ import { AdultParticipant,
          StudentParticipant,
          Gender,
          GradeLevel,
-         LanguageSkill,
-         LanguageStandardLevels }     from '../models/participants';
+         LanguageSkill }              from '../models/participants';
 
 import { Sample,
          FileUpload,
@@ -87,14 +88,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       this.notificationsService.error(
         'Form is not complete!',
         'Please complete the necessary information before moving on!');
-      this._step = this._step;
-      this.changeDetectorRef.detectChanges();  // force change detection to run so that stepDirection is updated properly in the DOM
-
     }
-    this.changeDetectorRef.markForCheck()
   }
-
-  public languageStandardLevels = LanguageStandardLevels;
 
   private _step = 'about';
   private stepDirection = 'forward';
@@ -103,8 +98,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   public sample: Sample = new Sample();
 
   // A model for the languageSkillPanel:
-  public selectedParticipant: StudentParticipant | AdultParticipant;
-  public languageSkill = new LanguageSkill({language: 'eng'});
+  // public selectedParticipant: FormGroup;
+  // public languageSkill: FormGroup = this.createLanguageSkill('eng');
+  @ViewChild('linguagramComponent') linguagramComponent;
   @ViewChild('languageSkillPanel') languageSkillPanel;
 
   //
@@ -112,7 +108,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   @ViewChild('participantLookupPanel') participantLookupPanel;
 
   // Get references to dynamically-generated elements, mainly for DOM-manipulation purposes:
-  @ViewChildren('participantRow') participantRows;
   @ViewChildren('languageUsageSelect') languageUsageSelects;
   @ViewChildren('languageUsageRangeInput') languageUsageRangeInputs;
 
@@ -129,6 +124,11 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       })
     ], Validators.minLength(1)),
     supportingFiles: new FormArray([]),
+  });
+
+  participantsForm: FormGroup = this.builder.group({
+    students: new FormArray([], Validators.compose([Validators.required, Validators.minLength(2)])),
+    adults: new FormArray([])
   });
 
 
@@ -178,17 +178,25 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   doStepValidation(value): boolean {
 
-    const markAllTouched = function(fg) {
-      Object.keys(fg.controls).forEach(field => {
-        const control = fg.get(field);
-        control.markAsTouched();
-        if (control.controls) { markAllTouched(control); }
-      });
+    const markAllTouched = function(control) {
+      Object.keys(control.controls).forEach(
+        field => {
+          const innerControl = control.get(field);
+          innerControl.markAsTouched();
+          // if (!innerControl.valid) { console.log('invalid', innerControl); }
+          if (innerControl.controls) { markAllTouched(innerControl); }
+        }
+      );
     }
 
-    if (value === 'about') {
-      markAllTouched(this.aboutForm);
-      return this.aboutForm.valid;
+    // if (value === 'about') {
+    //   markAllTouched(this.aboutForm);
+    //   return this.aboutForm.valid;
+    // }
+
+    if (value === 'participants') {
+      markAllTouched(this.participantsForm);
+      return this.participantsForm.valid;
     }
     return true;
   }
@@ -200,19 +208,38 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   editLanguageSkill(event, option, participant) {
     // Populate and pop-up the languageSkillPanel when a language 'pill' is clicked.
     event.stopPropagation();
-    this.selectedParticipant = participant;
-    this.languageSkill = participant.languageSkills.find(lang => lang.language === option.value);
+    let languageSkill = participant.controls.languageSkills.controls.find(
+      langSkillFormGroup => langSkillFormGroup.controls.language.value === option.value
+    );
+    this.linguagramComponent.newLinguagram(languageSkill);
+    this.changeDetectorRef.detectChanges();
     this.languageSkillPanel.toggle(event);
+    return false;
   }
 
-  newLanguageSkill(option, participant, selectComponent) {
+  createLanguageSkill(language) {
+    return this.builder.group({
+      language: new FormControl(language, Validators.required),
+      speakingProficiency: new FormControl(null, Validators.required),
+      listeningProficiency: new FormControl(null, Validators.required),
+      readingProficiency: new FormControl(null),
+      writingProficiency: new FormControl(null),
+      participantIsLearner: new FormControl(null),
+      isPrimaryLanguage: new FormControl(null),
+      assessedLevel: new FormArray([])
+    });
+  }
+
+  newLanguageSkill(language, participant: FormGroup, selectComponent) {
     // Populate and pop-up the languageSkillPanel when a new language is first added.
     // First, find the 'pill' <li/> to align the languageSkillPanel to:
     const targetEl = selectComponent.el.nativeElement
-                    .querySelector(`li.select2-selection__choice[data-value^=${option.value}]`);
-    this.selectedParticipant = participant;
-    this.languageSkill = new LanguageSkill({language: option.value});
-    participant.languageSkills.push(this.languageSkill);
+                    .querySelector(`li.select2-selection__choice[data-value^=${language}]`);
+
+    let languageSkill: FormGroup = this.createLanguageSkill(language);
+    (participant.controls.languageSkills as FormArray).push(languageSkill);
+    this.linguagramComponent.newLinguagram(languageSkill);
+    this.changeDetectorRef.detectChanges();
     this.languageSkillPanel.show(null, targetEl);
   }
 
@@ -238,6 +265,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   removeLanguageUsage(i) {
+    // TODO: this could be removed
+    //   call aboutForm.get('languagesUsed').removeAt(i) directly from the template,
+    //   and watch for valuechanges to implement policies
     (this.aboutForm.get('languagesUsed') as FormArray).removeAt(i);
     this.changeDetectorRef.detectChanges();
     this.enforceLangUsagePolicies();
@@ -246,7 +276,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   enforceLangUsagePolicies() {
     const languagesUsed: FormArray = (this.aboutForm.get('languagesUsed') as FormArray);
-    if (languagesUsed.length > 1) {
+    if (languagesUsed.controls.length > 1) {
       for (let langUsage of languagesUsed.controls) {
         const usageControl = (langUsage as FormGroup).controls.usage;
         if (usageControl.value === 'all') { usageControl.setValue(null); }
@@ -263,18 +293,58 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   addStudentParticipant($event) {
-    let participant = new StudentParticipant();
-    this.sample.languagesUsed.forEach(langUsage => {
-      participant.languageSkills.push(new LanguageSkill({language: langUsage.language}));
+    // let participant = new StudentParticipant();
+    // this.sample.languagesUsed.forEach(langUsage => {
+    //   participant.languageSkills.push(new LanguageSkill({language: langUsage.language}));
+    // });
+    // participant.languageKeys = participant.languageSkills.map(lang => lang.language);
+    // this.sample.students.push(participant);
+
+    const formGroup = this.builder.group({
+      uuid: new FormControl(uuid.v4(), Validators.required),
+      nickname: new FormControl(null, Validators.required),
+      avatar: new FormControl(StudentParticipant.getRandomAvatar(), Validators.required),
+      gender: new FormControl(null, Validators.required),
+      gradeLevel: new FormControl(null, Validators.required),
+      languageKeys: new FormArray([], Validators.minLength(1)),
+      languageSkills: new FormArray([], Validators.minLength(1))
     });
-    participant.languageKeys = participant.languageSkills.map(lang => lang.language);
-    this.sample.students.push(participant);
+
+    // (this.aboutForm.get('languagesUsed') as FormArray).controls.forEach(
+    //   langUsed => {
+    //     console.log((langUsed as FormGroup).controls.language.value);
+    //     (formGroup.controls.languageSkills as FormArray).push(
+    //       this.createLanguageSkill((langUsed as FormGroup).controls.language.value)
+    //     )
+    //   }
+    // );
+
+    // (formGroup.controls.languageKeys as FormArray).push(
+    //   new FormControl('spa')
+    // );
+
+    (this.participantsForm.get('students') as FormArray).push(formGroup);
+
     $event.target.blur();
+    this.changeDetectorRef.detectChanges();
+    return false;
   }
 
   addAdultParticipant($event) {
-    this.sample.adults.push(new AdultParticipant());
+
+    const formGroup = this.builder.group({
+      uuid: new FormControl(uuid.v4(), Validators.required),
+      nickname: new FormControl(null, Validators.required),
+      avatar: new FormControl(AdultParticipant.getRandomAvatar(), Validators.required),
+      gender: new FormControl(null, Validators.required),
+      isSubmitter: new FormControl(null),
+      isTeacher: new FormControl(null)
+    });
+
+    (this.participantsForm.get('adults') as FormArray).push(formGroup);
+
     $event.target.blur();
+    return false;
   }
 
   lookupParticipants($event, type) {
@@ -302,16 +372,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     participant.languageSkills = participant.languageSkills.filter(lang => lang.language !== langToRemove);
     participant.languageKeys = participant.languageKeys.filter(lang => lang !== langToRemove);
     this.languageSkillPanel.hide();
-  }
-
-  addLanguageStandard(languageSkill) {
-    languageSkill.assessedLevel.push({standard: '', level: ''});
-  }
-
-  removeLanguageStandard(event: Event, languageSkill, assessedLevel) {
-    event.stopPropagation();
-    languageSkill.assessedLevel = languageSkill.assessedLevel.filter(item => item !== assessedLevel);
-
   }
 
   recordingSelected(event) {
@@ -594,7 +654,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     const sampleClone = JSON.parse(JSON.stringify(this.sample));
 
 
-    sampleClone.students.forEach(student => delete student['languageKeys']);
+    // sampleClone.students.forEach(student => delete student['languageKeys']);
 
     if (this.sample.recording.file && this.sample.recording.file.file) {
       validated.recordingFile = this.sample.recording.file.file;
@@ -640,6 +700,13 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   formSubmit() {
     console.log(this.aboutForm.value);
+  }
+
+  languageSkillIsValid(participant, language) {
+    let ls = participant.controls.languageSkills.controls.find(
+      langSkillFormGroup => langSkillFormGroup.controls.language.value === language
+    );
+    return ls && ls.valid;
   }
 
 }
