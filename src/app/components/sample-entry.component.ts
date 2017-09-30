@@ -10,7 +10,11 @@ import { AfterViewInit,
          ViewChild,
          ViewChildren }               from '@angular/core';
 
-import { FormGroup, FormControl, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { FormArray,
+         FormBuilder,
+         FormControl,
+         FormGroup,
+         Validators }                 from '@angular/forms';
 
 import { ActivatedRoute,
          Router }                     from '@angular/router';
@@ -85,6 +89,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     if (this.doStepValidation(this._step)) {
       this.doStepChange(value);
     } else {
+      setTimeout(() => this.stepChooser.value = this._step, 0);
       this.notificationsService.error(
         'Form is not complete!',
         'Please complete the necessary information before moving on!');
@@ -97,6 +102,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   // Our master model:
   public sample: Sample = new Sample();
 
+  @ViewChild('stepChooser') stepChooser;
   // A model for the languageSkillPanel:
   // public selectedParticipant: FormGroup;
   // public languageSkill: FormGroup = this.createLanguageSkill('eng');
@@ -111,14 +117,16 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   @ViewChildren('languageUsageSelect') languageUsageSelects;
   @ViewChildren('languageUsageRangeInput') languageUsageRangeInputs;
 
-
-  aboutForm: FormGroup = this.builder.group({
+  // FormGroup objects (one per 'page' of the sample-entry component)
+  aboutForm: FormGroup = this.formBuilder.group({
+    uuid: new FormControl(uuid.v4(), Validators.required),
+    collectionSource: new FormControl('', Validators.required),
     context: new FormControl('', Validators.required),
     subjectArea: new FormControl('', Validators.required),
     objective: new FormControl('', Validators.required),
     prompt: new FormControl('', Validators.required),
     languagesUsed: new FormArray([
-      this.builder.group({
+      this.formBuilder.group({
         language: new FormControl('eng', Validators.required),
         usage: new FormControl('all', Validators.required)
       })
@@ -126,11 +134,30 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     supportingFiles: new FormArray([]),
   });
 
-  participantsForm: FormGroup = this.builder.group({
+  participantsForm: FormGroup = this.formBuilder.group({
     students: new FormArray([], Validators.compose([Validators.required, Validators.minLength(2)])),
     adults: new FormArray([])
   });
 
+  conversationForm: FormGroup = this.formBuilder.group({
+    recording: this.formBuilder.group({
+      file: this.formBuilder.group({
+        file: new FormControl(null),
+        title: new FormControl(null),
+        name: new FormControl(null, Validators.required),
+        url: new FormControl(null),
+      }),
+      includesAdditionalContext: new FormControl(null),
+      noAudioAvailable: new FormControl(false, Validators.required),
+      noAudioExplanation: new FormControl(null)
+    }),
+    turns: new FormArray([
+      this.formBuilder.group({
+        speaker: new FormControl(null, Validators.required),
+        content: new FormControl(null, Validators.required)
+      })
+    ])
+  });
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -139,7 +166,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
 
-    private builder: FormBuilder,
+    private formBuilder: FormBuilder,
 
     private authConfig: AuthConfig,
     private apiService: ApiService,
@@ -148,8 +175,69 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.sample.collectionSource = params;
+      this.aboutForm.get('collectionSource').setValue(params);
     });
+
+    this.aboutForm.get('languagesUsed').valueChanges.subscribe(
+      languagesUsed => {
+        // seems to cause "RangeError: Maximum call stack size exceeded at callWithDebugContext"
+        //  if not wrapped in setTimeout... don't fully understand why
+        setTimeout(() => this.enforceLangUsagePolicies());
+      }
+    );
+
+    // toggle the 'required' status of the recording file and the explanation when the
+    //  checkbox is toggled
+    this.conversationForm.get('recording').get('noAudioAvailable').valueChanges.subscribe(
+      (noAudioAvailable: boolean) => {
+        const noAudioExplanation = this.conversationForm.get('recording').get('noAudioExplanation');
+        const file = this.conversationForm.get('recording').get('file');
+
+        if (noAudioAvailable) {
+          noAudioExplanation.enable();
+          noAudioExplanation.setValidators(Validators.required);
+
+          file.setValidators(null);
+          file.disable();
+
+        } else {
+          file.enable();
+          file.setValidators(Validators.required);
+
+          noAudioExplanation.setValidators(null);
+          noAudioExplanation.disable();
+        }
+
+        noAudioExplanation.updateValueAndValidity();
+        file.updateValueAndValidity();
+      }
+    );
+
+    // ensure there is always a blank turn at the bottom of the list
+    //  (and that all turns but the last are required)
+    this.conversationForm.get('turns').valueChanges.subscribe(
+      turns => {
+        let turnFormGroups = (this.conversationForm.get('turns') as FormArray).controls;
+        for (let i = 0, il = turnFormGroups.length - 1; i < il; i++) {
+          Object.keys((turnFormGroups[i] as FormGroup).controls).forEach(
+            key => (turnFormGroups[i] as FormGroup).controls[key].setValidators(Validators.required)
+          )
+        }
+        if (turns[turns.length - 1].content && turns[turns.length - 1].speaker) {
+          this.addTurn();
+          this.changeDetectorRef.detectChanges();
+        }
+      }
+    );
+  }
+
+  addTurn() {
+    (this.conversationForm.get('turns') as FormArray).push(
+      this.formBuilder.group({
+        speaker: new FormControl(null),
+        content: new FormControl(null)
+      })
+    );
   }
 
   ngAfterViewInit() {
@@ -189,14 +277,19 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       );
     }
 
-    // if (value === 'about') {
-    //   markAllTouched(this.aboutForm);
-    //   return this.aboutForm.valid;
-    // }
+    if (value === 'about') {
+      markAllTouched(this.aboutForm);
+      return this.aboutForm.valid;
+    }
 
     if (value === 'participants') {
       markAllTouched(this.participantsForm);
       return this.participantsForm.valid;
+    }
+
+    if (value === 'conversation') {
+      markAllTouched(this.conversationForm);
+      return this.conversationForm.valid;
     }
     return true;
   }
@@ -218,7 +311,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   createLanguageSkill(language) {
-    return this.builder.group({
+    return this.formBuilder.group({
       language: new FormControl(language, Validators.required),
       speakingProficiency: new FormControl(null, Validators.required),
       listeningProficiency: new FormControl(null, Validators.required),
@@ -253,25 +346,11 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   addLanguageUsage() {
     (this.aboutForm.get('languagesUsed') as FormArray).push(
-      this.builder.group({
+      this.formBuilder.group({
         language: new FormControl(null, Validators.required),
         usage: new FormControl(null, Validators.required)
       })
     );
-
-    this.changeDetectorRef.detectChanges();
-    this.enforceLangUsagePolicies();
-    return false;
-  }
-
-  removeLanguageUsage(i) {
-    // TODO: this could be removed
-    //   call aboutForm.get('languagesUsed').removeAt(i) directly from the template,
-    //   and watch for valuechanges to implement policies
-    (this.aboutForm.get('languagesUsed') as FormArray).removeAt(i);
-    this.changeDetectorRef.detectChanges();
-    this.enforceLangUsagePolicies();
-    return false;
   }
 
   enforceLangUsagePolicies() {
@@ -292,47 +371,44 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addStudentParticipant($event) {
-    // let participant = new StudentParticipant();
-    // this.sample.languagesUsed.forEach(langUsage => {
-    //   participant.languageSkills.push(new LanguageSkill({language: langUsage.language}));
-    // });
-    // participant.languageKeys = participant.languageSkills.map(lang => lang.language);
-    // this.sample.students.push(participant);
-
-    const formGroup = this.builder.group({
+  addStudentParticipant($event?) {
+    const formGroup = this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
       nickname: new FormControl(null, Validators.required),
       avatar: new FormControl(StudentParticipant.getRandomAvatar(), Validators.required),
       gender: new FormControl(null, Validators.required),
       gradeLevel: new FormControl(null, Validators.required),
-      languageKeys: new FormArray([], Validators.minLength(1)),
+      languageKeys: new FormControl(null, Validators.minLength(1)),
       languageSkills: new FormArray([], Validators.minLength(1))
     });
 
-    // (this.aboutForm.get('languagesUsed') as FormArray).controls.forEach(
-    //   langUsed => {
-    //     console.log((langUsed as FormGroup).controls.language.value);
-    //     (formGroup.controls.languageSkills as FormArray).push(
-    //       this.createLanguageSkill((langUsed as FormGroup).controls.language.value)
-    //     )
-    //   }
-    // );
+    (this.aboutForm.get('languagesUsed') as FormArray).controls.forEach(
+      langUsed => {
+        (formGroup.get('languageSkills') as FormArray).push(
+          this.createLanguageSkill((langUsed as FormGroup).get('language').value)
+        );
+      }
+    );
 
-    // (formGroup.controls.languageKeys as FormArray).push(
-    //   new FormControl('spa')
-    // );
+    formGroup.get('languageKeys').setValue(
+      (this.aboutForm.get('languagesUsed') as FormArray).controls.map(
+        langUsed => (langUsed as FormGroup).get('language').value
+      )
+    );
 
     (this.participantsForm.get('students') as FormArray).push(formGroup);
 
-    $event.target.blur();
+
+
+
+    if ($event) { $event.target.blur(); }
     this.changeDetectorRef.detectChanges();
     return false;
   }
 
   addAdultParticipant($event) {
 
-    const formGroup = this.builder.group({
+    const formGroup = this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
       nickname: new FormControl(null, Validators.required),
       avatar: new FormControl(AdultParticipant.getRandomAvatar(), Validators.required),
@@ -356,25 +432,36 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   addLookedUpParticipants(data) {
     this.participantLookupPanel.removeModal();
-    this.sample[data.type].push(...data.participants);
+    // TODO:
+    // this.sample[data.type].push(...data.participants);
   }
 
-  addTurn() {
-    if (! this.sample.turns[this.sample.turns.length - 1].isEmpty()) {
-      this.sample.turns.push(new Turn());
-    }
-  }
-
-  clearParticipantLanguage(event: Event, participant: StudentParticipant) {
+  clearParticipantLanguage(event: Event, student: FormGroup) {
     // <HTMLElement>.dataset.value, quite apart from the typescript issues, doesn't work on IE < 11
     event.stopPropagation();
     const langToRemove = (event.target as HTMLElement).getAttribute('data-value');
-    participant.languageSkills = participant.languageSkills.filter(lang => lang.language !== langToRemove);
-    participant.languageKeys = participant.languageKeys.filter(lang => lang !== langToRemove);
+
+    const languagesOfInstruction = (this.aboutForm.get('languagesUsed') as FormArray).controls.map(
+      langUsed => (langUsed as FormGroup).get('language').value
+    );
+
+    if (languagesOfInstruction.indexOf(langToRemove) > -1) {
+      this.notificationsService.error(
+        'Invalid Action!',
+        'You may not remove a language used in the conversation!');
+      return false;
+    }
+
+
+    (student.get('languageSkills') as FormArray).controls.filter(
+      langSkillFormGroup => langSkillFormGroup.get('language').value !== langToRemove
+    );
+
+    student.get('languageKeys').setValue(student.get('languageKeys').value.filter(lang => lang !== langToRemove));
     this.languageSkillPanel.hide();
   }
 
-  recordingSelected(event) {
+  recordingSelected($event) {
     const acceptedFileTypes: string[] = [
       // Audio
       'audio/flac',    // flac
@@ -387,27 +474,34 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     const acceptedFileTypesString = 'audio files';
     const maximumFileSizeInBytes = environment.maxRecordingFileSize;
 
-    if (event.target.files && event.target.files[0]) {
+    if ($event.target.files && $event.target.files[0]) {
 
       let file =  this.validateSelectedFiles(
-        event.target.files, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString)[0];
+        $event.target.files, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString)[0];
+
       if (file) {
-        this.sample.recording.file = new FileUpload({file: file, title: file.name});
-        this.sample.recording.file.url = URL.createObjectURL(file);
+        this.conversationForm.get('recording').get('file').patchValue({
+          file: file,
+          name: file.name,
+          url: URL.createObjectURL(file)
+        });
       }
     }
+
+    $event.target.blur();
   }
 
   getRecordingFromDropbox() {
     const sampleEntryComponent = this;
-    const recording = this.sample.recording;
+    const recordingFormGroup = this.conversationForm.get('recording');
 
     const handleFiles = function(files) {
       const file = sampleEntryComponent.validateFilesFromDropbox(files, environment.maxRecordingFileSize)[0];
       if (file) {
-        recording.file = new FileUpload({
+        recordingFormGroup.get('file').patchValue({
           url: file.link,
-          title: file.name
+          name: file.name,
+          file: file
         });
       }
     };
@@ -422,7 +516,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   clearRecording() {
-    this.sample.recording = null;
+    (this.conversationForm.controls.recording as FormGroup).controls.file.reset()
   }
 
   validateFilesFromDropbox(files, maximumFileSizeInBytes) {
@@ -558,19 +652,16 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     const maximumFileSizeInBytes = environment.maxSupportingFileSize;
     const rejectedTooMany: File[] = [];
 
-    const supportingFiles: FormArray = (this.aboutForm.get('supportingFiles') as FormArray);
+    const supportingFiles = <FormArray>this.aboutForm.get('supportingFiles');
     this.validateSelectedFiles(filesList, acceptedFileTypes, maximumFileSizeInBytes, acceptedFileTypesString).forEach(
       supportingFile => {
         if (supportingFiles.length < environment.maxSupportingFileCount) {
           supportingFiles.push(
-            // new FileUpload({file: supportingFile, title: '', name: supportingFile.name})
-
-            this.builder.group({
+            this.formBuilder.group({
               file: new FormControl(supportingFile),
               title: new FormControl(null, Validators.required),
               name: new FormControl(supportingFile.name, Validators.required),
             })
-
           );
         } else {
           rejectedTooMany.push(supportingFile);
@@ -600,14 +691,20 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   getSupportingFilesFromDropbox() {
     const sampleEntryComponent = this;
-    const supportingFiles = this.sample.supportingFiles;
+    const supportingFiles = <FormArray>this.aboutForm.get('supportingFiles');
 
     const handleFiles = function(files) {
       const rejectedTooMany = [];
       sampleEntryComponent.validateFilesFromDropbox(files, environment.maxSupportingFileSize).forEach(
         supportingFile => {
           if (supportingFiles.length < sampleEntryComponent.environment.maxSupportingFileCount) {
-            supportingFiles.push(new FileUpload({name: supportingFile.name, title: '', url: supportingFile.link}));
+            supportingFiles.push(
+              sampleEntryComponent.formBuilder.group({
+                title: new FormControl(null, Validators.required),
+                name: new FormControl(supportingFile.name, Validators.required),
+                url: new FormControl(supportingFile.link)
+              })
+            );
           } else {
             rejectedTooMany.push(supportingFile);
           }
@@ -651,14 +748,14 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       supportingFiles: [],
     };
 
-    const sampleClone = JSON.parse(JSON.stringify(this.sample));
+    let sample = Object.assign({}, this.aboutForm.value, this.participantsForm.value, this.conversationForm.value);
 
+    sample.students.forEach(student => delete student['languageKeys']);
 
-    // sampleClone.students.forEach(student => delete student['languageKeys']);
-
-    if (this.sample.recording.file && this.sample.recording.file.file) {
-      validated.recordingFile = this.sample.recording.file.file;
-      delete sampleClone.recording.file.url;
+    if (!this.conversationForm.get('recording').get('noAudioAvailable').value
+        && this.conversationForm.get('recording').get('file').get('file').value) {
+      validated.recordingFile = this.conversationForm.get('recording').get('file').get('file').value;
+      delete sample.recording.file.url;
     }
 
     this.sample.supportingFiles.forEach(
@@ -671,9 +768,26 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       }
     );
 
-    sampleClone.turns = sampleClone.turns.filter(turn => turn.hasOwnProperty('speaker') && turn['content']);
+    const removeEmpty = (obj) => {
+      Object.keys(obj).forEach(key => {
+        if (obj[key] === null
+            || (Array.isArray(obj[key]) && obj[key].length === 0)
+            || (typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0)) {
 
-    validated.sampleJSON = JSON.stringify(sampleClone);
+          delete obj[key];
+
+        } else if (obj[key] && typeof obj[key] === 'object') {
+          removeEmpty(obj[key]);
+        }
+      });
+      return obj;
+    };
+
+    sample = removeEmpty(sample);
+    sample.turns = sample.turns.filter(turn => turn.hasOwnProperty('speaker') && turn['content']);
+    console.log(sample);
+
+    validated.sampleJSON = JSON.stringify(sample);
 
     return validated;
   }
@@ -691,15 +805,12 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   loadSample(sampleObj: Sample, update = false) {
-    if (update) {
-      this.sample = Object.assign(this.sample, new Sample(sampleObj));
-    } else {
-      this.sample = new Sample(sampleObj);
-    }
-  }
-
-  formSubmit() {
-    console.log(this.aboutForm.value);
+    // TODO:
+    // if (update) {
+    //   this.sample = Object.assign(this.sample, new Sample(sampleObj));
+    // } else {
+    //   this.sample = new Sample(sampleObj);
+    // }
   }
 
   languageSkillIsValid(participant, language) {
@@ -708,5 +819,4 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     );
     return ls && ls.valid;
   }
-
 }

@@ -1,6 +1,7 @@
 <div class="panel sample-entry" #sampleEntryContainer>
 
-  <ui-switch-toggle name="step-chooser"
+  <ui-switch-toggle #stepChooser
+                    name="step-chooser"
                     [options]="[{label: 'About', value: 'about'}, {label: 'Participants', value: 'participants'}, {label: 'Conversation', value: 'conversation'}]"
                     [(ngModel)]="step"
                     styleClass="step-chooser">
@@ -76,11 +77,11 @@
               <div class="u-1-24">
                 <button class="text-style"
                         [disabled]="aboutForm.get('languagesUsed').controls.length <= 1"
-                        (click)="removeLanguageUsage(i)">
+                        (click)="aboutForm.get('languagesUsed').removeAt(i)">
                   <i class="fa fa-close"></i>
                 </button>
               </div>
-              <div class="u-12-24"  [formGroupName]="i">
+              <div class="u-12-24" [formGroupName]="i">
                 <ui-select #languageUsageSelect
                            name="sampleLanguages"
                            formControlName="language"
@@ -193,6 +194,7 @@
               <td class="input-field languages" [formGroupName]="i">
                 <ui-select placeholder="Select One or More Languages..."
                            #selectComponent
+                           formControlName="languageKeys"
                            [options]="langKnowns"
                            [multiple]="true"
                            (selected)="newLanguageSkill($event.value, student, selectComponent)">
@@ -231,9 +233,9 @@
           <button class="button-style" (click)="this.addStudentParticipant($event)">
             <i class="fa fa-plus"></i> Add a new student participant
           </button>
-          <button class="button-style" (click)="this.lookupParticipants($event, 'students')">
+          <!--button class="button-style" (click)="this.lookupParticipants($event, 'students')">
             <i class="fa fa-search"></i> Lookup a student participant
-          </button>
+          </button-->
         </div>
 
         <hr>
@@ -248,7 +250,7 @@
             <th class="is-teacher">is-teacher</th>
           </thead>
           <tbody>
-            <tr  formArrayName="adults" *ngFor="let adult of participantsForm.get('adults').controls; let i=index">
+            <tr formArrayName="adults" *ngFor="let adult of participantsForm.get('adults').controls; let i=index">
               <td class="remove">
                 <button class="text-style" (click)="participantsForm.get('adults').removeAt(i)">
                   <i class="fa fa-close"></i>
@@ -287,9 +289,9 @@
           <button class="button-style" (click)="this.addAdultParticipant($event)">
             <i class="fa fa-plus"></i> Add a new adult participant
           </button>
-          <button class="button-style" (click)="this.lookupParticipants($event, 'adults')">
+          <!--button class="button-style" (click)="this.lookupParticipants($event, 'adults')">
             <i class="fa fa-search"></i> Lookup a adult participant
-          </button>
+          </button-->
         </div>
 
       </div>
@@ -309,14 +311,14 @@
         <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
       </div>
 
-      <div class="panel">
+      <div class="panel" [formGroup]="conversationForm">
 
-        <div class="recording-upload">
+        <div class="recording-upload" [formGroup]="conversationForm.controls.recording">
            <div>
-            <div *ngIf="!sample.recording.file" class="no-audio-available">
+            <div *ngIf="!conversationForm.controls.recording.controls.file.controls.name.value" class="no-audio-available">
               <label for="no-audio-available">
-                <input name="no-audio-available" type="checkbox" [(ngModel)]="sample.recording.noAudioAvailable">
-                {{ (sample.recording.noAudioAvailable) ?
+                <input name="no-audio-available" type="checkbox" formControlName="noAudioAvailable">
+                {{ (conversationForm.controls.recording.controls.noAudioAvailable.value) ?
                     'Please provide a brief explanation of why no audio file is available:' :
                     'Please upload a file, or check here if one is not available.' }}
                 <ui-help-button helpText="Please supply an audio file if at all possible. [More text here!]"
@@ -324,24 +326,25 @@
               </label>
             </div>
             <div class="input-field">
-              <textarea *ngIf="sample.recording.noAudioAvailable" [(ngModel)]="sample.recording.noAudioExplanation"></textarea>
+              <textarea *ngIf="conversationForm.controls.recording.controls.noAudioAvailable.value"
+                        formControlName="noAudioExplanation"></textarea>
             </div>
-            <div *ngIf="sample.recording.file" class="recording">
+            <div *ngIf="conversationForm.controls.recording.controls.file.controls.name.value" class="recording">
               <button (click)="clearRecording()" class="text-style" data-tooltip="Clear Selection">
                 <i class="fa fa-close"></i>
               </button>
-              <span class="recording-title">{{sample.recording.file.title}}</span>
-              <img *ngIf="!sample.recording.file.url" alt="loading..." src="data:image/gif;base64,R0lGODlhgAAPAPEAAIwVFd27u////wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQFCgAAACwAAAAAgAAPAAACo4wfoIC33NKKUtF3Z8RbN/55CEiNonMaJGp1bfiaMQvBtXzTpZuradUDZmY+opA3DK6KwaQTCbU9pVHc1LrDUrfarq765Ya9u+VRzLyO12lwG10yy39zY11Jz9t/6jf5/HfXB8hGWKaHt6eYyDgo6BaH6CgJ+QhnmWWoiVnI6ddJmbkZGkgKujhplNpYafr5OooqGst66Uq7OpjbKmvbW/p7UAAAIfkEBQoAAQAsAAAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwLAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALBYAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsIQAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwsAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALDcAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsQgAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxNAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALFgAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsYwAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxuAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALHkAAAAHAA8AAAIIhI+py+0PoywAOw">
-              <audio *ngIf="sample.recording.file.url" [src]="sample.recording.file.url | uiSafe: 'url'" controls></audio>
+              <span class="recording-title">{{conversationForm.controls.recording.controls.file.controls.name.value}}</span>
+              <img *ngIf="!conversationForm.controls.recording.controls.file.controls.url.value" alt="loading..." src="data:image/gif;base64,R0lGODlhgAAPAPEAAIwVFd27u////wAAACH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQFCgAAACwAAAAAgAAPAAACo4wfoIC33NKKUtF3Z8RbN/55CEiNonMaJGp1bfiaMQvBtXzTpZuradUDZmY+opA3DK6KwaQTCbU9pVHc1LrDUrfarq765Ya9u+VRzLyO12lwG10yy39zY11Jz9t/6jf5/HfXB8hGWKaHt6eYyDgo6BaH6CgJ+QhnmWWoiVnI6ddJmbkZGkgKujhplNpYafr5OooqGst66Uq7OpjbKmvbW/p7UAAAIfkEBQoAAQAsAAAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwLAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALBYAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsIQAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACwsAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALDcAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsQgAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxNAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALFgAAAAHAA8AAAIIhI+py+0PoywAIfkEBQoAAQAsYwAAAAcADwAAAgiEj6nL7Q+jLAAh+QQFCgABACxuAAAABwAPAAACCISPqcvtD6MsACH5BAUKAAEALHkAAAAHAA8AAAIIhI+py+0PoywAOw">
+              <audio *ngIf="conversationForm.controls.recording.controls.file.controls.url.value" [src]="conversationForm.controls.recording.controls.file.controls.url.value | uiSafe: 'url'" controls></audio>
             </div>
-            <div *ngIf="sample.recording.file">
-              <input name="includes-additional-context" type="checkbox"/>
+            <div *ngIf="conversationForm.controls.recording.controls.file.controls.name.value">
+              <input name="includes-additional-context" type="checkbox" formControlName="includesAdditionalContext">
               <label for="includes-additional-context">
                 Check here if the audio recording includes material that goes beyond what is transcribed below
               </label>
             </div>
           </div>
-          <div class="buttons" *ngIf="!sample.recording.noAudioAvailable">
+          <div class="buttons" *ngIf="!conversationForm.controls.recording.controls.noAudioAvailable.value">
             <button (click)="fileInput.click()" class="button-style">
               <input #fileInput type="file" (change)="recordingSelected($event)">
               Choose File
@@ -358,24 +361,24 @@
             <th class="turn">Turn</th>
           </thead>
           <tbody>
-            <tr *ngFor="let turn of sample.turns; let i=index">
+            <tr formArrayName="turns" *ngFor="let turn of conversationForm.get('turns').controls; let i=index">
               <td>
-                <button (click)="sample.turns = removeValue(sample.turns, turn)" class="text-style" [disabled]="sample.turns.length <= 1">
+                <button (click)="conversationForm.get('turns').removeAt(i)" class="text-style" [disabled]="conversationForm.get('turns').controls.length <= 1">
                   <i class="fa fa-close"></i>
                 </button>
               </td>
               <td>{{i + 1}}</td>
-              <td class="input-field">
-                <select [(ngModel)]="turn.speaker" (change)="addTurn()" class="turn-participant">
-                  <option *ngFor="let participant of sample.students"
-                          [value]="participant.uuid">{{participant.nickname}}</option>
-                  <option *ngFor="let participant of sample.adults"
-                          [value]="participant.uuid">{{participant.nickname}}</option>
+              <td class="input-field" [formGroupName]="i">
+                <select formControlName="speaker" class="turn-participant">
+                  <option *ngFor="let student of participantsForm.get('students').controls"
+                          [value]="student.controls.uuid.value">{{student.controls.nickname.value}}</option>
+                  <option *ngFor="let adult of participantsForm.get('adults').controls"
+                          [value]="adult.controls.uuid.value">{{adult.controls.nickname.value}}</option>
                 </select>
               </td>
-              <td class="input-field">
-                <ui-turn-editor [(ngModel)]="turn.content" placeholder="turn..." (turnEditorBlur)="addTurn()"></ui-turn-editor>
-                <div class="alert alert-danger">Turn is required</div>
+              <td class="input-field" [formGroupName]="i">
+                <ui-turn-editor formControlName="content" placeholder="turn..."></ui-turn-editor>
+                <!--div class="alert alert-danger">Turn is required</div-->
               </td>
             </tr>
           </tbody>
@@ -387,6 +390,8 @@
   </div>
 
   <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
+    <pre>{{conversationForm.value | json}}</pre>
+    <hr>
     <pre>{{aboutForm.value | json}}</pre>
     <hr>
     <pre>{{participantsForm.value | json}}</pre>
