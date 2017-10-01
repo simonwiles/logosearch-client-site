@@ -141,6 +141,11 @@
 
       </div>
       </form>
+
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
+      </div>
+
     </div>
 
 <!-- ################################################################################################################# -->
@@ -296,6 +301,11 @@
       </div>
       </form>
 
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
+      </div>
+
     </div>
 
 <!-- ################################################################################################################# -->
@@ -389,6 +399,11 @@
             I am unable to submit 16 or more turns.
           </label>
         </div>
+      </div>
+
+      <div class="step-buttons">
+        <button class="button-style" (click)="step = 'participants'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
       </div>
 
     </div>
