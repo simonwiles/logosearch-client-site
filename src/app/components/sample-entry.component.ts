@@ -292,7 +292,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
         field => {
           const innerControl = control.get(field);
           innerControl.markAsTouched();
-          if (!innerControl.valid) { console.log('invalid', field, innerControl); }
           if (innerControl.controls) { markAllTouched(innerControl); }
         }
       );
@@ -807,7 +806,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     sample = removeEmpty(sample);
     sample.turns = sample.turns.filter(turn => turn.hasOwnProperty('speaker') && turn['content']);
-    console.log(sample);
 
     validated.sampleJSON = JSON.stringify(sample);
 
