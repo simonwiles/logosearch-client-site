@@ -382,7 +382,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="few-turns" [style.height]="(submitAttempted && conversationForm.get('turns').controls.length < 17) ? 'auto' : '0'">
+        <div class="few-turns" [style.display]="(submitAttempted && conversationForm.get('turns').controls.length < 17) ? 'block' : 'none'">
           <p>You must submit at least 4 turns.  Please try to collect and transcribe at least 16 turns if possible.</p>
           <label for="few-turns">
             <input name="few-turns" type="checkbox" formControlName="fewTurns">
