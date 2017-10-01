@@ -74,13 +74,13 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   // These are for populating the various select elements:
   public genders: any = Object.values(Gender);
-  public gradeLevels: any = Object.keys(GradeLevel).map(_ => ({ label: GradeLevel[_], value: _ }));
+  public gradeLevels: any = Object.keys(GradeLevel)
+                              .filter(key => !key.startsWith('unknown'))
+                              .map(key => ({ label: GradeLevel[key], value: key }));
   public languages: any = Language;
-  public languageOptions: any = Object.values(Language);
+  public languageOptions: any = Object.values(Language).filter(obj => obj.value !== 'unk');
   public subjectAreas: any = Object.values(SubjectArea);
-  public langKnowns: any = Object.values(Language).map(
-    _ => ({ label: _.label, value: _.value })
-  );
+  public langKnowns: any = this.languageOptions.map(obj => ({ label: obj.label, value: obj.value }));
 
   public get step() { return this._step; }
 
