@@ -311,7 +311,7 @@ export class ApiService {
     } else if (error.status === 404) {
       errString = 'Resource not found!';
     } else if (error.status === 400) {
-      errString = 'Bad Request:' + error.json().body;
+      errString = 'Bad Request:' + (error.json().body || error.json().detail || error.json().error);
     } else {
       try {
         errString = (
