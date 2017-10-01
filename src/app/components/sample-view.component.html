@@ -48,18 +48,11 @@
         <td>
           <ul>
             <li *ngFor="let supportingFile of sample.supportingFiles">
-              <a href="{{supportingFile.file}}">{{supportingFile.title}}</a>
+              <a href="{{supportingFile.file}}" target="new">{{supportingFile.title}}</a>
             </li>
           </ul>
         </td>
       </tr>
-      <!--tr>
-        <th>Evaluations</th>
-        <td>
-          Dimension One: <strong>{{sample?.d1Avg}}</strong>, Dimension Two: <strong>{{sample?.d2Avg}}</strong> (avg. of {{sample?.numScores}} scores)
-          <a (click)="evaluationsCollapsible.toggle(true)">[more...]</a>
-        </td>
-      </tr-->
     </table>
   </ui-collapsible>
 

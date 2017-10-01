@@ -459,7 +459,6 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   clearParticipantLanguage(event: Event, student: FormGroup) {
-    // <HTMLElement>.dataset.value, quite apart from the typescript issues, doesn't work on IE < 11
     event.stopPropagation();
     const langToRemove = (event.target as HTMLElement).getAttribute('data-value');
 
