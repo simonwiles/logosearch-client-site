@@ -96,6 +96,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public submitAttempted = false;
+
   private _step = 'about';
   private stepDirection = 'forward';
 
@@ -156,7 +158,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
         speaker: new FormControl(null, Validators.required),
         content: new FormControl(null, Validators.required)
       })
-    ])
+    ], Validators.compose([Validators.required, Validators.minLength(16)])), // note: includes the blank one at the bottom which will be stripped
+    fewTurns: new FormControl(false)
   });
 
   constructor(
@@ -227,6 +230,24 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
           this.addTurn();
           this.changeDetectorRef.detectChanges();
         }
+
+        if (turnFormGroups.length < 17) { // note: includes the blank one at the bottom which will be stripped
+          this.conversationForm.get('fewTurns').setValidators(Validators.requiredTrue);
+        } else {
+          this.conversationForm.get('fewTurns').clearValidators();
+        }
+      }
+    );
+
+    this.conversationForm.get('fewTurns').valueChanges.subscribe(
+      fewTurns => {
+        // note: Validators.minLength includes the blank one at the bottom which will be stripped
+        if (fewTurns) {
+          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(4)]);
+        } else {
+          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(16)]);
+        }
+        this.conversationForm.get('turns').updateValueAndValidity();
       }
     );
   }
@@ -271,7 +292,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
         field => {
           const innerControl = control.get(field);
           innerControl.markAsTouched();
-          // if (!innerControl.valid) { console.log('invalid', innerControl); }
+          if (!innerControl.valid) { console.log('invalid', field, innerControl); }
           if (innerControl.controls) { markAllTouched(innerControl); }
         }
       );
@@ -288,6 +309,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
 
     if (value === 'conversation') {
+      this.submitAttempted = true;
       markAllTouched(this.conversationForm);
       return this.conversationForm.valid;
     }

@@ -429,6 +429,8 @@
   }
 
   .no-audio-available {
+    margin-bottom: 10px;
+
     input[type='checkbox'] {
       margin-right: 8px;
     }
@@ -447,6 +449,19 @@
     font-weight: bold;
   }
 }
+
+.few-turns {
+  overflow: hidden;
+  transition: height .2s ease;
+}
+
+.ng-touched.ng-invalid {
+  .few-turns {
+    color: $invalid-warning;
+  }
+}
+
+
 
 .notification-content {
   ul {
