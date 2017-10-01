@@ -158,7 +158,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
         speaker: new FormControl(null, Validators.required),
         content: new FormControl(null, Validators.required)
       })
-    ], Validators.compose([Validators.required, Validators.minLength(16)])), // note: includes the blank one at the bottom which will be stripped
+      // note: includes the blank one at the bottom which will be stripped
+    ], Validators.compose([Validators.required, Validators.minLength(17)])),
     fewTurns: new FormControl(false)
   });
 
@@ -243,9 +244,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       fewTurns => {
         // note: Validators.minLength includes the blank one at the bottom which will be stripped
         if (fewTurns) {
-          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(4)]);
+          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(5)]);
         } else {
-          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(16)]);
+          this.conversationForm.get('turns').setValidators([Validators.required, Validators.minLength(17)]);
         }
         this.conversationForm.get('turns').updateValueAndValidity();
       }
