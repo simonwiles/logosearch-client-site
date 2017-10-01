@@ -428,7 +428,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  addAdultParticipant($event) {
+  addAdultParticipant($event?) {
 
     const formGroup = this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
@@ -441,7 +441,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     (this.participantsForm.get('adults') as FormArray).push(formGroup);
 
-    $event.target.blur();
+    if ($event) { $event.target.blur(); }
     return false;
   }
 
@@ -522,8 +522,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       if (file) {
         recordingFormGroup.get('file').patchValue({
           url: file.link,
-          name: file.name,
-          file: file
+          name: file.name
         });
       }
     };
@@ -781,12 +780,12 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       delete sample.recording.file.url;
     }
 
-    this.sample.supportingFiles.forEach(
-      (supportingFile: FileUpload) => {
-        if (supportingFile.file) {
-          validated.supportingFiles.push(supportingFile.file);
+    (this.aboutForm.get('supportingFiles') as FormArray).controls.forEach(
+      (supportingFile: FormGroup) => {
+        if (supportingFile.get('file')) {
+          validated.supportingFiles.push(supportingFile.get('file').value);
         } else {
-          validated.supportingFiles.push(supportingFile.url);
+          validated.supportingFiles.push(supportingFile.get('url').value);
         }
       }
     );
