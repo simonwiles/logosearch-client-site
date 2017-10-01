@@ -99,8 +99,8 @@
     }
 
     td {
-      padding: 0 2px;
       font-size: 14px;
+      padding: 0 2px;
     }
 
     .alert {
@@ -114,7 +114,10 @@
     }
 
     tbody.ng-invalid.ng-touched {
-     .alert { color: $invalid-warning; font-weight: bold;}
+      .alert {
+        color: $invalid-warning;
+        font-weight: bold;
+      }
     }
 
 
@@ -123,8 +126,8 @@
     }
 
     .remove {
-      text-align: center;
       padding: 0;
+      text-align: center;
       width: 10px;
     }
 
@@ -153,11 +156,11 @@
     li {
       cursor: pointer;
 
-      &:after {
+      &::after {
         font: normal normal normal 14px/1 FontAwesome;
       }
 
-      &.valid:after {
+      &.valid::after {
         color: $valid-confirmation;
         // content: '\f058';  // fa-check-circle
         content: '\f00c';  // fa-check
@@ -199,7 +202,6 @@
     .remove-turn { width: 40px; }
     .turn-num { width: 40px; }
     .speaker { width: 150px; }
-    .turn {}
 
     .turn-participant {
       width: 100%;
@@ -307,6 +309,7 @@
 
   .no-supporting-files {
     color: $gray;
+    margin-top: 10px;
   }
 
   input[type='file'] {
@@ -380,13 +383,12 @@
 }
 
 .recording-upload {
-
-  display: flex;
-  position: relative;
-  padding: 20px;
   background: mix($light-blue, $white, 50%);
   border-radius: 8px;
+  display: flex;
   margin-bottom: 20px;
+  padding: 20px;
+  position: relative;
 
   > div:first-child {
     flex: 1 1 auto;
@@ -409,10 +411,10 @@
   .recording {
     align-items: center;
     background-color: $white;
-    border-radius: 4px;
     border: 1px solid $main-accent;
+    border-radius: 4px;
     display: flex;
-    margin: 4px 0 8px 0;
+    margin: 4px 0 8px;
     padding: 0 4px;
 
     button {
@@ -457,8 +459,6 @@
   overflow: hidden;
   padding: 0 10px 10px;
   transition: height .2s ease;
-
-  // background: mix($invalid-warning, $white, 20%);
 
   input[type=checkbox] {
     vertical-align: middle;
@@ -530,14 +530,11 @@ ui-turn-editor.ng-touched.ng-invalid {
 
       &::before {
         color: purple;
-        font-weight: bold;
         display: inline-block;
+        font-weight: bold;
         margin: 0 4px;
         padding: 2px;
-
       }
     }
-
-
   }
 }

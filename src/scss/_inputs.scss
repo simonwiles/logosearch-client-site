@@ -5,7 +5,6 @@
   border-bottom: 1px solid rgba($black, .26);
   box-shadow: none;
   color: rgba($black, .87);
-  // margin-bottom: 1px;
   outline: 0;
   padding: 0;
   text-shadow: 1px 1px 1px rgba($black, .004);
@@ -55,11 +54,7 @@
 
 
 %md-input-select {
-
   @extend %md-input;
-
-  -moz-appearance: none;
-  -webkit-appearance: none;
   appearance: none;
   background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNiIgd2lkdGg9IjEwIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMCwwIDUsNiIgc3R5bGU9ImZpbGw6cmdiYSgwLDAsMCwuMjQpOyIvPjwvc3ZnPg==);
   background-position: right center;
@@ -69,9 +64,9 @@
 }
 
 %button-bar {
+  display: flex;
   margin: 0;
   padding: 0;
-  display: flex;
 
   li {
     box-shadow: $button-shadow;
@@ -118,7 +113,7 @@
   }
 }
 
-ul.ui-button-bar { @extend %button-bar; }
+.ui-button-bar { @extend %button-bar; }
 
 select {
   @extend %md-input-select;
@@ -126,6 +121,7 @@ select {
   &:required:invalid {
     color: $gray;
   }
+
   option[value=""][disabled] {
     display: none;
   }
@@ -143,10 +139,6 @@ button.text-style {
   margin: 0;
   overflow: visible;
   padding: 0 4px;
-
-  -moz-user-select: text;
-  -ms-user-select: text;
-  -webkit-user-select: text;
   user-select: text;
 
   &:hover,
@@ -299,4 +291,3 @@ input.text-style {
     display: none;
   }
 }
-

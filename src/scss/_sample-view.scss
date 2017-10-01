@@ -46,9 +46,9 @@
     }
 
     ul {
+      list-style: none;
       margin: 0;
       padding: 0;
-      list-style: none;
     }
 
     .supporting-files {
@@ -61,7 +61,7 @@
       a {
         text-decoration: none;
 
-        &:before {
+        &::before {
           content: '\f016';
           font-family: FontAwesome;
           margin-right: 8px;
@@ -70,7 +70,7 @@
         &[href$=png],
         &[href$=jpg],
         &[href$=jpeg] {
-          &:before {
+          &::before {
             content: '\f1c5';
           }
         }
