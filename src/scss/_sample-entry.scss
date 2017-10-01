@@ -33,7 +33,7 @@
   }
 
   .step-buttons {
-    margin: 0 1%;
+    margin: 10px 1% 0;
     text-align: right;
 
     .button-style {
@@ -103,6 +103,21 @@
       font-size: 14px;
     }
 
+    .alert {
+      padding-left: 20px;
+      transition: all .2s ease;
+
+      &.hidden {
+        font-size: 0;
+        height: 0;
+      }
+    }
+
+    tbody.ng-invalid.ng-touched {
+     .alert { color: $invalid-warning; font-weight: bold;}
+    }
+
+
     .input-field > input {
       font-size: 14px;
     }
@@ -135,20 +150,31 @@
       min-width: 160px;
     }
 
-    li:after {
-      font: normal normal normal 14px/1 FontAwesome;
+    li {
+      cursor: pointer;
+
+      &:after {
+        font: normal normal normal 14px/1 FontAwesome;
+      }
+
+      &.valid:after {
+        color: $valid-confirmation;
+        // content: '\f058';  // fa-check-circle
+        content: '\f00c';  // fa-check
+      }
+
+      &.select2-selection__choice:not(.valid):after {
+        color: $invalid-warning;
+        // content: '\f06a';  // fa-exclamation-circle
+        content: '\f071';  // fa-exclamation-triangle
+      }
     }
 
-    li.valid:after {
-      color: $valid-confirmation;
-      // content: '\f058';  // fa-check-circle
-      content: '\f00c';  // fa-check
-    }
-
-    li.select2-selection__choice:not(.valid):after {
-      color: $invalid-warning;
-      // content: '\f06a';  // fa-exclamation-circle
-      content: '\f071';  // fa-exclamation-triangle
+    td.ng-touched.ng-invalid {
+      li.select2-selection__choice:not(.valid) {
+        @extend %animation-bounce;
+        color: $invalid-warning;
+      }
     }
 
     .switch-toggle {
@@ -403,6 +429,8 @@
   }
 
   .no-audio-available {
+    margin-bottom: 10px;
+
     input[type='checkbox'] {
       margin-right: 8px;
     }
@@ -415,7 +443,25 @@
   input[type='file'] {
     display: none;
   }
+
+  &.ng-touched.ng-invalid {
+    color: $invalid-warning;
+    font-weight: bold;
+  }
 }
+
+.few-turns {
+  overflow: hidden;
+  transition: height .2s ease;
+}
+
+.ng-touched.ng-invalid {
+  .few-turns {
+    color: $invalid-warning;
+  }
+}
+
+
 
 .notification-content {
   ul {
@@ -428,6 +474,12 @@
 @mixin mark-color($color) {
   background: rgba($color, .2);
   border-color: $color;
+}
+
+ui-turn-editor.ng-touched.ng-invalid {
+  .editable {
+    @extend %md-input-invalid;
+  }
 }
 
 .ui-turn-editor {

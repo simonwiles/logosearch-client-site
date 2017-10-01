@@ -1,7 +1,9 @@
 import { NgModule }                     from '@angular/core';
+
 import { BrowserModule }                from '@angular/platform-browser';
 import { BrowserAnimationsModule }      from '@angular/platform-browser/animations';
-import { FormsModule }                  from '@angular/forms';
+import { FormsModule,
+         ReactiveFormsModule }          from '@angular/forms';
 import { HttpModule }                   from '@angular/http';
 
 import { SelectModule }                 from './ui-modules/angular2-select/select.module';
@@ -50,8 +52,9 @@ import { SiteLayoutComponent }          from './components/site-layout.component
 import { AboutComponent }               from './components/about.component';
 import { HomeComponent }                from './components/home.component';
 import { EvaluationBrowserComponent }   from './components/evaluation-browser.component';
-import { LoginComponent }               from './components/login.component';
+import { LinguagramComponent }          from './components/linguagram.component';
 import { LmsBridgeComponent }           from './components/lms-bridge.component';
+import { LoginComponent }               from './components/login.component';
 import { ParticipantLookupComponent }   from './components/participant-lookup.component';
 import { ProfileComponent }             from './components/profile.component';
 import { SampleBrowserComponent }       from './components/sample-browser.component';
@@ -76,6 +79,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
 
     AboutComponent,
     HomeComponent,
+    LinguagramComponent,
     LmsBridgeComponent,
     LoginComponent,
     ParticipantLookupComponent,
@@ -93,7 +97,10 @@ import { SamplesTableComponent }        from './components/samples-table.compone
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+
     FormsModule,
+    ReactiveFormsModule,
+
     HttpModule,
 
     SelectModule,

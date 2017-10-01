@@ -26,14 +26,14 @@ export const SLIDER_VALUE_ACCESSOR: any = {
 
     <ul #rangeLabels
         class="range-labels"
-        [ngClass]="{'disabled': disabled}">
+        [ngClass]="{'disabled': disabled || readonly}">
       <li *ngFor="let option of options; let i=index"
           [ngClass]="{
             'selected': i == index,
             'active': i <= index,
             'disabled': option.disabled
           }"
-          (click)="(!disabled && !option.disabled) && updateIndex(i)">
+          (click)="(!readonly && !disabled && !option.disabled) && updateIndex(i)">
         {{ option.label }}
       </li>
     </ul>
@@ -49,6 +49,7 @@ export class RangeSliderComponent implements ControlValueAccessor {
     {label: 'Four', value: 'four', disabled: false}
   ];
   @Input() disabled = false;
+  @Input() readonly = false;
 
   index: number = null;
   maxRangeWidth = 100;  // using this it's possible to shorten the line if the last option(s) are disabled
