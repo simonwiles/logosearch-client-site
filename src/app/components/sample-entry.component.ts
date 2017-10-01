@@ -474,10 +474,14 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       return false;
     }
 
-
-    (student.get('languageSkills') as FormArray).controls.filter(
-      langSkillFormGroup => langSkillFormGroup.get('language').value !== langToRemove
-    );
+    // make sure to remove the corresponding languageSkill first!
+    const langSkillControls = (student.get('languageSkills') as FormArray).controls;
+    for (let i = 0, il = langSkillControls.length; i < il; i++) {
+      if (langSkillControls[i].get('language').value === langToRemove) {
+        (student.get('languageSkills') as FormArray).removeAt(i);
+        break;
+      }
+    }
 
     student.get('languageKeys').setValue(student.get('languageKeys').value.filter(lang => lang !== langToRemove));
     this.languageSkillPanel.hide();
