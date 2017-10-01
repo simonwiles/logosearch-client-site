@@ -12,7 +12,8 @@ import { environment }                    from '../../environments/environment';
 import { Language }                       from '../models/common';
 import { Sample,
          SubjectArea }                    from '../models/sample';
-import { GradeLevel }                     from '../models/participants';
+import { Gender,
+         GradeLevel }                     from '../models/participants';
 
 import { ApiService }                     from '../services/api.service';
 import { TranscriptionRendererService }   from '../services/transcription-renderer.service';
@@ -30,6 +31,7 @@ export class SampleViewComponent implements OnInit, OnChanges {
   @Input() highlight: string;
   @Input() showEvaluations = true;
 
+  gender = Gender;
   gradeLevels = GradeLevel;
   languages = Language;
   subjectAreas = SubjectArea;

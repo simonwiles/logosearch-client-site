@@ -1,23 +1,26 @@
 <div *ngIf="sample" class="sample-view" [ngClass]="panelClass">
 
-  <div class="g">
-    <div class="u-1-2">
-      <a class="sample-permalink" [routerLink]="['/sample/'+sample.uuid]" uiTooltip="Direct Link to this Sample"><i class="fa fa-link"></i></a>
+  <div class="top">
+    <div>
+      <a class="sample-permalink" [routerLink]="['/sample/'+sample.uuid]" uiTooltip="Direct Link to this Sample" uiTooltipPosition="right">
+        <i class="fa fa-link"></i></a>
       <p class="submission-details">[Submitted by {{sample?.submittedBy.displayName}} on <span>{{sample?.submittedAt | date}}</span>]</p>
     </div>
-    <div class="u-1-2 recording">
-      <div>
-        <span *ngIf="!sample.recording.recordingFile">[no audio recording available]</span>
-        <audio *ngIf="sample.recording.recordingFile" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
-      </div>
+    <div class="recording">
+      <span *ngIf="!sample.recording.recordingFile">[no audio recording available]</span>
+      <audio *ngIf="sample.recording.recordingFile" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
+      <br>
+      <span *ngIf="sample.recording.includesAdditionalContext">* This recording includes additional context beyond what is transcribed below</span>
     </div>
   </div>
 
   <ui-collapsible header="<h2>Context</h2>" [shown]="true">
-    <p>{{sample?.context}}</p>
     <table class="context">
       <tr>
-        <th>Subject Area / Topic</th>
+        <th>Context</th><td>{{sample?.context}}</td>
+      </tr>
+      <tr>
+        <th>Subject Area</th>
         <td>
           <ul class="pills">
             <li *ngFor="let subjectArea of sample.subjectArea">{{subjectAreas[subjectArea].label}}</li>
@@ -31,12 +34,32 @@
         <th>Prompt</th><td>{{sample?.prompt}}</td>
       </tr>
       <tr>
+        <th>Languages</th>
+        <td>
+          <ul>
+            <li *ngFor="let lang of sample.languagesUsed" class="value-stud">
+              {{languages[lang.language].label}}
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="supporting-files">
+        <th>Supporting Files</th>
+        <td>
+          <ul>
+            <li *ngFor="let supportingFile of sample.supportingFiles">
+              <a href="{{supportingFile.file}}">{{supportingFile.title}}</a>
+            </li>
+          </ul>
+        </td>
+      </tr>
+      <!--tr>
         <th>Evaluations</th>
         <td>
           Dimension One: <strong>{{sample?.d1Avg}}</strong>, Dimension Two: <strong>{{sample?.d2Avg}}</strong> (avg. of {{sample?.numScores}} scores)
           <a (click)="evaluationsCollapsible.toggle(true)">[more...]</a>
         </td>
-      </tr>
+      </tr-->
     </table>
   </ui-collapsible>
 
@@ -45,21 +68,16 @@
       <tr *ngFor="let participant of sample?.students" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
         <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px" alt="Avatar for {{participant.nickname}}"></td>
         <td>{{participant.nickname}}</td>
-        <td>
-          <span class="value-stud"><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></span>
-          {{(participant.gender == 'F') ? 'Female' : 'Male' }}
-        </td>
-        <td>
-          <span class="value-stud">{{participant.gradeLevel}}</span> {{gradeLevels[participant.gradeLevel]}}
-        </td>
+        <td><span class="value-stud"><i class="fa fa-venus-mars"></i> {{gender[participant.gender].label}}</span></td>
+        <td>{{gradeLevels[participant.gradeLevel]}}</td>
         <td>
           Speaker of
           <ul class="participant-languages">
-            <li *ngFor="let lang of participant.languageSkills">
-              {{languages[lang.language].label}}
+            <li *ngFor="let lang of participant.languageSkills" class="value-stud">
               <i *ngIf="lang.isPrimaryLanguage" class="fa fa-home" uiTooltip="{{languages[lang.language].label}} is a primary language of {{participant.nickname}}."></i>
               <i *ngIf="lang.participantIsLearner" class="fa fa-mortar-board" uiTooltip="{{participant.nickname}} is a learner of {{languages[lang.language].label}}."></i>
               <i *ngIf="lang.assessedLevel.length" class="fa fa-bar-chart" uiTooltip="{{renderAssessedLevel(lang.assessedLevel)}}."></i>
+              {{languages[lang.language].label}}
             </li>
           </ul>
         </td>
@@ -67,7 +85,7 @@
       <tr *ngFor="let participant of sample?.adults" (mouseenter)="highlightParticipant(participant.uuid)" (mouseleave)="removeHighlight()">
         <td><img src="{{environment.mediaURL}}{{participant.avatar}}" height="45px" alt="Avatar for {{participant.nickname}}"></td>
         <td>{{participant.nickname}}</td>
-        <td><i class="fa fa-{{(participant.gender == 'F') ? 'female' : 'male' }}"></i></td>
+        <td><span class="value-stud"><i class="fa fa-venus-mars"></i> {{gender[participant.gender].label}}</span></td>
       </tr>
     </table>
   </ui-collapsible>

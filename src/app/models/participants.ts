@@ -12,8 +12,8 @@ export const Gender = {
 
 export const GradeLevel = {
   unknown_elementary:   'Unknown (Elementary)',
-  unknown_middleschool: 'Unknown (Middle)',
-  unknown_highschool:   'Unknown (High)',
+  unknown_middleschool: 'Unknown (Middle School)',
+  unknown_highschool:   'Unknown (High School)',
   unknown:              'Unknown',
   pre_k:                'Pre-Kindergarden',
   k:                    'Kindergarden',

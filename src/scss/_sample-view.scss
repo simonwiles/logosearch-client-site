@@ -1,12 +1,80 @@
 .sample-view {
 
+  .top {
+    display: flex;
+
+    > div:first-child {
+      flex: 1 0 auto;
+    }
+
+    .recording {
+      background: $light-blue;
+      border-radius: 4px;
+      flex: 1 0 300px;
+      padding: 8px;
+
+      span {
+        color: rgba($black, .56);
+        margin: 4px 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      audio {
+        text-shadow: none;
+        width: 100%;
+      }
+
+    }
+
+  }
+
   h2 { margin: 8px 0; }
 
   .context {
-    margin: 4px 28px;
+    margin: 4px 0;
 
-    img {
-      vertical-align: middle;
+    th {
+      padding-top: 4px;
+      vertical-align: top;
+      width: 140px;
+    }
+
+    td {
+      padding: 4px;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .supporting-files {
+
+      li {
+        display: inline-block;
+        margin: 0 8px;
+      }
+
+      a {
+        text-decoration: none;
+
+        &:before {
+          content: '\f016';
+          font-family: FontAwesome;
+          margin-right: 8px;
+        }
+
+        &[href$=png],
+        &[href$=jpg],
+        &[href$=jpeg] {
+          &:before {
+            content: '\f1c5';
+          }
+        }
+      }
     }
   }
 
@@ -35,8 +103,10 @@
       color: $main-accent;
       font-weight: 700;
       padding: 0 8px;
-      text-align: left;
+      text-align: right;
       text-shadow: 0 1px 0 $white;
+      vertical-align: top;
+      width: 30px;
     }
 
     td {
@@ -54,34 +124,6 @@
     }
   }
 
-  .recording {
-    display: inline-flex;
-
-    > div {
-      background: $light-blue;
-      border-radius: 4px;
-      display: flex;
-      margin: auto 0;
-      padding: 8px;
-      width: 100%;
-    }
-
-    span {
-      color: rgba($black, .56);
-      margin: 4px 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      // text-shadow: none;
-      white-space: nowrap;
-    }
-
-    audio {
-      text-shadow: none;
-      width: 100%;
-    }
-
-  }
-
   .sample-permalink {
     float: left;
     font-size: 24px;
@@ -90,28 +132,11 @@
 
 }
 
-.display-main {
-  // display: inline-block;
-  // width: 100%;
-  // transform: translate3d(100%, 0, 0);
-}
-
 .participant-languages {
-
   display: inline-block;
   margin: 0;
   padding: 0;
 
-  li {
-    border: 1px solid rgba($black, .56);
-    display: inline-block;
-    margin: 0 2px;
-    padding: 0 2px;
-
-    i {
-      margin-left: 4px;
-    }
-  }
 }
 
 .evaluations-browser {
@@ -119,7 +144,7 @@
 
   .pagination {
     position: absolute;
-    top: -30px;
     right: 30px;
+    top: -30px;
   }
 }

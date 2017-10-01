@@ -126,7 +126,7 @@
 
 .samples-list-table {
   table-layout: fixed;
-  width: auto !important;
+  // width: auto !important;
 
   > tr:not(.row-expansion) {
     overflow: hidden;
