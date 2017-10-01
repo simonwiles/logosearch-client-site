@@ -772,6 +772,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     let sample = Object.assign({}, this.aboutForm.value, this.participantsForm.value, this.conversationForm.value);
 
+    delete sample.fewTurns;
     sample.students.forEach(student => delete student['languageKeys']);
 
     if (!this.conversationForm.get('recording').get('noAudioAvailable').value
@@ -814,6 +815,14 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   saveSample() {
+
+    if (!this.doStepValidation('about') || !this.doStepValidation('participants') || !this.doStepValidation('conversation')) {
+      this.notificationsService.error(
+          'Form is not complete!',
+          'Please complete the necessary information before moving on!');
+      return false;
+    }
+
     let validated = this.validateSample();
 
     this.apiService.putSample(validated.sampleJSON, validated.recordingFile, validated.supportingFiles).subscribe(
