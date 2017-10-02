@@ -33,18 +33,18 @@ export interface ISample {
 
 
 export const SubjectArea = {
+  art:             { label: 'Art',                       value: 'art' },
+  ela:             { label: 'English Language Arts',     value: 'ela' },
+  eld:             { label: 'ESL / ELD etc.',            value: 'eld' },
+  hss:             { label: 'History / Social Studies',  value: 'hss' },
+  math:            { label: 'Mathematics',               value: 'math' },
+  algebra:         { label: 'Mathematics | Algebra',     value: 'algebra' },
+  geometry:        { label: 'Mathematics | Geometry',    value: 'geometry' },
   science:         { label: 'Science',                   value: 'science' },
   biology:         { label: 'Science | Biology',         value: 'biology' },
   chemistry:       { label: 'Science | Chemistry',       value: 'chemistry' },
   physics:         { label: 'Science | Physics',         value: 'physics' },
   science_other:   { label: 'Science | Other',           value: 'science_other' },
-  art:             { label: 'Art',                       value: 'art' },
-  math:            { label: 'Mathematics',               value: 'math' },
-  algebra:         { label: 'Mathematics | Algebra',     value: 'algebra' },
-  geometry:        { label: 'Mathematics | Geometry',    value: 'geometry' },
-  ela:             { label: 'English Language Arts',     value: 'ela' },
-  hss:             { label: 'History / Social Studies',  value: 'hss' },
-  eld:             { label: 'ESL / ELD etc.',            value: 'eld' },
   spanish:         { label: 'Spanish',                   value: 'spanish' },
   other:           { label: 'Other',                     value: 'other' }
 };
