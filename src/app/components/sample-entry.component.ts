@@ -327,6 +327,20 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       langSkillFormGroup => langSkillFormGroup.controls.language.value === option.value
     );
     this.linguagramComponent.newLinguagram(languageSkill);
+
+    const markAllTouched = function(control) {
+      Object.keys(control.controls).forEach(
+        field => {
+          const innerControl = control.get(field);
+          innerControl.markAsTouched();
+          if (innerControl.controls) { markAllTouched(innerControl); }
+        }
+      );
+    }
+
+    // update validation status so that indicators show
+    markAllTouched(languageSkill);
+
     this.changeDetectorRef.detectChanges();
     this.languageSkillPanel.toggle(event);
     return false;

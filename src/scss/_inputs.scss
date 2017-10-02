@@ -1,3 +1,7 @@
+
+$fa-exclamation-triangle: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAARCAYAAADQWvz5AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAAIwAAACMB1fQWXQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEKSURBVDiNpZM/agJREIc//xTGRsQcIKQPBCQWAQsvELyCZzDkDHamMqRN6gTUoJcQbFJYS0hjSClJsfxS+BaGZd6iZmBgmPnm4+0+HuSEoCFYhmzksbkhuBco5PBYyZngx4h+BefHiJ6NJM2nQyUXgsQRJYLLQ0TTsDgWNEOOQ2+6r6RtTjAy/QfT72T3io5rYOoTU1ctIyhERYIucB1ZtnULuHEOAYKS4D3zcydm/paZrQRlT9RzbulDu88YCD6deS8rqQjWDrgVLEJunflaULGivgNJMDfMPML0U6Am+IpAMyOaRZhvQb0M3BF/2VeCx7SOMHXgtiDYAKcRaN/YFIEXIPmHJAFe/wDiWNxAiTzV4gAAAABJRU5ErkJggg);
+$select-down-arrow: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNiIgd2lkdGg9IjEwIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMCwwIDUsNiIgc3R5bGU9ImZpbGw6cmdiYSgwLDAsMCwuMjQpOyIvPjwvc3ZnPg==);
+
 %md-input-blurred {
   background-color: transparent;
   background-image: none;
@@ -28,7 +32,7 @@
 
 %md-input-invalid {
 
-  border-color: $alert;
+  border-color: $invalid-warning;
   border-width: 2px;
 
   ~ .alert {
@@ -37,9 +41,18 @@
     font-size: .7em;
   }
 
+  background: $fa-exclamation-triangle center right 2px no-repeat;
+
   ~ label {
     color: $invalid-warning !important;
     font-weight: bold;
+
+    // &::before {
+    //   color: $invalid-warning;
+    //   content: '\f071';  // fa-exclamation-triangle
+    //   font-family: FontAwesome;
+    // }
+
   }
 }
 
@@ -56,9 +69,7 @@
 %md-input-select {
   @extend %md-input;
   appearance: none;
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNiIgd2lkdGg9IjEwIj48cG9seWdvbiBwb2ludHM9IjAsMCAxMCwwIDUsNiIgc3R5bGU9ImZpbGw6cmdiYSgwLDAsMCwuMjQpOyIvPjwvc3ZnPg==);
-  background-position: right center;
-  background-repeat: no-repeat;
+  background: $select-down-arrow right center no-repeat;
   cursor: pointer;
   padding: 0 12px 0 0;
 }
@@ -269,21 +280,27 @@ input.text-style {
   > input,
   > select {
     height: 32px;
+  }
+
+  > select {
 
     &.ng-invalid.ng-touched {
       @extend %md-input-invalid;
+      background: $select-down-arrow right center no-repeat, $fa-exclamation-triangle center right 22px no-repeat;
     }
-
   }
 
   > ui-select {
     &.ng-invalid.ng-touched {
-      @extend %md-input-invalid;
 
       .select2-selection {
-        border-color: $invalid-warning;
-        border-width: 2px;
+        @extend %md-input-invalid;
+
+        &.select2-selection--single {
+          background: $fa-exclamation-triangle center right 22px no-repeat;
+        }
       }
+
     }
   }
 
