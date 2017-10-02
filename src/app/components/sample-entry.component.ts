@@ -79,7 +79,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
                               .map(key => ({ label: GradeLevel[key], value: key }));
   public languages: any = Language;
   public languageOptions: any = Object.values(Language).filter(obj => obj.value !== 'unk');
-  public subjectAreas: any = Object.values(SubjectArea);
+  public subjectAreas: any = Object.values(SubjectArea).filter(obj => obj.value !== 'science_other');
   public langKnowns: any = this.languageOptions.map(obj => ({ label: obj.label, value: obj.value }));
 
   public submitAttempted = false;

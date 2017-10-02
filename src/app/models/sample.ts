@@ -44,7 +44,7 @@ export const SubjectArea = {
   biology:         { label: 'Science | Biology',         value: 'biology' },
   chemistry:       { label: 'Science | Chemistry',       value: 'chemistry' },
   physics:         { label: 'Science | Physics',         value: 'physics' },
-  // science_other:   { label: 'Science | Other',           value: 'science_other' },
+  science_other:   { label: 'Science | Other',           value: 'science_other' },
   spanish:         { label: 'Spanish',                   value: 'spanish' },
   other:           { label: 'Other',                     value: 'other' }
 };
