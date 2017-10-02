@@ -3,7 +3,8 @@
   <ui-switch-toggle #stepChooser
                     name="step-chooser"
                     [options]="[{label: 'About', value: 'about'}, {label: 'Participants', value: 'participants'}, {label: 'Conversation', value: 'conversation'}]"
-                    [(ngModel)]="step"
+                    [ngModel]="step"
+                    (click)="doStepChange($event.target.control?.dataset.value)"
                     styleClass="step-chooser">
   </ui-switch-toggle>
 
@@ -17,7 +18,7 @@
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
+        <button class="button-style" (click)="doStepChange('participants')">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
       <form [formGroup]="aboutForm" novalidate>
@@ -143,7 +144,7 @@
       </form>
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'">Next <i class="fa fa-arrow-circle-right"></i></button>
+        <button class="button-style" (click)="doStepChange('participants')">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
     </div>
@@ -156,8 +157,8 @@
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
+        <button class="button-style" (click)="doStepChange('about')"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="doStepChange('conversation')">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
       <form [formGroup]="participantsForm" novalidate>
@@ -302,8 +303,8 @@
       </form>
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'about'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
-        <button class="button-style" (click)="step = 'conversation'">Next <i class="fa fa-arrow-circle-right"></i></button>
+        <button class="button-style" (click)="doStepChange('about')"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="doStepChange('conversation')">Next <i class="fa fa-arrow-circle-right"></i></button>
       </div>
 
     </div>
@@ -316,7 +317,7 @@
          (@slideForwardBack.done)="sampleEntryContainer.style.overflow = 'visible'">
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="doStepChange('participants')"><i class="fa fa-arrow-circle-left"></i> Previous</button>
         <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
       </div>
 
@@ -402,7 +403,7 @@
       </div>
 
       <div class="step-buttons">
-        <button class="button-style" (click)="step = 'participants'"><i class="fa fa-arrow-circle-left"></i> Previous</button>
+        <button class="button-style" (click)="doStepChange('participants')"><i class="fa fa-arrow-circle-left"></i> Previous</button>
         <button class="button-style" (click)="saveSample()">Finish <i class="fa fa-floppy-o"></i></button>
       </div>
 

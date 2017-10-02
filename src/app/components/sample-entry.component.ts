@@ -82,28 +82,11 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   public subjectAreas: any = Object.values(SubjectArea);
   public langKnowns: any = this.languageOptions.map(obj => ({ label: obj.label, value: obj.value }));
 
-  public get step() { return this._step; }
-
-  public set step(value) {
-
-    if (this.doStepValidation(this._step)) {
-      this.doStepChange(value);
-    } else {
-      setTimeout(() => this.stepChooser.value = this._step, 0);
-      this.notificationsService.error(
-        'Form is not complete!',
-        'Please complete the necessary information before moving on!');
-    }
-  }
-
   public submitAttempted = false;
   public busy = false;
 
-  private _step = 'about';
+  public step = 'about';
   private stepDirection = 'forward';
-
-  // Our master model:
-  public sample: Sample = new Sample();
 
   @ViewChild('stepChooser') stepChooser;
   // A model for the languageSkillPanel:
@@ -277,14 +260,33 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  doStepChange(value): void {
-    if (['about', 'participants', 'conversation'].indexOf(value) > ['about', 'participants', 'conversation'].indexOf(this._step)) {
+  doStepChange(nextStep) {
+
+    if (nextStep === null) { return false; }
+
+    if (!this.doStepValidation(this.step)) {
+      this.notificationsService.error(
+        'Form is not complete!',
+        'Please complete the necessary information before moving on!',
+        {showCloseButton: true}
+      );
+      return false;
+    }
+
+    if (nextStep === 'conversation' && this.step === 'about') {
+      if (!this.doStepValidation('participants')) {
+        this.step = 'participants';
+        return false;
+      }
+    }
+
+    if (['about', 'participants', 'conversation'].indexOf(nextStep) > ['about', 'participants', 'conversation'].indexOf(this.step)) {
       this.stepDirection = 'forward';
     } else {
       this.stepDirection = 'back';
     }
-    this.changeDetectorRef.detectChanges();  // force change detection to run so that stepDirection is updated properly in the DOM
-    this._step = value;
+    this.step = nextStep;
+    return true;
   }
 
   doStepValidation(value): boolean {
@@ -836,7 +838,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     if (!this.doStepValidation('about') || !this.doStepValidation('participants') || !this.doStepValidation('conversation')) {
       this.notificationsService.error(
           'Form is not complete!',
-          'Please complete the necessary information before moving on!');
+          'Please complete the necessary information before moving on!',
+          {showCloseButton: true}
+      );
       return false;
     }
 
