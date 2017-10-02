@@ -301,6 +301,10 @@ input.text-style {
         }
       }
 
+      ~ label {
+        color: $invalid-warning !important;
+        font-weight: bold;
+      }
     }
   }
 
