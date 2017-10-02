@@ -1,5 +1,12 @@
 html.lms-bridge {
 
+  .router-outlet {
+    > p {
+      margin: 0;
+      padding-left: 1em;
+    }
+  }
+
   body {
     overflow: hidden;
   }
