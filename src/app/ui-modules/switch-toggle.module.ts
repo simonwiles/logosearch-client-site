@@ -23,6 +23,7 @@ export const SWITCHTOGGLE_VALUE_ACCESSOR: any = {
         <input type="radio"
                [name]="name"
                [value]="idx"
+               [attr.data-value]="item.value"
                [checked]="this.value === item.value"
                [id]="(name + '-' + item.value)"
                (change)="handleChange($event)">
