@@ -34,4 +34,34 @@ html.lms-bridge {
     }
   }
 
+  .sample-view {
+
+    .submission-details {
+      background: #689F38;
+      color: $white;
+      padding: 5px 20px 5px 10px;
+      margin: 10px 20px 0 30px;
+      border-radius: 10px;
+      font-weight: bold;
+      text-shadow: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      span {
+        color: $white;
+      }
+
+      &::before {
+        content: '\f00c';
+        font-family: FontAwesome;
+        font-size: 1.2em;
+        margin-right: 5px;
+      }
+    }
+
+    .recording {
+      max-width: 50%;
+    }
+  }
 }

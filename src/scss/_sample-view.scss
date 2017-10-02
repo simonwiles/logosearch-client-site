@@ -5,20 +5,23 @@
 
     > div:first-child {
       flex: 1 0 auto;
+      max-width: 50%;
     }
 
     .recording {
       background: $light-blue;
       border-radius: 4px;
-      flex: 1 0 300px;
+      flex: 1 2 300px;
       padding: 8px;
 
       span {
         color: rgba($black, .56);
-        margin: 4px 0;
+        display: inline-block;
+        margin: 2px 0 -6px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        width: 100%;
       }
 
       audio {
