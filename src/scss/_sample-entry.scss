@@ -1,6 +1,8 @@
 
 .sample-entry {
 
+  position: relative;
+
   > div {
     position: relative;
     transform-style: preserve-3d;
@@ -471,6 +473,27 @@
   }
 }
 
+
+.reload-mask {
+  background-color: rgba(255, 255, 255, 0.8);
+  bottom: 0;
+  color: rgba(0, 0, 0, .54);
+  font-size: 2em;
+  left: 0;
+  padding-left: inherit;
+  padding-right: inherit;
+  position: absolute !important;
+  right: 0;
+  text-align: center;
+  top: 0;
+
+  i {
+    font-size: 80px;
+    margin-top: -40px;
+    position: relative;
+    top: 50%;
+  }
+}
 
 
 .notification-content {

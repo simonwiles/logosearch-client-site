@@ -410,6 +410,10 @@
 
   </div>
 
+  <div class="reload-mask" *ngIf="busy">
+    <i class="fa fa-spin fa-spinner"></i>
+  </div>
+
   <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
     <pre>{{conversationForm.value | json}}</pre>
     <hr>

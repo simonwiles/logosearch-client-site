@@ -97,6 +97,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   }
 
   public submitAttempted = false;
+  public busy = false;
 
   private _step = 'about';
   private stepDirection = 'forward';
@@ -841,12 +842,18 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     let validated = this.validateSample();
 
+    this.busy = true;
     this.apiService.putSample(validated.sampleJSON, validated.recordingFile, validated.supportingFiles).subscribe(
       sample => {
+        this.busy = false;
         this.messageBusService.emit('sampleSaved', sample);
         this.router.navigate(['../sample', sample.uuid], {relativeTo: this.route});
       },
-      error => { console.log(error); this.notificationsService.error('Error!', error.message); }
+      error => {
+        this.busy = false;
+        console.log(error);
+        this.notificationsService.error('Error!', error.message);
+      }
     );
   }
 
