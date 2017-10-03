@@ -520,10 +520,6 @@ ui-turn-editor.ng-touched.ng-invalid {
 
   .editable {
     @extend %md-input;
-    height: 32px;
-    line-height: 31px;
-    margin: 0;
-    padding: 0;
 
     mark {
       border-style: solid none;

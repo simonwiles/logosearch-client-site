@@ -2,7 +2,19 @@ $black: #000 !default;
 $white: #fff !default;
 
 .ui-turn-editor {
+  display: table;
   position: relative;
+  width: 100%;
+
+  .editable {
+    display: table-cell;
+    height: 32px;
+    line-height: 20px;
+    margin: 0;
+    padding: 0 0 2px;
+    vertical-align: middle;
+  }
+
 }
 
 .ui-turn-editor-toolbar {
