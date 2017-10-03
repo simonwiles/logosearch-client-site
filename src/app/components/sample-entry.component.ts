@@ -265,11 +265,12 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     if (nextStep === null) { return false; }
 
     if (!this.doStepValidation(this.step)) {
-      this.notificationsService.error(
-        'Form is not complete!',
-        'Please complete the necessary information before moving on!',
-        {showCloseButton: true}
-      );
+      // this.notificationsService.error(
+      //   'Form is not complete!',
+      //   'Please complete the necessary information before moving on!',
+      //   {showCloseButton: true}
+      // );
+
       return false;
     }
 
@@ -836,11 +837,11 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   saveSample() {
 
     if (!this.doStepValidation('about') || !this.doStepValidation('participants') || !this.doStepValidation('conversation')) {
-      this.notificationsService.error(
-          'Form is not complete!',
-          'Please complete the necessary information before moving on!',
-          {showCloseButton: true}
-      );
+      // this.notificationsService.error(
+      //     'Form is not complete!',
+      //     'Please complete the necessary information before moving on!',
+      //     {showCloseButton: true}
+      // );
       return false;
     }
 
