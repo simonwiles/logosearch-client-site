@@ -9,6 +9,10 @@
     <a href="mailto:sjwiles@stanford.edu">Simon Wiles &lt;sjwiles@stanford.edu&gt;</a>.
   </p>
   <router-outlet></router-outlet>
+  <p *ngIf="noPeerReview" class="no-peer-review">
+    Peer-review for this assignment is not yet available (too few assignments have been submitted at this stage).
+    Please check back later!
+  </p>
 </div>
 
 <ui-notifications [notificationsService]="notificationsService" [options]="{timeout: 5000, position: ['top', 'right']}"></ui-notifications>

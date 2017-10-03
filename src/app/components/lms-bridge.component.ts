@@ -23,6 +23,8 @@ export class LmsBridgeComponent implements OnInit {
   public spinnerText = 'Waiting for communication from Lagunita...';
   public lmsConnectionEstablished = false;
 
+  public noPeerReview = false;
+
   private remoteHost: string;
 
   constructor(
@@ -103,25 +105,27 @@ export class LmsBridgeComponent implements OnInit {
       //  (there really should be only one), and extract the grade-level
       //  and subject-area from that to better assign peer review.
 
-      this.apiService.getSamples(
-        {
-          sortBy: '-num_scores',
-          submittedBy: '-' + this.authService.loggedInUser.uuid,
-          assignment: [course, session, assignment].join(':')
-        }
-      ).subscribe(
-        samples => {
-          console.log(samples);
-        }
-      );
+      // this.apiService.getSamples(
+      //   {
+      //     sortBy: '-num_scores',
+      //     submittedBy: '-' + this.authService.loggedInUser.uuid,
+      //     assignment: [course, session, assignment].join(':')
+      //   }
+      // ).subscribe(
+      //   samples => {
+      //     console.log(samples);
+      //   }
+      // );
 
-      this.router.navigate(
-        ['evaluate'],
-        {
-          relativeTo: this.route,
-          queryParams: {tool: '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5'}
-        }
-      );
+      // this.router.navigate(
+      //   ['evaluate'],
+      //   {
+      //     relativeTo: this.route,
+      //     queryParams: {tool: '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5'}
+      //   }
+      // );
+
+      this.noPeerReview = true;
     }
   }
 

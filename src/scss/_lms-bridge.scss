@@ -4,6 +4,16 @@ html.lms-bridge {
     > p {
       margin: 0 0 10px;
       padding-left: 1em;
+
+      &.no-peer-review {
+        border: 1px solid;
+        border-radius: 10px;
+        color: rgba(0, 0, 0, .54);
+        font-size: 22px;
+        margin: 25px;
+        padding: 20px;
+        text-align: center;
+      }
     }
   }
 
