@@ -415,14 +415,16 @@
     <i class="fa fa-spin fa-spinner"></i>
   </div>
 
-  <ui-collapsible *ngIf="!environment.production" header="diagnostic" [shown]="false">
-    <pre>{{conversationForm.value | json}}</pre>
-    <hr>
+  <ui-collapsible *ngIf="!environment.production" header="aboutForm" [shown]="false">
     <pre>{{aboutForm.value | json}}</pre>
-    <hr>
+  </ui-collapsible>
+
+  <ui-collapsible *ngIf="!environment.production" header="participantsForm" [shown]="false">
     <pre>{{participantsForm.value | json}}</pre>
-    <hr>
-    <pre>{{sample | json}}</pre>
+  </ui-collapsible>
+
+  <ui-collapsible *ngIf="!environment.production" header="conversationForm" [shown]="false">
+    <pre>{{conversationForm.value | json}}</pre>
   </ui-collapsible>
 
 </div>
