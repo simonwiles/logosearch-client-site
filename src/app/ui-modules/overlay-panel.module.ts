@@ -48,10 +48,21 @@ import { DomHandler }     from '../utils/domhandler';
   }
 
   .ui-overlaypanel-close {
-    border-radius: 10px;
+    border-radius: 2px;
+    border: 1px solid transparent;
+    color: #8c1515;
+    font-size: 20px;
+    font-weight: normal;
     position: absolute;
-    right: -10px;
-    top: -10px;
+    right: 4px;
+    top: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .ui-overlaypanel-close:hover {
+    border-color: #8c1515;
+    background-color: #8c1515;
+    color: #fff;
   }
   `],
   providers: [DomHandler]
