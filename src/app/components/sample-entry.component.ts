@@ -466,8 +466,8 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       nickname: new FormControl(null, Validators.required),
       avatar: new FormControl(AdultParticipant.getRandomAvatar(), Validators.required),
       gender: new FormControl(null, Validators.required),
-      isSubmitter: new FormControl(null),
-      isTeacher: new FormControl(null)
+      isSubmitter: new FormControl(null, Validators.required),
+      isTeacher: new FormControl(null, Validators.required)
     });
 
     (this.participantsForm.get('adults') as FormArray).push(formGroup);

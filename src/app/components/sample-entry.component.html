@@ -251,8 +251,16 @@
             <th class="avatar">avatar</th>
             <th class="nickname">nickname</th>
             <th class="gender">gender</th>
-            <th class="is-submitter">is-submitter</th>
-            <th class="is-teacher">is-teacher</th>
+            <th class="is-submitter">
+              is submitter
+              <ui-help-button helpText="Is this participant the submitter of the sample (i.e. you!)?"
+                              position="top"></ui-help-button>
+            </th>
+            <th class="is-teacher">
+              is teacher
+              <ui-help-button helpText="Is this participant the teacher of the class?"
+                              position="top"></ui-help-button>
+            </th>
           </thead>
           <tbody>
             <tr formArrayName="adults" *ngFor="let adult of participantsForm.get('adults').controls; let i=index">

@@ -290,25 +290,35 @@ input.text-style {
     }
   }
 
-  > ui-select {
-    &.ng-invalid.ng-touched {
+  .alert {
+    display: none;
+  }
+}
 
-      .select2-selection {
-        @extend %md-input-invalid;
 
-        &.select2-selection--single {
-          background: $fa-exclamation-triangle center right 22px no-repeat;
-        }
-      }
+ui-select.ng-invalid.ng-touched {
+  .select2-selection {
+    @extend %md-input-invalid;
 
-      ~ label {
-        color: $invalid-warning !important;
-        font-weight: bold;
-      }
+    &.select2-selection--single {
+      background: $fa-exclamation-triangle center right 22px no-repeat;
     }
   }
 
-  .alert {
-    display: none;
+  ~ label {
+    color: $invalid-warning !important;
+    font-weight: bold;
+  }
+}
+
+ui-switch-toggle.ng-touched.ng-invalid {
+  .switch-toggle {
+    @extend %animation-bounce;
+    border: 1px solid $invalid-warning;
+
+    label {
+      color: $invalid-warning;
+      font-weight: bold;
+    }
   }
 }
