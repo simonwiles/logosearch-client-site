@@ -1,10 +1,7 @@
-import { CommonModule }          from '@angular/common';
-
 import { ChangeDetectorRef,
          Component,
          forwardRef,
-         Input,
-         NgModule }              from '@angular/core';
+         Input }                 from '@angular/core';
 
 import { ControlValueAccessor,
          NG_VALUE_ACCESSOR }     from '@angular/forms';
@@ -32,6 +29,7 @@ export const SWITCHTOGGLE_VALUE_ACCESSOR: any = {
       <a></a>
     </div>
     `,
+    styleUrls: ['./switch-toggle.component.scss'],
     providers: [SWITCHTOGGLE_VALUE_ACCESSOR]
 })
 export class SwitchToggleComponent implements ControlValueAccessor  {
@@ -72,10 +70,3 @@ export class SwitchToggleComponent implements ControlValueAccessor  {
     this.isDisabled = isDisabled;
   }
 }
-
-@NgModule({
-    imports: [CommonModule],
-    exports: [SwitchToggleComponent],
-    declarations: [SwitchToggleComponent]
-})
-export class SwitchToggleModule { }

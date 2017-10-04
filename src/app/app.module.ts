@@ -14,6 +14,7 @@ import { NotificationsModule }          from './ui-modules/ui-notifications/noti
 import { PipesModule }                  from './ui-modules/ui-pipes/pipes.module';
 import { TurnEditorModule }             from './ui-modules/ui-turn-editor/turn-editor.module';
 import { StarRatingModule }             from './ui-modules/ui-star-rating/star-rating.module';
+import { SwitchToggleModule }           from './ui-modules/ui-switch-toggle/switch-toggle.module';
 
 import { CollapsibleModule }            from './ui-modules/collapsible.module';
 import { DataTableModule }              from './ui-modules/data-table/data-table.module';
@@ -21,7 +22,6 @@ import { HelpButtonModule }             from './ui-modules/help-button.module';
 import { OverlayPanelModule }           from './ui-modules/overlay-panel.module';
 import { PaginationModule }             from './ui-modules/pagination.module';
 import { RangeSliderModule }            from './ui-modules/range-slider.module';
-import { SwitchToggleModule }           from './ui-modules/switch-toggle.module';
 import { ToggleModule }                 from './ui-modules/toggle.module';
 import { TooltipModule }                from './ui-modules/tooltip.module';
 
