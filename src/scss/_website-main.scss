@@ -89,6 +89,7 @@ footer {
 .page-content {
   background: $panel;
   min-height: 300px;
+  overflow: auto;
   text-align: center;
   text-shadow: 0 1px 0 $white;
 
