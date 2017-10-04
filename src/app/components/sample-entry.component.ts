@@ -5,10 +5,14 @@ import { Observable }                 from 'rxjs/Observable';
 import { AfterViewInit,
          ChangeDetectorRef,
          Component,
+         ComponentFactory,
+         ComponentFactoryResolver,
+         ComponentRef,
          ElementRef,
          OnInit,
          ViewChild,
-         ViewChildren }               from '@angular/core';
+         ViewChildren,
+         ViewContainerRef }           from '@angular/core';
 
 import { FormArray,
          FormBuilder,
@@ -41,6 +45,8 @@ import { Sample,
          LanguageUsage,
          SubjectArea,
          Turn }                       from '../models/sample';
+
+import { LinguagramComponent }        from '../components/linguagram.component';
 
 import { ApiService }                 from '../services/api.service';
 import { MessageBusService }          from '../services/message-bus.service';
@@ -85,17 +91,15 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   public submitAttempted = false;
   public busy = false;
 
+  public linguagramComponentRef: ComponentRef<LinguagramComponent>;
+
   public step = 'about';
   private stepDirection = 'forward';
 
   @ViewChild('stepChooser') stepChooser;
-  // A model for the languageSkillPanel:
-  // public selectedParticipant: FormGroup;
-  // public languageSkill: FormGroup = this.createLanguageSkill('eng');
-  @ViewChild('linguagramComponent') linguagramComponent;
   @ViewChild('languageSkillPanel') languageSkillPanel;
+  @ViewChild('linguagramComponentContainer', { read: ViewContainerRef }) linguagramComponentContainer;
 
-  //
   @ViewChild('participantLookup') participantLookup;
   @ViewChild('participantLookupPanel') participantLookupPanel;
 
@@ -149,6 +153,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
+    private componentFactoryResolver: ComponentFactoryResolver,
     private elementRef: ElementRef,
 
     private route: ActivatedRoute,
@@ -213,7 +218,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
         }
         if (turns[turns.length - 1].content && turns[turns.length - 1].speaker) {
           this.addTurn();
-          this.changeDetectorRef.detectChanges();
+          // this.changeDetectorRef.detectChanges();
         }
 
         if (turnFormGroups.length < 17) { // note: includes the blank one at the bottom which will be stripped
@@ -324,29 +329,42 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     return arr.filter(e => e !== value);
   }
 
-  editLanguageSkill(event, option, participant) {
-    // Populate and pop-up the languageSkillPanel when a language 'pill' is clicked.
-    event.stopPropagation();
-    let languageSkill = participant.controls.languageSkills.controls.find(
-      langSkillFormGroup => langSkillFormGroup.controls.language.value === option.value
-    );
-    this.linguagramComponent.newLinguagram(languageSkill);
+  createLinguagram(languageSkillForm) {
+    this.linguagramComponentContainer.clear();
+    const componentFactory: ComponentFactory<LinguagramComponent> =
+      this.componentFactoryResolver.resolveComponentFactory(LinguagramComponent);
+    this.linguagramComponentRef = this.linguagramComponentContainer.createComponent(componentFactory);
+    this.linguagramComponentRef.instance.newLinguagram(languageSkillForm);
+  }
 
-    const markAllTouched = function(control) {
-      Object.keys(control.controls).forEach(
-        field => {
-          const innerControl = control.get(field);
-          innerControl.markAsTouched();
-          if (innerControl.controls) { markAllTouched(innerControl); }
-        }
-      );
-    }
+  markAllTouched(control) {
+    Object.keys(control.controls).forEach(
+      field => {
+        const innerControl = control.get(field);
+        innerControl.markAsTouched();
+        if (innerControl.controls) { this.markAllTouched(innerControl); }
+      }
+    );
+  }
+
+  editLanguageSkill($event, option, participant) {
+    // Populate and pop-up the languageSkillPanel when a language 'pill' is clicked.
+    $event.stopPropagation();
+
+    let languageSkillForm = participant.get('languageSkills').controls.find(
+      _languageSkillForm => _languageSkillForm.get('language').value === option.value
+    );
 
     // update validation status so that indicators show
-    markAllTouched(languageSkill);
+    this.markAllTouched(languageSkillForm.get('assessedLevel'));
 
-    this.changeDetectorRef.detectChanges();
-    this.languageSkillPanel.toggle(event);
+    if (this.linguagramComponentRef && languageSkillForm === this.linguagramComponentRef.instance.linguagramForm) {
+      this.createLinguagram(languageSkillForm);
+      this.languageSkillPanel.toggle($event);
+    } else {
+      this.createLinguagram(languageSkillForm);
+      this.languageSkillPanel.show($event);
+    }
     return false;
   }
 
@@ -369,10 +387,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     const targetEl = selectComponent.el.nativeElement
                     .querySelector(`li.select2-selection__choice[data-value^=${language}]`);
 
-    let languageSkill: FormGroup = this.createLanguageSkill(language);
-    (participant.controls.languageSkills as FormArray).push(languageSkill);
-    this.linguagramComponent.newLinguagram(languageSkill);
-    this.changeDetectorRef.detectChanges();
+    let languageSkillForm: FormGroup = this.createLanguageSkill(language);
+    (participant.controls.languageSkills as FormArray).push(languageSkillForm);
+    this.createLinguagram(languageSkillForm);
     this.languageSkillPanel.show(null, targetEl);
   }
 
@@ -438,11 +455,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     (this.participantsForm.get('students') as FormArray).push(formGroup);
 
-
-
-
     if ($event) { $event.target.blur(); }
-    this.changeDetectorRef.detectChanges();
     return false;
   }
 

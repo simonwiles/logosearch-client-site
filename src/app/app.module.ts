@@ -136,6 +136,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
 
     TranscriptionRendererService
   ],
+  entryComponents: [LinguagramComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
