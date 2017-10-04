@@ -22,7 +22,7 @@ import { DomHandler }     from '../utils/domhandler';
          [ngStyle]="style"
          [class]="styleClass"
          *ngIf="visible"
-         (window:click)="onWindowClick($event)">
+         (document:click)="onDocumentClick($event)">
       <div class="ui-overlaypanel-content">
         <ng-content></ng-content>
       </div>
@@ -92,7 +92,8 @@ export class OverlayPanelComponent {
   // prefering not to use HostListener here, so as not to have the event
   //  constantly firing when the panel is not even part of the DOM
   //  (better solutions are available?)
-  onWindowClick($event) {
+  onDocumentClick($event) {
+    console.log('windowclick');
     if (!this.overlayPanel.nativeElement.contains($event.target)) {
       this.hide();
     }

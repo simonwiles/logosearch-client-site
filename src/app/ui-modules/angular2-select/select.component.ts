@@ -188,6 +188,9 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
       this.focus();
     }
     event.stopPropagation();
+    // this is a hack; stopping propagation causes any upstream eventHandlers
+    //  to be ignored.  Here we make sure at least those bound on document will fire.
+    document.dispatchEvent(new Event('click'));
   }
 
   /**
