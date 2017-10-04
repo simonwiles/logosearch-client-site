@@ -373,7 +373,10 @@
           <tbody>
             <tr formArrayName="turns" *ngFor="let turn of conversationForm.get('turns').controls; let i=index">
               <td>
-                <button (click)="conversationForm.get('turns').removeAt(i)" class="text-style" [disabled]="conversationForm.get('turns').controls.length <= 1">
+                <button class="text-style"
+                        tabindex="-1"
+                        [disabled]="conversationForm.get('turns').controls.length <= 1"
+                        (click)="conversationForm.get('turns').removeAt(i)">
                   <i class="fa fa-close"></i>
                 </button>
               </td>

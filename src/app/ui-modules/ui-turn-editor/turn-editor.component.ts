@@ -45,12 +45,13 @@ export const INPUT_VALUE_ACCESSOR: any = {
     </button-->
 
     <button *ngFor="let action of objectKeys(annotations)"
+            tabindex="-1"
             (mousedown)="toolbarButtonClick($event, action)">
       <i *ngIf="annotations[action].icon" [class]="'fa ' + annotations[action].icon"></i>
       {{annotations[action].label}}
     </button>
 
-    <button (mousedown)="toolbarButtonClick($event, 'clear')">clear</button>
+    <button tabindex="-1" (mousedown)="toolbarButtonClick($event, 'clear')">clear</button>
   </div>
   `,
   styleUrls: ['./turn-editor.component.scss'],
