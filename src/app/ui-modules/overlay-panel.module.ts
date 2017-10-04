@@ -93,7 +93,6 @@ export class OverlayPanelComponent {
   //  constantly firing when the panel is not even part of the DOM
   //  (better solutions are available?)
   onDocumentClick($event) {
-    console.log('windowclick');
     if (!this.overlayPanel.nativeElement.contains($event.target)) {
       this.hide();
     }
