@@ -32,15 +32,6 @@ export class StarRatingComponent implements ControlValueAccessor {
   @Input() readonly: boolean;
   @Input() name: string;
 
-  @Input() styleClass = '';
-
-  @Output() onBlur: EventEmitter<any> = new EventEmitter();
-  @Output() onClear: EventEmitter<any> = new EventEmitter();
-  @Output() onFocus: EventEmitter<any> = new EventEmitter();
-  @Output() onSelect: EventEmitter<any> = new EventEmitter();
-
-
-  display: string;
   value: string;
 
   constructor(private domHandler: DomHandler) {
@@ -48,10 +39,10 @@ export class StarRatingComponent implements ControlValueAccessor {
   }
 
   handleChange(event: Event) {
-    // <HTMLInputElement>.input can only be a string; this shenanigans is so that
+    // <HTMLInputElement>.value can only be a string; this shenanigans is so that
     //  values passed into (and, crucially, out of) this component can have other
     //  types (boolean, number, object, array, etc.)
-    this.value = (event.target as HTMLInputElement).value;
+    this.value = this.options.slice().reverse()[+(event.target as HTMLInputElement).value].value;
     this.onModelChange(this.value);
   }
 
