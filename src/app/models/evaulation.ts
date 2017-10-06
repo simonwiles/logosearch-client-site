@@ -14,22 +14,22 @@ export class Evaluation {
   public submittedAt: string;
   public submittedBy: string;
 
-  public evaluatorIsSubmitter: boolean;
+  public evaluatorIsSampleSubmitter: boolean;
 
   public sample: string;
 
   public tool: string;
-  public scores: Score[] = [];
+  public dimensions: Dimension[] = [];
 
 
   constructor(obj?: IEvaluation) {
     Object.assign(this, obj);
-    this.scores = this.scores.map(score => new Score(score));
+    this.dimensions = this.dimensions.map(dimension => new Dimension(dimension));
   }
 }
 
 
-export class Score {
+export class Dimension {
   public rationale = '';
   public dimension: string;
   public score = 0;

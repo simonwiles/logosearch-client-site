@@ -19,7 +19,7 @@
       </header>
 
       <article>
-        <div *ngFor="let dimension of evaluation.scores; let index=index" class="dimension">
+        <div *ngFor="let dimension of evaluation.dimensions; let index=index" class="dimension">
           <p>
             <strong>Dimension {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}:
             {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].title }}</strong>
@@ -32,9 +32,9 @@
               [options]="['1','2','3','4']">
             </ui-star-rating> -
             <strong>
-              {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].label}}
+              {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.label}}
             </strong>
-            <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score].rubric"></ui-help-button>
+            <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.rubric"></ui-help-button>
           </p>
           <p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
           <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p>
