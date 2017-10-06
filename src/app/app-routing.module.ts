@@ -42,6 +42,7 @@ const routes: Routes = [
       { path: 'users', component: ProfileComponent },
       { path: 'sample/:uuid', component: SampleViewComponent },
       { path: 'samples', component: SampleBrowserComponent },
+      { path: 'evaluate/:uuid', component: SampleEvaluationComponent },
       { path: 'evaluate', component: SampleEvaluationComponent },
 
       { path: '**', component: HomeComponent }

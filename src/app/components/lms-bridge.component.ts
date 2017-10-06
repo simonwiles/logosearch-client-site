@@ -73,7 +73,7 @@ export class LmsBridgeComponent implements OnInit {
     this.remoteHost = data.remoteHost;
     if (course !== data.openEdXCourseId.split(':').pop()) {
       this.spinnerText = 'Configuration Error!';
-      console.log('course mismatch!');
+      console.log('Course mismatch!', course, data.openEdXCourseId.split(':').pop());
       return;
     }
 
@@ -97,6 +97,8 @@ export class LmsBridgeComponent implements OnInit {
           }
         );
       }
+
+      return;
     }
 
     if (type.toLowerCase() === 'peerevaluation') {
@@ -126,7 +128,34 @@ export class LmsBridgeComponent implements OnInit {
       // );
 
       this.noPeerReview = true;
+      return;
     }
+
+    if (type.toLowerCase() === 'submissionselfassessment') {
+
+      if (data.hasOwnProperty('responseValue')) {
+        this.router.navigate(['sample', data.responseValue], {relativeTo: this.route});
+      } else {
+        let queryParams = {
+          course: course,
+          session: session,
+          assignment: assignment
+        };
+        this.router.navigate(
+          ['sample-entry'],
+          {
+            relativeTo: this.route,
+            queryParams: queryParams
+          }
+        );
+      }
+
+      return;
+    }
+
+    this.spinnerText = 'Configuration Error!';
+    console.log('unknown command:', type);
+
   }
 
   sendData(sampleUuid) {
