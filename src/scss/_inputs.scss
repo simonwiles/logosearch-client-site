@@ -322,3 +322,17 @@ ui-switch-toggle.ng-touched.ng-invalid {
     }
   }
 }
+
+ui-star-rating.ng-touched.ng-invalid {
+  .ui-star-rating {
+    border-bottom: 2px solid $invalid-warning;
+  }
+
+  &::after {
+    color: $invalid-warning;
+    content: '\f071';  // fa-exclamation-triangle
+    font-family: FontAwesome;
+    margin: 0 8px;
+  }
+
+}
