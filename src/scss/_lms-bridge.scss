@@ -1,6 +1,12 @@
 html.lms-bridge {
 
+  body {
+    overflow: hidden;
+  }
+
   .router-outlet {
+    position: relative;
+
     > p {
       margin: 0 0 10px;
       padding-left: 1em;
@@ -15,10 +21,6 @@ html.lms-bridge {
         text-align: center;
       }
     }
-  }
-
-  body {
-    overflow: hidden;
   }
 
   .panel {
