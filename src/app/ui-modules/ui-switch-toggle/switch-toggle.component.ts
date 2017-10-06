@@ -46,7 +46,7 @@ export class SwitchToggleComponent implements ControlValueAccessor  {
   constructor(private cd: ChangeDetectorRef) { }
 
   handleChange(event: Event) {
-    // <HTMLInputElement>.input can only be a string; this shenanigans is so that
+    // <HTMLInputElement>.value can only be a string; this shenanigans is so that
     //  values passed into (and, crucially, out of) this component can have other
     //  types (boolean, number, object, array, etc.)
     this.value = this.options[+(event.target as HTMLInputElement).value].value;
