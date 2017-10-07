@@ -168,7 +168,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      this.aboutForm.get('collectionSource').setValue(params);
+      if (params.hasOwnProperty('collectionSource')) {
+        this.aboutForm.get('collectionSource').setValue(params['collectionSource']);
+      }
     });
 
     this.aboutForm.get('languagesUsed').valueChanges.subscribe(
