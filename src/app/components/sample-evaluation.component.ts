@@ -1,17 +1,30 @@
+import * as uuid from 'uuid';
+
 import { Component,
          Input,
-         OnChanges,
          OnInit,
-         SimpleChanges }                  from '@angular/core';
+         SimpleChanges }           from '@angular/core';
 
-import { ActivatedRoute }                 from '@angular/router';
+import { FormArray,
+         FormBuilder,
+         FormControl,
+         FormGroup,
+         Validators }              from '@angular/forms';
 
-import { environment }                    from '../../environments/environment';
+import { ActivatedRoute,
+         Router }                  from '@angular/router';
 
-import { Evaluation, Score }                     from '../models/evaulation';
-import { Sample }                         from '../models/sample';
+import { environment }             from '../../environments/environment';
 
-import { EvaluationTools }                from '../models/evaluation-tools';
+import { Evaluation,
+         Dimension }               from '../models/evaulation';
+import { EvaluationTools }         from '../models/evaluation-tools';
+import { Sample }                  from '../models/sample';
+
+import { ApiService }              from '../services/api.service';
+import { MessageBusService }       from '../services/message-bus.service';
+import { NotificationsService }    from '../services/notifications.service';
+
 
 
 
@@ -20,39 +33,175 @@ import { EvaluationTools }                from '../models/evaluation-tools';
   selector: 'lr-sample-evaluation',
   templateUrl: './sample-evaluation.component.html'
 })
-export class SampleEvaluationComponent implements OnInit, OnChanges {
+export class SampleEvaluationComponent implements OnInit {
 
-  @Input() sampleUuid: string;
-  @Input() sample: Sample;
+  public environment = environment;
+  public busy = false;
 
-  public evaluation: Evaluation = new Evaluation();
-  public dimensions;
   public evaluationTool;
   public evaluationTools = EvaluationTools;
+  public sampleUuid: string;
 
-  constructor(private route: ActivatedRoute) { }
+  public evaluationForm: FormGroup = this.formBuilder.group({
+    uuid: new FormControl(uuid.v4(), Validators.required),
+    tool: new FormControl('', Validators.required),
+    collectionSource: new FormControl(''),
+    // evaluatorIsSampleSubmitter: new FormControl('', Validators.required),
+    sample: new FormControl('', Validators.required),
+    dimensions: new FormArray([]),
+  });
+
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private formBuilder: FormBuilder,
+
+    private apiService: ApiService,
+    private messageBusService: MessageBusService,
+    private notificationsService: NotificationsService) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.evaluation.tool = params['tool'];
-      this.evaluationTool = this.evaluationTools[params['tool']];
-      Object.keys(this.evaluationTool.dimensions).forEach(
-        key => {
-          this.evaluation.scores.push(new Score({dimension: key}));
-        }
-      );
-    });
-    // const key = 'uuid';
-    // if (this.sample) {
-    //   this.sampleUuid = this.sample.uuid;
-    // } else {
-    //   // const uuid = this.route.snapshot.params[key];
-    //   // if (uuid) { this.sampleUuid = uuid; }
-    // }
+
+    let sampleUuid, toolUuid;
+    const params = this.activatedRoute.snapshot.queryParams;
+
+    // all values that arrive as queryParams except for 'sampleUuid' and 'toolUuid'
+    //  are to be saved in the 'collectionSource' field of the FormGroup.
+    // this.evaluationForm.get('collectionSource').setValue(
+    //   Object.keys(this.activatedRoute.snapshot.queryParams)
+    //         .filter(key => key !== 'sampleUuid')
+    //         .reduce((obj, key) => {
+    //           obj[key] = this.activatedRoute.snapshot.queryParams[key];
+    //           return obj;
+    //         }, {})
+    // );
+
+    console.log(params);
+
+    if (params.hasOwnProperty('collectionSource')) {
+      this.evaluationForm.get('collectionSource').setValue(params['collectionSource']);
+    }
+
+    if (params.hasOwnProperty('toolUuid')) {
+      toolUuid = params['toolUuid'];
+    } else {
+      console.log('no tool specified!');
+    }
+
+    sampleUuid = this.activatedRoute.snapshot.params['sampleUuid'];
+    if (!sampleUuid) {
+      if (params.hasOwnProperty('sampleUuid')) {
+        sampleUuid = params['sampleUuid'];
+      } else {
+        // can't do anything if we don't know what sample we're supposed to be evaluating!
+        console.log('no sample specified!');
+      }
+    }
+
+    console.log(sampleUuid);
+
+    if (sampleUuid && toolUuid) {
+      this.init(sampleUuid, toolUuid);
+    }
   }
 
+  init(sampleUuid, toolUuid) {
+    const evaluationTool = this.evaluationTool = this.evaluationTools[toolUuid];
+    this.sampleUuid = sampleUuid;
 
-  ngOnChanges(changes: SimpleChanges) {
+    this.evaluationForm.get('tool').setValue(toolUuid);
+    this.evaluationForm.get('sample').setValue(this.sampleUuid);
+    // this.evaluationForm.get('evaluatorIsSampleSubmitter').setValue(true);
+
+    Object.keys(this.evaluationTool.dimensions).forEach(
+      key => {
+        (this.evaluationForm.get('dimensions') as FormArray).push(this.newDimensionForm(key));
+      }
+    );
+
+    // subscribe to changes to the score of optional dimensions --
+    //  if there's a score, the rationale is required.
+    (this.evaluationForm.get('dimensions') as FormArray).controls.forEach(
+      dimension => {
+        if (evaluationTool.dimensions[(dimension as FormGroup).get('dimension').value].isOptional) {
+          dimension.get('score').valueChanges.subscribe(
+            score => {
+              dimension.get('rationale').setValidators(Validators.required);
+              dimension.get('rationale').updateValueAndValidity();
+            }
+          );
+        }
+      }
+    )
+  }
+
+  newDimensionForm(dimension) {
+    if (this.evaluationTool.dimensions[dimension].isOptional) {
+      return this.formBuilder.group({
+        dimension: new FormControl(dimension, Validators.required),
+        rationale: new FormControl(''),
+        score: new FormControl(null)
+      });
+    }
+    return this.formBuilder.group({
+      dimension: new FormControl(dimension, Validators.required),
+      rationale: new FormControl('', Validators.required),
+      score: new FormControl(null, Validators.required)
+    });
+  }
+
+  submitEvaluation($event) {
+
+    const markAllTouched = function(control) {
+      Object.keys(control.controls).forEach(
+        field => {
+          const innerControl = control.get(field);
+          innerControl.markAsTouched();
+          if (innerControl.controls) { markAllTouched(innerControl); }
+        }
+      );
+    }
+
+    markAllTouched(this.evaluationForm);
+
+    if (!this.evaluationForm.valid) {
+      this.notificationsService.error('Error!', 'form not valid');
+      return;
+    }
+
+    const removeEmpty = (obj) => {
+      Object.keys(obj).forEach(key => {
+        if (obj[key] === null
+            || (Array.isArray(obj[key]) && obj[key].length === 0)
+            || (typeof obj[key] === 'object' && Object.keys(obj[key]).length === 0)
+            || (typeof obj[key] === 'string' && obj[key] === '')) {
+
+          delete obj[key];
+
+        } else if (obj[key] && typeof obj[key] === 'object') {
+          removeEmpty(obj[key]);
+        }
+      });
+      return obj;
+    };
+
+    let evaluationJSON = JSON.stringify(removeEmpty(this.evaluationForm.value));
+
+    this.busy = true;
+    this.apiService.putEvaluation(evaluationJSON).subscribe(
+      evaluation => {
+        this.busy = false;
+        this.messageBusService.emit('evaluationSaved', evaluation);
+        this.router.navigate(['../sample', evaluation.sample], {relativeTo: this.activatedRoute});
+      },
+      error => {
+        this.busy = false;
+        console.log(error);
+        this.notificationsService.error('Error!', error.message);
+      }
+    );
+
+    $event.target.blur();
   }
 
 }
