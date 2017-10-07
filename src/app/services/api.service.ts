@@ -268,7 +268,7 @@ export class ApiService {
   public putSample(sampleJSON, recordingFile, supportingFiles): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
     const options: RequestOptions = new RequestOptions({
-      headers: this.getHeadersWithAuth(new Headers())
+      headers: this.getHeadersWithAuth(this.headers)
     });
 
     let formData = new FormData();
@@ -278,6 +278,23 @@ export class ApiService {
       supportingFile => formData.append('supportingFiles', supportingFile));
 
     return this.http.put(samplesURI, formData, options)
+                    .map(response => response.json())
+                    .catch(error => this.handleError(error));
+  }
+
+
+  public putEvaluation(evaluationJSON): Observable<any> {
+    const evaluationsURI: string = environment.apiURL + 'evaluations/';
+    const options: RequestOptions = new RequestOptions({
+      headers: this.getHeadersWithAuth(
+        new Headers({
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        })
+      )
+    });
+
+    return this.http.put(evaluationsURI, evaluationJSON, options)
                     .map(response => response.json())
                     .catch(error => this.handleError(error));
   }
