@@ -55,6 +55,13 @@ export class SampleViewComponent implements OnInit, OnChanges {
     const key = 'uuid';
     if (this.sample) {
       this.sampleUuid = this.sample.uuid;
+    } else if (this.sampleUuid) {
+      this.apiService.getSample(this.sampleUuid).subscribe(
+        sample => {
+          this.sample = sample;
+          this.onSampleLoaded();
+        }
+      );
     } else {
       const uuid = this.route.snapshot.params[key];
       if (uuid) { this.sampleUuid = uuid; this.loadSample(); }
