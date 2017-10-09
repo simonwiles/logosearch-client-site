@@ -244,7 +244,7 @@ export class ApiService {
       if (params.sample) { _params.set('sample', params.sample); }
       if (params.tool) { _params.set('tool', params.tool); }
       if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
-      if (params.bySubmitter) { _params.set('bySubmitter', params.bySubmitter); }
+      if (params.bySubmitter) { _params.set('bySubmitter', (params.bySubmitter === true) ? 'True' : 'False') }
 
     }
     const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
