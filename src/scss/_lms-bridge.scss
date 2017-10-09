@@ -7,19 +7,19 @@ html.lms-bridge {
   .router-outlet {
     position: relative;
 
-    > p {
+    .notice {
       margin: 0 0 10px;
       padding-left: 1em;
+    }
 
-      &.no-peer-review {
-        border: 1px solid;
-        border-radius: 10px;
-        color: rgba(0, 0, 0, .54);
-        font-size: 22px;
-        margin: 25px;
-        padding: 20px;
-        text-align: center;
-      }
+    .no-peer-review {
+      border: 1px solid;
+      border-radius: 10px;
+      color: rgba(0, 0, 0, .54);
+      font-size: 22px;
+      margin: 25px;
+      padding: 20px;
+      text-align: center;
     }
   }
 
@@ -59,32 +59,64 @@ html.lms-bridge {
       display: none;
     }
 
-    .submission-details {
-      background: #689F38;
-      color: $white;
-      padding: 5px 20px 5px 10px;
-      margin: 2px 20px 0 0;
-      border-radius: 10px;
-      font-weight: bold;
-      text-shadow: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    // .submission-details {
+    //   background: $green2;
+    //   color: $white;
+    //   padding: 5px 20px 5px 10px;
+    //   margin: 2px 20px 0 0;
+    //   border-radius: 10px;
+    //   font-weight: bold;
+    //   text-shadow: none;
+    //   white-space: nowrap;
+    //   overflow: hidden;
+    //   text-overflow: ellipsis;
 
-      span {
-        color: $white;
-      }
+    //   span {
+    //     color: $white;
+    //   }
 
-      &::before {
-        content: '\f00c';
-        font-family: FontAwesome;
-        font-size: 1.2em;
-        margin-right: 5px;
-      }
-    }
+    //   &::before {
+    //     content: '\f00c';
+    //     font-family: FontAwesome;
+    //     font-size: 1.2em;
+    //     margin-right: 5px;
+    //   }
+    // }
 
     .recording {
       max-width: 50%;
     }
+  }
+}
+
+.assignment-completion-status {
+  align-items: center;
+  background-color: $white;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0 !important;
+
+
+  &.valid {
+    border: 2px solid $green2;
+    color: $green2;
+  }
+
+  &.warning {
+    border: 2px solid $yellow2;
+    background: $yellow1;
+    color: #444;
+
+    i {
+      color: $yellow2;
+    }
+
+  }
+
+  i {
+    display: block;
+    font-size: 24px;
+    text-align: center;
+    width: 60px;
   }
 }
