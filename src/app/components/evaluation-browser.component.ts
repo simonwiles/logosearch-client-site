@@ -24,6 +24,7 @@ export class EvaluationBrowserComponent implements OnInit, OnChanges {
   constructor(public evaluationsListService: EvaluationsListService) { }
 
   ngOnInit() {
+    this.evaluationsListService.limit = 4;
     this.evaluationsListService.params['sample'] = this.sampleUuid;
   }
 
