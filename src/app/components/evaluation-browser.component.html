@@ -19,26 +19,34 @@
       </header>
 
       <article>
-        <div *ngFor="let dimension of evaluation.dimensions; let index=index" class="dimension">
-          <p>
-            <strong>Dimension {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}:
-            {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].title }}</strong>
-          </p>
-          <p>
-            <ui-star-rating
-              [name]="evaluation.uuid + index"
-              [readonly]="true"
-              [(ngModel)]="dimension.score"
-              [options]="['1','2','3','4']">
-            </ui-star-rating> -
-            <strong>
-              {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.label}}
-            </strong>
-            <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.rubric"></ui-help-button>
-          </p>
-          <p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
-          <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p>
-        </div>
+        <ul>
+          <li *ngFor="let dimension of evaluation.dimensions; let index=index" class="value-stud">
+            <span>D{{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}</span>
+            {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.label}}
+          </li>
+        </ul>
+        <ui-collapsible [shown]="false">
+          <div *ngFor="let dimension of evaluation.dimensions; let index=index" class="dimension">
+            <p>
+              <strong>Dimension {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].index }}:
+              {{ evaluationTools[evaluation.tool].dimensions[dimension.dimension].title }}</strong>
+            </p>
+            <p>
+              <ui-star-rating
+                [name]="evaluation.uuid + index"
+                [readonly]="true"
+                [(ngModel)]="dimension.score"
+                [options]="['1','2','3','4']">
+              </ui-star-rating> -
+              <strong>
+                {{evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.label}}
+              </strong>
+              <ui-help-button [helpText]="evaluationTools[evaluation.tool].dimensions[dimension.dimension].levels[dimension.score]?.rubric"></ui-help-button>
+            </p>
+            <p *ngIf="dimension.rationale">{{dimension.rationale}}</p>
+            <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p>
+          </div>
+        </ui-collapsible>
       </article>
     </div>
 

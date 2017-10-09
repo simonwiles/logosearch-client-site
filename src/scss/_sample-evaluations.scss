@@ -30,7 +30,35 @@
   article {
     margin: 12px 0 8px;
 
-    > div {
+    ul {
+      margin: 0 0 10px 35px;
+      padding: 0;
+
+      .value-stud {
+        background-color: $white;
+
+        span {
+          background-color: $main-accent;
+          border-radius: .8em 0 0 .8em;
+          color: $white;
+          display: inline-block;
+          font-weight: bold;
+          margin-left: -8px;
+          margin-right: 4px;
+          padding: 0 8px;
+        }
+      }
+    }
+
+    .handle {
+      color: $main-accent;
+      float: left;
+      font-size: 18px;
+      margin-left: 6px;
+      margin-top: -32px;
+    }
+
+    .dimension {
       @extend %shadow-z-1;
       background: #fafafa;
       border-radius: 3px;
@@ -40,6 +68,7 @@
       &:first-child {
         margin-top: 0;
       }
+
     }
 
     header {
@@ -50,6 +79,11 @@
       text-decoration: underline;
 
     }
+  }
+
+  .button-style.submit {
+    font-size: 18px;
+    width: 100%;
   }
 
   .ui-star-rating {
@@ -63,11 +97,13 @@
 
 
   &.mini-panel {
-    height: 300px;
+    //height: 300px;
+    height: auto;
+    width: 98%;
 
-    article {
-      overflow-y: scroll;
-    }
+    // article {
+    //   overflow-y: scroll;
+    // }
   }
 
 }
