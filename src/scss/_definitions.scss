@@ -9,16 +9,26 @@ $orange: #ed7d31;
 
 // ul colours
 $cardinal: #8c1515;
-$teal: #007c92;
-$green: #009b76;
-$dark-grey: #4d4f53;
-$blue: #0098d8;
-$gold: #eaab00;
+$ul-teal: #007c92;
+$ul-green: #009b76;
+$ul-dark-grey: #4d4f53;
+$ul-blue: #0098d8;
+$ul-gold: #eaab00;
+
 
 $dark-blue: #2b3d50;
 $light-blue: #a8d8eb;
 $light-blue: mix($light-blue, $white, 80%);
 
+// notifications
+$green1: #8bc34a;
+$green2: desaturate(darken($green1, 12), 10);  // formerly: #689f38;
+$red1: #f44336;
+$red2: desaturate(darken($red1, 20), 10);  // formerly: #d32f2f;
+$yellow1: #ffdb5b;
+$yellow2: desaturate(darken($yellow1, 20), 10);  // formerly: #edc242;
+$blue1: #03a9f4;
+$blue2: desaturate(darken($blue1, 20), 10);  // formerly: #0288d1;
 
 // ui colours
 $main-accent: $cardinal;
@@ -32,7 +42,6 @@ $valid-confirmation: #008000;
 $hover-highlight: $light-blue;
 $pill-bg: #e4e4e4;
 $pill-border: #ccc;
-
 
 
 $font-header: 'Roboto Slab', serif;
