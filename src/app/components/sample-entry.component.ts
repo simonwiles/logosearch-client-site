@@ -21,6 +21,7 @@ import { FormArray,
          Validators }                 from '@angular/forms';
 
 import { ActivatedRoute,
+         NavigationExtras,
          Router }                     from '@angular/router';
 
 import { animate,
@@ -110,7 +111,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   // FormGroup objects (one per 'page' of the sample-entry component)
   aboutForm: FormGroup = this.formBuilder.group({
     uuid: new FormControl(uuid.v4(), Validators.required),
-    collectionSource: new FormControl('', Validators.required),
+    collectionSource: new FormControl(''),
     context: new FormControl('', Validators.required),
     subjectArea: new FormControl('', Validators.required),
     objective: new FormControl('', Validators.required),
@@ -167,11 +168,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     private notificationsService: NotificationsService) { }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      if (params.hasOwnProperty('collectionSource')) {
-        this.aboutForm.get('collectionSource').setValue(params['collectionSource']);
-      }
-    });
+    if (this.route.snapshot.queryParams.hasOwnProperty('collectionSource')) {
+      this.aboutForm.get('collectionSource').setValue(JSON.parse(this.route.snapshot.queryParams['collectionSource']));
+    }
 
     this.aboutForm.get('languagesUsed').valueChanges.subscribe(
       languagesUsed => {
@@ -867,6 +866,19 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       sample => {
         this.busy = false;
         this.messageBusService.emit('sampleSaved', sample);
+        if (this.route.snapshot.queryParams.routing === 'selfevaluation') {
+          let navigationExtras: NavigationExtras = {
+            queryParams: {
+              sampleUuid: sample.uuid
+            },
+            queryParamsHandling: 'merge',
+            relativeTo: this.route,
+            skipLocationChange: true,
+            replaceUrl: false
+          };
+          this.router.navigate(['../evaluate'], navigationExtras)
+          return;
+        }
         this.router.navigate(['../sample', sample.uuid], {relativeTo: this.route});
       },
       error => {
