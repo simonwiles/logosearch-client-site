@@ -65,19 +65,6 @@ export class SampleEvaluationComponent implements OnInit {
     let sampleUuid, toolUuid;
     const params = this.activatedRoute.snapshot.queryParams;
 
-    // all values that arrive as queryParams except for 'sampleUuid' and 'toolUuid'
-    //  are to be saved in the 'collectionSource' field of the FormGroup.
-    // this.evaluationForm.get('collectionSource').setValue(
-    //   Object.keys(this.activatedRoute.snapshot.queryParams)
-    //         .filter(key => key !== 'sampleUuid')
-    //         .reduce((obj, key) => {
-    //           obj[key] = this.activatedRoute.snapshot.queryParams[key];
-    //           return obj;
-    //         }, {})
-    // );
-
-    console.log(params);
-
     if (params.hasOwnProperty('collectionSource')) {
       this.evaluationForm.get('collectionSource').setValue(params['collectionSource']);
     }
@@ -97,8 +84,6 @@ export class SampleEvaluationComponent implements OnInit {
         console.log('no sample specified!');
       }
     }
-
-    console.log(sampleUuid);
 
     if (sampleUuid && toolUuid) {
       this.init(sampleUuid, toolUuid);
@@ -185,10 +170,11 @@ export class SampleEvaluationComponent implements OnInit {
       return obj;
     };
 
-    let evaluationJSON = JSON.stringify(removeEmpty(this.evaluationForm.value));
+    let value = removeEmpty(this.evaluationForm.value);
+    value.dimensions = value.dimensions.filter(dimension => dimension.score && dimension.rationale);
 
     this.busy = true;
-    this.apiService.putEvaluation(evaluationJSON).subscribe(
+    this.apiService.putEvaluation(JSON.stringify(value)).subscribe(
       evaluation => {
         this.busy = false;
         this.messageBusService.emit('evaluationSaved', evaluation);

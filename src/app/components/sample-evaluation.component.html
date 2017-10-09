@@ -41,7 +41,7 @@
       <p *ngIf="!dimension.rationale" class="no-rationale">[No rationale supplied.]</p-->
 
     </div>
-    <button class="button-style" (click)="submitEvaluation($event)">Submit</button>
+    <button class="button-style submit" (click)="submitEvaluation($event)">Submit</button>
   </article>
 
   <ui-collapsible *ngIf="!environment.production" header="evaluationForm" [shown]="false">

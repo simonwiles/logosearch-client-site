@@ -22,7 +22,7 @@ const routes: Routes = [
       { path: 'evaluate', component: SampleEvaluationComponent },
       { path: 'sample/:uuid', component: SampleViewComponent,
         children: [
-          { path: 'evaluate/:uuid', component: SampleEvaluationComponent },
+          { path: 'evaluate/:sampleUuid', component: SampleEvaluationComponent },
           { path: 'evaluate', component: SampleEvaluationComponent },
         ]
       },
@@ -42,7 +42,7 @@ const routes: Routes = [
       { path: 'users', component: ProfileComponent },
       { path: 'sample/:uuid', component: SampleViewComponent },
       { path: 'samples', component: SampleBrowserComponent },
-      { path: 'evaluate/:uuid', component: SampleEvaluationComponent },
+      { path: 'evaluate/:sampleUuid', component: SampleEvaluationComponent },
       { path: 'evaluate', component: SampleEvaluationComponent },
 
       { path: '**', component: HomeComponent }
