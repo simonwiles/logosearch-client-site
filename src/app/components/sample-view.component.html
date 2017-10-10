@@ -1,3 +1,8 @@
+<div *ngIf="!sample" class="sample-view" [ngClass]="panelClass">
+  <p>
+    The requested sample cannot be found and/or is unavailable.  Would you like to <a [routerLink]="['/samples']">Browse the Samples</a>?
+  </p>
+</div>
 <div *ngIf="sample" class="sample-view" [ngClass]="panelClass">
 
   <div class="top">
