@@ -1,6 +1,10 @@
 <div *ngIf="!sample" class="sample-view" [ngClass]="panelClass">
   <p>
-    The requested sample cannot be found and/or is unavailable.  Would you like to <a [routerLink]="['/samples']">Browse the Samples</a>?
+    The requested sample cannot be found and/or is unavailable.  <!--Would you like to <a [routerLink]="['/samples']">Browse the Samples</a>? -->
+  </p>
+  <p>
+    If you have reached this page in error, please contact <a target="_top" href="mailto:sjwiles@stanford.edu?subject=Missing Sample [{{sampleUuid}}]">
+    Simon &lt;sjwiles@stanford.edu&gt;</a>, and I will resolve the problem for you.  Thanks!
   </p>
 </div>
 <div *ngIf="sample" class="sample-view" [ngClass]="panelClass">
