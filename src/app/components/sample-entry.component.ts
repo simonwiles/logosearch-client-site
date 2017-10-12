@@ -98,11 +98,14 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   private stepDirection = 'forward';
 
   @ViewChild('stepChooser') stepChooser;
+
   @ViewChild('languageSkillPanel') languageSkillPanel;
   @ViewChild('linguagramComponentContainer', { read: ViewContainerRef }) linguagramComponentContainer;
 
   @ViewChild('participantLookup') participantLookup;
   @ViewChild('participantLookupPanel') participantLookupPanel;
+
+  @ViewChild('fileInput') fileInput;
 
   // Get references to dynamically-generated elements, mainly for DOM-manipulation purposes:
   @ViewChildren('languageUsageSelect') languageUsageSelects;
@@ -521,12 +524,15 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   recordingSelected($event) {
     const acceptedFileTypes: string[] = [
       // Audio
+      'audio/aac',     // aac
       'audio/flac',    // flac
       'audio/mpeg',    // mp3
       'audio/mp3',     // mp3
       'audio/mp4',     // mp4 audio
       'audio/ogg',     // OGG Vorbis
-      'audio/vnd.wav'  // wav
+      'audio/vnd.wav', // wav
+      'audio/webm',    // webm
+      'audio/x-m4a'    // m4a
     ];
     const acceptedFileTypesString = 'audio files';
     const maximumFileSizeInBytes = environment.maxRecordingFileSize;
@@ -542,6 +548,10 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
           name: file.name,
           url: URL.createObjectURL(file)
         });
+      } else {
+        // reset the control, so that it reactivates if the user selects the same file again
+        //  (otherwise, if an invalid file is re-selected, nothing happens!)
+        this.fileInput.nativeElement.value = null;
       }
     }
 
