@@ -44,7 +44,7 @@ export class SampleViewComponent implements OnInit, OnChanges {
   private renderedTranscription: any;
 
   constructor(
-    private route: ActivatedRoute,
+    private activatedRoute: ActivatedRoute,
     private elementRef: ElementRef,
     private apiService: ApiService,
     private renderer: Renderer,
@@ -52,7 +52,9 @@ export class SampleViewComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    const key = 'uuid';
+    if (this.activatedRoute.snapshot.queryParams['showEvaluations'] === 'false') {
+      this.showEvaluations = false;
+    }
     if (this.sample) {
       this.sampleUuid = this.sample.uuid;
     } else if (this.sampleUuid) {
@@ -63,7 +65,7 @@ export class SampleViewComponent implements OnInit, OnChanges {
         }
       );
     } else {
-      const uuid = this.route.snapshot.params[key];
+      const uuid = this.activatedRoute.snapshot.params['uuid'];
       if (uuid) { this.sampleUuid = uuid; this.loadSample(); }
     }
   }
