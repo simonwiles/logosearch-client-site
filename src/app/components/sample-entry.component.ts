@@ -524,15 +524,16 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   recordingSelected($event) {
     const acceptedFileTypes: string[] = [
       // Audio
-      'audio/aac',     // aac
-      'audio/flac',    // flac
-      'audio/mpeg',    // mp3
-      'audio/mp3',     // mp3
-      'audio/mp4',     // mp4 audio
-      'audio/ogg',     // OGG Vorbis
-      'audio/vnd.wav', // wav
-      'audio/webm',    // webm
-      'audio/x-m4a'    // m4a
+      'audio/aac',      // aac
+      'audio/flac',     // flac
+      'audio/mpeg',     // mp3
+      'audio/mp3',      // mp3
+      'audio/mp4',      // mp4 audio
+      'audio/ogg',      // OGG Vorbis
+      'audio/vnd.wav',  // wav
+      'audio/webm',     // webm
+      'audio/x-m4a',    // m4a
+      'audio/x-ms-wma'  // wma
     ];
     const acceptedFileTypesString = 'audio files';
     const maximumFileSizeInBytes = environment.maxRecordingFileSize;
