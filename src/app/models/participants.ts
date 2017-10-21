@@ -7,7 +7,7 @@ export const Gender = {
   F: { label: 'Female', value: 'F' },
   M: { label: 'Male', value: 'M' },
   O: { label: 'Other', value: 'O' },
-  null: { label: 'Unknown', value: 'U' }
+  U: { label: 'Unknown', value: 'U' }
 };
 
 export const GradeLevel = {
