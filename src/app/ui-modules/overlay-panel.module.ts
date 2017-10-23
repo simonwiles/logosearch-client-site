@@ -1,4 +1,5 @@
 import { AfterViewInit,
+         ChangeDetectorRef,
          Component,
          ElementRef,
          EventEmitter,
@@ -87,7 +88,10 @@ export class OverlayPanelComponent {
 
   @ViewChild('overlayPanel') overlayPanel;
 
-  constructor(private el: ElementRef, private domHandler: DomHandler) { }
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    private el: ElementRef,
+    private domHandler: DomHandler) { }
 
   // prefering not to use HostListener here, so as not to have the event
   //  constantly firing when the panel is not even part of the DOM
@@ -127,21 +131,21 @@ export class OverlayPanelComponent {
     this.target = elementTarget;
 
     this.visible = true;
-    setTimeout(() => {
-      let container = this.getContainer()
-      container.style.zIndex = ++DomHandler.zindex;
+    this.changeDetectorRef.detectChanges();
 
-      container.style.display = 'block';
+    let container = this.getContainer()
+    container.style.zIndex = ++DomHandler.zindex;
 
-      let top = elementTarget.offsetHeight + elementTarget.getBoundingClientRect().top + this.domHandler.getWindowScrollTop();
-      let left = elementTarget.getBoundingClientRect().left + this.domHandler.getWindowScrollLeft()
-                  + elementTarget.offsetWidth - container.offsetWidth;
+    container.style.display = 'block';
 
-      container.style.top = top + 'px';
-      container.style.left = left + 'px';
-      this.domHandler.fadeIn(container, 250);
-      this.onAfterShow.emit(null);
-    });
+    let top = elementTarget.offsetHeight + elementTarget.getBoundingClientRect().top + this.domHandler.getWindowScrollTop();
+    let left = elementTarget.getBoundingClientRect().left + this.domHandler.getWindowScrollLeft()
+                + elementTarget.offsetWidth - container.offsetWidth;
+
+    container.style.top = top + 'px';
+    container.style.left = left + 'px';
+    this.domHandler.fadeIn(container, 250);
+    this.onAfterShow.emit(null);
   }
 
   hide() {
