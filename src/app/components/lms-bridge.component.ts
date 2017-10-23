@@ -10,6 +10,8 @@ import { ActivatedRoute,
 
 import { environment }           from '../../environments/environment';
 
+import { Sample }                from '../models/sample';
+
 import { ApiService }            from '../services/api.service';
 import { AuthService }           from '../services/auth.service';
 import { MessageBusService }     from '../services/message-bus.service';
@@ -25,8 +27,8 @@ export class LmsBridgeComponent implements OnInit {
   public environment = environment;
   public spinnerText = 'Waiting for communication from Lagunita...';
   public lmsConnectionEstablished = false;
-  public noPeerReview = false;
-  public assignmentCompletionStatus: SafeHtml;
+  public assignmentCompletionStatus: any;
+  public notice: SafeHtml;
 
   private remoteHost: string;
   private routing: string;
@@ -168,11 +170,17 @@ export class LmsBridgeComponent implements OnInit {
             if (Array.from(document.querySelectorAll('.ui-overlaypanel')).some(elem => elem.contains(mutation.target))) {
               setTimeout(
                 () => {
+                  let targetHeight: number;
                   const panel = (mutation.target as HTMLElement).closest('.ui-overlaypanel') as HTMLElement;
-                  window.parent.postMessage(
-                    JSON.stringify({'command': 'setHeight', value: panel.offsetTop + panel.offsetHeight}),
-                    remoteHost
-                  )
+                  // a race condition is possible (?) (because of setTimeout?), whereby there is no panel
+                  //  by the time we get here, so don't send anything unless we've got a legitimate height.
+                  if (panel) { targetHeight = panel.offsetTop + panel.offsetHeight; }
+                  if (targetHeight) {
+                    window.parent.postMessage(
+                      JSON.stringify({'command': 'setHeight', value: panel.offsetTop + panel.offsetHeight}),
+                      remoteHost
+                    );
+                  }
                 }, 0
               );
             } else if (mutation.target.nodeName === 'UI-OVERLAY-PANEL') {
@@ -225,7 +233,8 @@ export class LmsBridgeComponent implements OnInit {
       let navigationExtras: NavigationExtras = {
         relativeTo: this.route,
         skipLocationChange: true,
-        replaceUrl: false
+        replaceUrl: false,
+        queryParams: {showEvaluations: false}
       };
       this.router.navigate(['sample', data.responseValue], navigationExtras);
     } else {
@@ -280,7 +289,7 @@ export class LmsBridgeComponent implements OnInit {
           }
         },
         error => { console.log('err', error)}
-      )
+      );
 
     } else {
       // otherwise, load the sample-entry component
@@ -301,31 +310,67 @@ export class LmsBridgeComponent implements OnInit {
   }
 
   peerEvaluation(data, course, session, assignment) {
+
+    // the CAT (it's the only tool we have so far, so...)
+    const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
+
     // get the user's own submission in this cohort/assignment
-    //  (there really should be only one), and extract the grade-level
-    //  and subject-area from that to better assign peer review.
+    //  (there really should be only one), and check that the
+    //  self-evaluation has been completed.
 
-    // this.apiService.getSamples(
-    //   {
-    //     sortBy: '-num_scores',
-    //     submittedBy: '-' + this.authService.loggedInUser.uuid,
-    //     assignment: [course, session, assignment].join(':')
-    //   }
-    // ).subscribe(
-    //   samples => {
-    //     console.log(samples);
-    //   }
-    // );
+    this.apiService.getSamples(
+      {
+        submittedBy: this.authService.loggedInUser.uuid,
+        assignment: [course, session, assignment].join(':')
+      }
+    ).subscribe(
+      samples => {
 
-    // this.router.navigate(
-    //   ['evaluate'],
-    //   {
-    //     relativeTo: this.route,
-    //     queryParams: {tool: '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5'}
-    //   }
-    // );
+        if (samples.count === 0) {
+          this.notice = `
+            You have not yet completed your submission.<br><br>
+            Please return to the submission task and complete your upload,
+            before returning to this task.
+          `;
+          return;
+        } else if (samples.count === 1) {
+          const sample: Sample = samples.results[0];
+          this.apiService.getEvaluations({sample: sample.uuid, bySubmitter: true}).subscribe(
+            evaluations => {
+              if (evaluations.count === 0) {
+                this.notice = `
+                  You have not yet evaluated your submission.<br><br>
+                  Please return to the submission task and complete your evaluation,
+                  before returning to this task.
+                `;
+                return;
+              }
+            }
+          );
 
-    this.noPeerReview = true;
+          // we're still going, so we've got a user who's ready to do peer review:
+
+          this.notice = `
+            Peer-review for this assignment is not yet available (too few assignments have been submitted at this stage).
+            Please check back later!`;
+
+          // this.apiService.getPeerReview(sample.uuid, 3).subscribe(
+          //   response => {
+          //     console.log(response);
+          //   }
+          // );
+
+        } else {
+          this.notice = `
+            You seem to have submitted more than one sample for this assignment.  This is unexpected, and cannot be handled
+            at present.  Please contact Simon Wiles <sjwiles@stanford.edu> and I'll resolve the issue for you.  Thank you.`;
+
+          return;
+        }
+      }
+    );
+
+
   }
 
 

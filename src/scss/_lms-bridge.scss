@@ -7,13 +7,13 @@ html.lms-bridge {
   .router-outlet {
     position: relative;
 
-    .notice {
+    .banner-notice {
       margin: 0 0 10px;
       padding-left: 1em;
     }
 
-    .no-peer-review {
-      border: 1px solid;
+    .notice {
+      border: 1px solid $invalid-warning;
       border-radius: 10px;
       color: rgba(0, 0, 0, .54);
       font-size: 22px;

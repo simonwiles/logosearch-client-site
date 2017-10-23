@@ -5,7 +5,7 @@
 
 <div *ngIf="lmsConnectionEstablished" class="router-outlet">
 
-  <p class="notice">
+  <p class="banner-notice">
     If you have any trouble using the Language Repository tools embedded here, please contact:<br>
     <a href="mailto:sjwiles@stanford.edu">Simon Wiles &lt;sjwiles@stanford.edu&gt;</a>.
   </p>
@@ -20,10 +20,7 @@
 
   <router-outlet></router-outlet>
 
-  <p *ngIf="noPeerReview" class="no-peer-review">
-    Peer-review for this assignment is not yet available (too few assignments have been submitted at this stage).
-    Please check back later!
-  </p>
+  <p *ngIf="notice" class="notice" [innerHTML]="notice"></p>
 
   <div *ngIf="assignmentCompletionStatus"
        class="panel assignment-completion-status"

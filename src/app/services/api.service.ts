@@ -76,7 +76,8 @@ export class ApiService {
                       }
                     )
                     .catch(error => this.handleError(error));
-  };
+  }
+
 
   public getUser(uuid: string): Observable<any> {
 
@@ -98,7 +99,8 @@ export class ApiService {
     return this.http.get(userSocialURI, options)
                     .map(response => response.json().socialAuth)
                     .catch(error => this.handleError(error));
-  };
+  }
+
 
   public deleteUserSocial(uuid: string, provider: string) {
     const userSocialURI = `${environment.apiURL}users/${uuid}/social/${provider}/`;
@@ -119,7 +121,8 @@ export class ApiService {
     return this.http.get(sampleURI, options)
                     .map(response => new Sample(response.json()))
                     .catch(error => this.handleError(error));
-  };
+  }
+
 
   public getSamples(params?): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
@@ -189,7 +192,7 @@ export class ApiService {
                       }
                     )
                     .catch(error => this.handleError(error));
-  };
+  }
 
   public getParticipants(params): Observable<any> {
     const participantsURI: string = environment.apiURL + 'participants/';
@@ -261,8 +264,23 @@ export class ApiService {
                       }
                     )
                     .catch(error => this.handleError(error));
-  };
+  }
 
+
+  public getPeerReview(sampleUuid: string, required?: number): Observable<any> {
+
+    const getPeerReviewURI: string = environment.apiURL + 'peer-review/';
+
+    const params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+    params.set('sampleUuid', sampleUuid);
+    params.set('required', required.toString());
+
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: params});
+
+    return this.http.get(getPeerReviewURI, options)
+                    .map(response => response.json())
+                    .catch(error => this.handleError(error));
+  }
 
 
   public putSample(sampleJSON, recordingFile, supportingFiles): Observable<any> {
