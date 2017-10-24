@@ -177,6 +177,8 @@ export class ApiService {
 
       if (params.person) { _params.set('person', params.person); }
 
+      if (params.assignment) { _params.set('assignment', params.assignment); }
+
     }
     const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
 
