@@ -32,16 +32,19 @@ $select-down-arrow: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy
 
 %md-input-invalid {
 
+  background: $fa-exclamation-triangle center right 2px no-repeat;
   border-color: $invalid-warning;
   border-width: 2px;
+  padding-right: 25px;
+  text-overflow: ellipsis;
 
   ~ .alert {
     color: $alert;
     display: block;
-    font-size: .7em;
+    font-size: .8em;
+    margin-top: 2px;
+    position: absolute;
   }
-
-  background: $fa-exclamation-triangle center right 2px no-repeat;
 
   ~ label {
     color: $invalid-warning !important;

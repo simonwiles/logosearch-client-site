@@ -106,7 +106,6 @@
     }
 
     .alert {
-      padding-left: 20px;
       transition: all .2s ease;
 
       &.hidden {
@@ -118,7 +117,6 @@
     tbody.ng-invalid.ng-touched {
       .alert {
         color: $invalid-warning;
-        font-weight: bold;
       }
     }
 

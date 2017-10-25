@@ -134,6 +134,8 @@
               </div>
               <div class="u-18-24 input-field" [formGroupName]="i">
                 <input formControlName="title" placeholder="Please enter a short title/description for this file...">
+                <span *ngIf="aboutForm.get('supportingFiles').controls[i].controls.title.hasError('maxlength')"
+                      class="alert">Title/description is too long! (max. 255 characters)</span>
               </div>
             </div>
             <div class="g no-supporting-files" *ngIf="!aboutForm.get('supportingFiles').controls.length"><div class="u-1">[no files attached]</div></div>
@@ -194,7 +196,8 @@
               </td>
               <td class="input-field nickname" [formGroupName]="i">
                 <input formControlName="nickname" placeholder="Choose a nickname">
-                <!--div class="alert alert-danger">Name is required</div-->
+                <span *ngIf="participantsForm.get('students').controls[i].controls.nickname.hasError('maxlength')"
+                      class="alert">Nickname is too long!<br>(max. 150 characters)</span>
               </td>
               <td class="input-field" [formGroupName]="i">
                 <select formControlName="gender">
@@ -280,7 +283,8 @@
               </td>
               <td class="nickname input-field" [formGroupName]="i">
                 <input formControlName="nickname" placeholder="Choose a nickname">
-                <!--div class="alert alert-danger">Name is required</div-->
+                <span *ngIf="participantsForm.get('adults').controls[i].controls.nickname.hasError('maxlength')"
+                      class="alert">Nickname is too long! (max. 150 characters)</span>
               </td>
               <td class="gender input-field" [formGroupName]="i">
                 <select formControlName="gender">
@@ -405,7 +409,7 @@
               </td>
               <td class="input-field" [formGroupName]="i">
                 <ui-turn-editor formControlName="content" placeholder="turn..."></ui-turn-editor>
-                <!--div class="alert alert-danger">Turn is required</div-->
+                <!--div class="alert">Turn is required</div-->
               </td>
             </tr>
           </tbody>

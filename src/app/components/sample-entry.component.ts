@@ -435,7 +435,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
   addStudentParticipant($event?) {
     const formGroup = this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
-      nickname: new FormControl(null, Validators.required),
+      nickname: new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(150)])),
       avatar: new FormControl(StudentParticipant.getRandomAvatar(), Validators.required),
       gender: new FormControl(null, Validators.required),
       gradeLevel: new FormControl(null, Validators.required),
@@ -467,7 +467,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
     const formGroup = this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
-      nickname: new FormControl(null, Validators.required),
+      nickname: new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(150)])),
       avatar: new FormControl(AdultParticipant.getRandomAvatar(), Validators.required),
       gender: new FormControl(null, Validators.required),
       isSubmitter: new FormControl(null, Validators.required),
@@ -726,7 +726,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
           supportingFiles.push(
             this.formBuilder.group({
               file: new FormControl(supportingFile),
-              title: new FormControl(null, Validators.required),
+              title: new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(255)])),
               name: new FormControl(supportingFile.name, Validators.required),
             })
           );
