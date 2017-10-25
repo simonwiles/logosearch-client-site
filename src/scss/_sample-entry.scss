@@ -155,6 +155,11 @@
       min-width: 160px;
     }
 
+    .is-submitter,
+    .is-teacher {
+      text-align: center;
+    }
+
     li {
       cursor: pointer;
 
@@ -183,6 +188,7 @@
     }
 
     .switch-toggle {
+      margin: 0 auto;
       max-width: 100px;
     }
   }
