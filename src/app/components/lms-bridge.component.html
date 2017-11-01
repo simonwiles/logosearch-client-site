@@ -1,3 +1,8 @@
+<p class="banner-notice">
+  If you have any trouble using the Language Repository tools embedded here, please contact:
+  <br><a href="mailto:sjwiles@stanford.edu">Simon Wiles &lt;sjwiles@stanford.edu&gt;</a>.
+</p>
+
 <div *ngIf="!lmsConnectionEstablished">
   <span class="loading-text center-fix">{{spinnerText}}</span>
   <i class="main-spinner center-fix fa fa-spin fa-spinner"></i>
@@ -5,31 +10,28 @@
 
 <div *ngIf="lmsConnectionEstablished" class="router-outlet">
 
-  <p class="banner-notice">
-    If you have any trouble using the Language Repository tools embedded here, please contact:<br>
-    <a href="mailto:sjwiles@stanford.edu">Simon Wiles &lt;sjwiles@stanford.edu&gt;</a>.
-  </p>
-
   <div *ngIf="assignmentCompletionStatus"
-       class="panel assignment-completion-status"
+       class="panel assignment-completion-status bounce"
        [ngClass]="assignmentCompletionStatus.class">
     <i class="fa fa-{{assignmentCompletionStatus.icon}}"></i>
-    {{ assignmentCompletionStatus.content }}
+    <p [innerHtml]="assignmentCompletionStatus.content | uiSafe"></p>
     <i class="fa fa-{{assignmentCompletionStatus.icon}}"></i>
   </div>
 
-  <router-outlet></router-outlet>
-
   <p *ngIf="notice" class="notice" [innerHTML]="notice"></p>
 
-  <div *ngIf="assignmentCompletionStatus"
-       class="panel assignment-completion-status"
+  <router-outlet *ngIf="!hideRouter"></router-outlet>
+
+  <div *ngIf="assignmentCompletionStatus && !hideRouter"
+       class="panel assignment-completion-status bounce"
        [ngClass]="assignmentCompletionStatus.class">
     <i class="fa fa-{{assignmentCompletionStatus.icon}}"></i>
-    {{ assignmentCompletionStatus.content }}
+    <p [innerHtml]="assignmentCompletionStatus.content | uiSafe"></p>
     <i class="fa fa-{{assignmentCompletionStatus.icon}}"></i>
   </div>
 
 </div>
 
-<ui-notifications [notificationsService]="notificationsService" [options]="{timeout: 5000, position: ['top', 'right']}"></ui-notifications>
+<ui-notifications [notificationsService]="notificationsService"
+                  [options]="{timeout: 5000, position: ['top', 'right']}">
+</ui-notifications>

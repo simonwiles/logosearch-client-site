@@ -5,7 +5,9 @@ import { ChangeDetectorRef,
 import { SafeHtml }              from '@angular/platform-browser';
 
 import { ActivatedRoute,
+         NavigationEnd,
          NavigationExtras,
+         NavigationStart,
          Router }                from '@angular/router';
 
 import { environment }           from '../../environments/environment';
@@ -29,9 +31,11 @@ export class LmsBridgeComponent implements OnInit {
   public lmsConnectionEstablished = false;
   public assignmentCompletionStatus: any;
   public notice: SafeHtml;
+  public hideRouter = false;
 
+  private assignmentIdToken: string;
   private remoteHost: string;
-  private routing: string;
+  private routing: 'selfEvaluation'|'peerEvaluation'|'peerEvaluationFinal';
 
   private statuses = {
     assignmentComplete: {
@@ -76,15 +80,39 @@ export class LmsBridgeComponent implements OnInit {
     this.messageBusService.listen(
       'evaluationSaved',
       evaluation => {
-        this.notificationsService.success('Thank you!', 'Your evaluation has been saved and this assignment is now complete!');
-        this.assignmentCompletionStatus = this.statuses.assignmentComplete;
+
+        window.parent.postMessage(
+          JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
+          this.remoteHost
+        )
+
+        if (this.routing === 'selfEvaluation') {
+
+          this.notificationsService.success('Thank you!', 'Your evaluation has been saved and this assignment is now complete!');
+          this.assignmentCompletionStatus = this.statuses.assignmentComplete;
+
+        } else if (this.routing === 'peerEvaluation') {
+
+          document.querySelector('body').style.opacity = '0';
+          window.parent.postMessage(JSON.stringify({'command': 'scrollToTop'}), this.remoteHost);
+          const [course, session, assignment, type] = this.assignmentIdToken.split(':');
+          this.peerEvaluation(course, session, assignment);
+
+        } else if (this.routing === 'peerEvaluationFinal') {
+
+          this.notificationsService.success('Thank you!', 'Your peer-evaluations have been recevied and this assignment is now complete!');
+          this.assignmentCompletionStatus = this.statuses.assignmentComplete;
+          this.sendData('[Peer-Evaluation Complete]');
+          this.hideRouter = true;
+
+        }
       }
     );
     this.messageBusService.listen(
       'sampleSaved',
       sample => {
         this.sendData(sample.uuid);
-        if (this.routing === 'selfevaluation') {
+        if (this.routing === 'selfEvaluation') {
           this.notificationsService.success(
             'Thank you!',
             'Please now review your submission, and complete the evaulation using the Conversation Analysis Tool below. ' +
@@ -113,11 +141,29 @@ export class LmsBridgeComponent implements OnInit {
         )
       );
     }
+
+    this.router.events.subscribe(
+      event => {
+        if (event instanceof NavigationEnd) {
+          document.querySelector('body').style.opacity = '1';
+          Array.from(document.querySelectorAll('.assignment-completion-status')).forEach(
+            elem => { elem.classList.remove('bounce'); void (elem as HTMLElement).offsetWidth; elem.classList.add('bounce'); }
+          );
+        }
+      }
+    );
   }
 
   dataReceived(data) {
 
+    // DELETE ME
+    // if (data.assignmentIdToken.startsWith('Education/CCC/SandBox:2017-Q4:A1')) {
+    //   data.assignmentIdToken = 'Education+XEDUC201+Fall2017:2017-Q4:A2:' + data.assignmentIdToken.split(':').pop();
+    //   data.openEdXCourseId = ':Education+XEDUC201+Fall2017';
+    // }
+
     this.remoteHost = data.remoteHost;
+    this.assignmentIdToken = data.assignmentIdToken;
 
     this.logInUser(data.lagunitaUser).subscribe(
       user => {
@@ -162,7 +208,6 @@ export class LmsBridgeComponent implements OnInit {
     //  overlay-panel components.  These are positioned absolutely, and so won't affect document.scrollHeight;
     //  the result is that the iframe won't resize to accommodate them, and they become unusable, so here
     //  we manually post the necessary height to the the parent window.
-    const remoteHost = this.remoteHost;
     const mutationObserver = new MutationObserver(
       mutations => {
         mutations.forEach(
@@ -178,7 +223,7 @@ export class LmsBridgeComponent implements OnInit {
                   if (targetHeight) {
                     window.parent.postMessage(
                       JSON.stringify({'command': 'setHeight', value: panel.offsetTop + panel.offsetHeight}),
-                      remoteHost
+                      this.remoteHost
                     );
                   }
                 }, 0
@@ -187,7 +232,7 @@ export class LmsBridgeComponent implements OnInit {
               // in case the panel has been removed...
               window.parent.postMessage(
                 JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
-                remoteHost
+                this.remoteHost
               )
             }
           }
@@ -199,27 +244,30 @@ export class LmsBridgeComponent implements OnInit {
 
 
   dispatch(data) {
-
+    const responseValue = data['responseValue'];
     const [course, session, assignment, type] = data.assignmentIdToken.split(':');
+
     if (course !== data.openEdXCourseId.split(':').pop()) {
+      this.lmsConnectionEstablished = false;
       this.spinnerText = 'Configuration Error!';
       console.log('Course mismatch!', course, data.openEdXCourseId.split(':').pop());
       return;
     }
 
+    // window.parent.postMessage(JSON.stringify({'command': 'scrollToTop'}), this.remoteHost);
     // dispatch based on type parameter
     if (type.toLowerCase() === 'submission') {
-      this.submissionOnly(data, course, session, assignment);
+      this.submissionOnly(responseValue, course, session, assignment);
       return;
     }
 
     if (type.toLowerCase() === 'peerevaluation') {
-      this.peerEvaluation(data, course, session, assignment)
+      this.peerEvaluation(course, session, assignment)
       return;
     }
 
     if (type.toLowerCase() === 'submissionselfevaluation') {
-      this.submissionWithSelfEvaluation(data, course, session, assignment);
+      this.submissionWithSelfEvaluation(responseValue, course, session, assignment);
       return;
     }
 
@@ -228,15 +276,15 @@ export class LmsBridgeComponent implements OnInit {
   }
 
 
-  submissionOnly(data, course, session, assignment) {
-    if (data.hasOwnProperty('responseValue')) {
+  submissionOnly(responseValue, course, session, assignment) {
+    if (typeof responseValue !== 'undefined') {
       let navigationExtras: NavigationExtras = {
         relativeTo: this.route,
         skipLocationChange: true,
         replaceUrl: false,
         queryParams: {showEvaluations: false}
       };
-      this.router.navigate(['sample', data.responseValue], navigationExtras);
+      this.router.navigate(['sample', responseValue], navigationExtras);
     } else {
       let navigationExtras: NavigationExtras = {
         queryParams: {
@@ -252,18 +300,18 @@ export class LmsBridgeComponent implements OnInit {
   }
 
 
-  submissionWithSelfEvaluation(data, course, session, assignment) {
+  submissionWithSelfEvaluation(responseValue, course, session, assignment) {
 
-    this.routing = 'selfevaluation';
+    this.routing = 'selfEvaluation';
 
     // the CAT (it's the only tool we have so far, so...)
     const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
 
-    // if we have a data.responseValue, then the sample has been submitted
-    if (data.hasOwnProperty('responseValue')) {
+    // if we have a responseValue, then the sample has been submitted
+    if (typeof responseValue !== 'undefined') {
 
       // check if a self-evaluation for this sample has been completed:
-      this.apiService.getEvaluations({sample: data.responseValue, bySubmitter: true}).subscribe(
+      this.apiService.getEvaluations({sample: responseValue, bySubmitter: true}).subscribe(
         response => {
           if (response.count < 1) {
             this.assignmentCompletionStatus = this.statuses.requiresSelfEvaluation;
@@ -271,7 +319,7 @@ export class LmsBridgeComponent implements OnInit {
               queryParams: {
                 collectionSource: JSON.stringify({course: course, session: session, assignment: assignment}),
                 toolUuid: catToolUuid,
-                sampleUuid: data.responseValue
+                sampleUuid: responseValue
               },
               relativeTo: this.route,
               skipLocationChange: true,
@@ -285,7 +333,7 @@ export class LmsBridgeComponent implements OnInit {
               skipLocationChange: true,
               replaceUrl: false
             };
-            this.router.navigate(['sample', data.responseValue], navigationExtras);
+            this.router.navigate(['sample', responseValue], navigationExtras);
           }
         },
         error => { console.log('err', error)}
@@ -309,10 +357,11 @@ export class LmsBridgeComponent implements OnInit {
     }
   }
 
-  peerEvaluation(data, course, session, assignment) {
+  peerEvaluation(course, session, assignment) {
 
     // the CAT (it's the only tool we have so far, so...)
     const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
+    const evaluationsRequired = 3;
 
     // get the user's own submission in this cohort/assignment
     //  (there really should be only one), and check that the
@@ -344,21 +393,11 @@ export class LmsBridgeComponent implements OnInit {
                   before returning to this task.
                 `;
                 return;
+              } else {
+                doPeerEvaluation(sample.uuid);
               }
             }
           );
-
-          // we're still going, so we've got a user who's ready to do peer review:
-
-          this.notice = `
-            Peer-review for this assignment is not yet available (too few assignments have been submitted at this stage).
-            Please check back later!`;
-
-          // this.apiService.getPeerReview(sample.uuid, 3).subscribe(
-          //   response => {
-          //     console.log(response);
-          //   }
-          // );
 
         } else {
           this.notice = `
@@ -370,9 +409,56 @@ export class LmsBridgeComponent implements OnInit {
       }
     );
 
+    let doPeerEvaluation = (sampleUuid) => {
+
+      this.apiService.getPeerReview(sampleUuid, evaluationsRequired).subscribe(
+        response => {
+          if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
+            if (response.evaluationsForAssignment === evaluationsRequired - 1) {
+              // this is the last one
+              this.routing = 'peerEvaluationFinal';
+            } else {
+              this.routing = 'peerEvaluation';
+            }
+            this.assignmentCompletionStatus = {
+              class: 'warning',
+              icon: 'sliders',
+              content: `
+                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
+                <br>Please submit your review for the submission shown below.
+              `
+            }
+
+            let navigationExtras: NavigationExtras = {
+              queryParams: {
+                collectionSource: JSON.stringify({course: course, session: session, assignment: assignment}),
+                toolUuid: catToolUuid,
+                sampleUuid: response.nextSample,
+                routing: this.routing
+              },
+              relativeTo: this.route,
+              skipLocationChange: true,
+              replaceUrl: false
+            };
+            this.router.navigate(['evaluate'], navigationExtras);
+
+
+          } else {
+            this.hideRouter = true;
+            this.assignmentCompletionStatus = {
+              class: 'valid',
+              icon: 'sliders',
+              content: `
+                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
+                <br>Your peer-evaluation assignment is now complete!  Thank you!
+              `
+            }
+          }
+        }
+      );
+    }
 
   }
-
 
 }
 

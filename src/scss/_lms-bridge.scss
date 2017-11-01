@@ -2,6 +2,7 @@ html.lms-bridge {
 
   body {
     overflow: hidden;
+    transition: opacity .4s ease;
   }
 
   .router-outlet {
@@ -103,8 +104,8 @@ html.lms-bridge {
   }
 
   &.warning {
-    border: 2px solid $yellow2;
     background: $yellow1;
+    border: 2px solid $yellow2;
     color: #444;
 
     i {
@@ -113,10 +114,26 @@ html.lms-bridge {
 
   }
 
+  &.bounce {
+    @extend %animation-bounce;
+  }
+
   i {
     display: block;
     font-size: 24px;
     text-align: center;
     width: 60px;
+  }
+
+  p {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+
+  .evals-completed {
+    @extend %animation-pulse;
+    font-size: 1.2em;
+    font-weight: bold;
   }
 }
