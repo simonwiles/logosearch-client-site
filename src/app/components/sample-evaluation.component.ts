@@ -75,7 +75,6 @@ export class SampleEvaluationComponent implements OnInit {
       this.activatedRoute.queryParams.subscribe(
         _queryParams => {
           if (_queryParams.hasOwnProperty('sampleUuid')) {
-            console.log('initting with new sampleUuid', _queryParams['sampleUuid']);
             this.init(_queryParams['sampleUuid'], toolUuid);
           }
 
