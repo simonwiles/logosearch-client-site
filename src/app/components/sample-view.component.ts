@@ -113,9 +113,8 @@ export class SampleViewComponent implements OnInit, OnChanges {
 
   renderAssessedLevel(assessedLevel) {
     return assessedLevel.map(
-      item => Object.keys(item).map(
-        key => `Proficiency: ${item[key]} (${(key === 'informal') ? 'Submitter\'s informal assessement' : key})`
-      )
+      item => `Proficiency: ${item['level']} ` +
+      `(${(item['standard'] === 'informal') ? 'Submitter\'s informal assessement' : item['standard'].toUpperCase()})`
     ).join('\n');
   }
 
