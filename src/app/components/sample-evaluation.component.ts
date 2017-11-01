@@ -42,14 +42,7 @@ export class SampleEvaluationComponent implements OnInit {
   public evaluationTools = EvaluationTools;
   public sampleUuid: string;
 
-  public evaluationForm: FormGroup = this.formBuilder.group({
-    uuid: new FormControl(uuid.v4(), Validators.required),
-    tool: new FormControl('', Validators.required),
-    collectionSource: new FormControl(''),
-    // evaluatorIsSampleSubmitter: new FormControl('', Validators.required),
-    sample: new FormControl('', Validators.required),
-    dimensions: new FormArray([]),
-  });
+  public evaluationForm: FormGroup = this.newEvaluationForm();
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -63,36 +56,38 @@ export class SampleEvaluationComponent implements OnInit {
   ngOnInit() {
 
     let sampleUuid, toolUuid;
-    const params = this.activatedRoute.snapshot.queryParams;
+    const queryParams = this.activatedRoute.snapshot.queryParams;
 
-    if (params.hasOwnProperty('collectionSource')) {
-      this.evaluationForm.get('collectionSource').setValue(params['collectionSource']);
+    if (queryParams.hasOwnProperty('collectionSource')) {
+      this.evaluationForm.get('collectionSource').setValue(queryParams['collectionSource']);
     }
 
-    if (params.hasOwnProperty('toolUuid')) {
-      toolUuid = params['toolUuid'];
+    if (queryParams.hasOwnProperty('toolUuid')) {
+      toolUuid = queryParams['toolUuid'];
     } else {
       console.log('no tool specified!');
     }
 
     sampleUuid = this.activatedRoute.snapshot.params['sampleUuid'];
-    if (!sampleUuid) {
-      if (params.hasOwnProperty('sampleUuid')) {
-        sampleUuid = params['sampleUuid'];
-      } else {
-        // can't do anything if we don't know what sample we're supposed to be evaluating!
-        console.log('no sample specified!');
-      }
-    }
-
-    if (sampleUuid && toolUuid) {
+    if (sampleUuid) {
       this.init(sampleUuid, toolUuid);
+    } else {
+      this.activatedRoute.queryParams.subscribe(
+        _queryParams => {
+          if (_queryParams.hasOwnProperty('sampleUuid')) {
+            console.log('initting with new sampleUuid', _queryParams['sampleUuid']);
+            this.init(_queryParams['sampleUuid'], toolUuid);
+          }
+
+        }
+      );
     }
   }
 
   init(sampleUuid, toolUuid) {
     const evaluationTool = this.evaluationTool = this.evaluationTools[toolUuid];
     this.sampleUuid = sampleUuid;
+    this.evaluationForm = this.newEvaluationForm();
 
     this.evaluationForm.get('tool').setValue(toolUuid);
     this.evaluationForm.get('sample').setValue(this.sampleUuid);
@@ -118,6 +113,17 @@ export class SampleEvaluationComponent implements OnInit {
         }
       }
     )
+  }
+
+  newEvaluationForm() {
+    return this.formBuilder.group({
+      uuid: new FormControl(uuid.v4(), Validators.required),
+      tool: new FormControl('', Validators.required),
+      collectionSource: new FormControl(''),
+      // evaluatorIsSampleSubmitter: new FormControl('', Validators.required),
+      sample: new FormControl('', Validators.required),
+      dimensions: new FormArray([]),
+    });
   }
 
   newDimensionForm(dimension) {
@@ -178,7 +184,10 @@ export class SampleEvaluationComponent implements OnInit {
       evaluation => {
         this.busy = false;
         this.messageBusService.emit('evaluationSaved', evaluation);
-        this.router.navigate(['../sample', evaluation.sample], {relativeTo: this.activatedRoute});
+
+        if (!this.activatedRoute.snapshot.queryParams.routing.startsWith('peerEvaluation')) {
+          this.router.navigate(['../sample', evaluation.sample], {relativeTo: this.activatedRoute});
+        }
       },
       error => {
         this.busy = false;
