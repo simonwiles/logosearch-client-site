@@ -136,7 +136,7 @@ export class LmsBridgeComponent implements OnInit {
       window.addResizeListener(
         document.body,
         () => window.parent.postMessage(
-          JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
+          JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight + 20}),
           this.remoteHost
         )
       );
