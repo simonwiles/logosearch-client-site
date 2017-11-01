@@ -75,6 +75,10 @@ export class SampleViewComponent implements OnInit, OnChanges {
       this.sample = (changes as any).sample.currentValue;
       this.onSampleLoaded();
     }
+    if ('sampleUuid' in changes && typeof(this.sample) !== 'undefined') {
+      this.sampleUuid = (changes as any).sampleUuid.currentValue;
+      this.loadSample();
+    }
   }
 
   onSampleLoaded() {
