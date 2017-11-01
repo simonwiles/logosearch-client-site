@@ -877,7 +877,7 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       sample => {
         this.busy = false;
         this.messageBusService.emit('sampleSaved', sample);
-        if (this.route.snapshot.queryParams.routing === 'selfevaluation') {
+        if (this.route.snapshot.queryParams.routing === 'selfEvaluation') {
           let navigationExtras: NavigationExtras = {
             queryParams: {
               sampleUuid: sample.uuid
