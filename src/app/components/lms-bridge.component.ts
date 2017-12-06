@@ -67,6 +67,7 @@ export class LmsBridgeComponent implements OnInit {
 
   ngOnInit() {
 
+    // listen for data from host page (i.e. Lagunita)
     window.addEventListener(
       'message',
       event => {
@@ -77,6 +78,7 @@ export class LmsBridgeComponent implements OnInit {
       false
     );
 
+    // listen for 'evaluationSaved' signal and route accordingly
     this.messageBusService.listen(
       'evaluationSaved',
       evaluation => {
@@ -108,6 +110,8 @@ export class LmsBridgeComponent implements OnInit {
         }
       }
     );
+
+    // listen for 'sampleSaved' signal and route accordingly
     this.messageBusService.listen(
       'sampleSaved',
       sample => {
@@ -132,22 +136,30 @@ export class LmsBridgeComponent implements OnInit {
       }
     );
 
+    // if we're in an iframe (when wouldn't we be?), listen for resize events on document.body,
+    //  and post document.body.scrollHeight to the parent script
     if (window !== parent.window) {
       window.addResizeListener(
         document.body,
         () => window.parent.postMessage(
-          JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight + 20}),
+          JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
           this.remoteHost
         )
       );
     }
 
+    // listen for NavigationEnd signals from the router, make sure document.body is faded in,
+    //  and (re-)trigger the css bounce effect
     this.router.events.subscribe(
       event => {
         if (event instanceof NavigationEnd) {
           document.querySelector('body').style.opacity = '1';
           Array.from(document.querySelectorAll('.assignment-completion-status')).forEach(
-            elem => { elem.classList.remove('bounce'); void (elem as HTMLElement).offsetWidth; elem.classList.add('bounce'); }
+            elem => {
+              elem.classList.remove('bounce');
+              void (elem as HTMLElement).offsetWidth;
+              elem.classList.add('bounce');
+            }
           );
         }
       }
@@ -155,12 +167,6 @@ export class LmsBridgeComponent implements OnInit {
   }
 
   dataReceived(data) {
-
-    // DELETE ME
-    // if (data.assignmentIdToken.startsWith('Education/CCC/SandBox:2017-Q4:A1')) {
-    //   data.assignmentIdToken = 'Education+XEDUC201+Fall2017:2017-Q4:A2:' + data.assignmentIdToken.split(':').pop();
-    //   data.openEdXCourseId = ':Education+XEDUC201+Fall2017';
-    // }
 
     this.remoteHost = data.remoteHost;
     this.assignmentIdToken = data.assignmentIdToken;
@@ -208,38 +214,46 @@ export class LmsBridgeComponent implements OnInit {
     //  overlay-panel components.  These are positioned absolutely, and so won't affect document.scrollHeight;
     //  the result is that the iframe won't resize to accommodate them, and they become unusable, so here
     //  we manually post the necessary height to the the parent window.
+    //
+    // The debounce is because the transition is animated (over 200ms).
+
+    // adapted from http://underscorejs.org/#debounce
+    function debounce(func, wait, immediate) {
+      let timeout;
+      return function() {
+        let context = this, args = arguments;
+        let later = function() {
+          timeout = null;
+          if (!immediate) { func.apply(context, args); }
+        };
+        let callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) { func.apply(context, args); }
+      };
+    };
+
+    let bodyHeight = document.body.scrollHeight;
     const mutationObserver = new MutationObserver(
       mutations => {
         mutations.forEach(
-          mutation => {
-            if (Array.from(document.querySelectorAll('.ui-overlaypanel')).some(elem => elem.contains(mutation.target))) {
-              setTimeout(
-                () => {
-                  let targetHeight: number;
-                  const panel = (mutation.target as HTMLElement).closest('.ui-overlaypanel') as HTMLElement;
-                  // a race condition is possible (?) (because of setTimeout?), whereby there is no panel
-                  //  by the time we get here, so don't send anything unless we've got a legitimate height.
-                  if (panel) { targetHeight = panel.offsetTop + panel.offsetHeight; }
-                  if (targetHeight) {
-                    window.parent.postMessage(
-                      JSON.stringify({'command': 'setHeight', value: panel.offsetTop + panel.offsetHeight}),
-                      this.remoteHost
-                    );
-                  }
-                }, 0
-              );
-            } else if (mutation.target.nodeName === 'UI-OVERLAY-PANEL') {
-              // in case the panel has been removed...
-              window.parent.postMessage(
-                JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
-                this.remoteHost
-              )
-            }
-          }
-        );
+          mutation => debounce(
+            () => {
+              if (bodyHeight !== document.body.scrollHeight) {
+                window.parent.postMessage(
+                  JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
+                  this.remoteHost
+                );
+                bodyHeight = document.body.scrollHeight;
+              }
+            },
+            250,
+            true
+          )()
+        )
       }
     );
-    mutationObserver.observe(document.querySelector('.router-outlet'), { childList: true, subtree: true });
+    mutationObserver.observe(document.querySelector('body'), { childList: true, subtree: true });
   }
 
 

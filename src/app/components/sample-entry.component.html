@@ -452,7 +452,12 @@
 
 <!-- ################################################################################################################# -->
 
-<ui-overlay-panel #languageSkillPanel [dismissable]="true" [showCloseIcon]="true" styleClass="language-skill-panel" (onBeforeHide)="linguagramComponentRef.destroy();">
+<ui-overlay-panel #languageSkillPanel
+                  [dismissable]="true"
+                  [showCloseIcon]="true"
+                  styleClass="language-skill-panel"
+                  appendTo="body"
+                  (onBeforeHide)="linguagramComponentRef.destroy();">
   <ng-template #linguagramComponentContainer></ng-template>
 </ui-overlay-panel>
 

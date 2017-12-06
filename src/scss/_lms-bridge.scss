@@ -1,6 +1,8 @@
 html.lms-bridge {
 
   body {
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     transition: opacity .4s ease;
   }
