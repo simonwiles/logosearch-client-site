@@ -432,8 +432,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     }
   }
 
-  addStudentParticipant($event?) {
-    const formGroup = this.formBuilder.group({
+
+  newStudentParticipantFormGroup() {
+    return this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
       nickname: new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(150)])),
       avatar: new FormControl(StudentParticipant.getRandomAvatar(), Validators.required),
@@ -442,6 +443,10 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       languageKeys: new FormControl(null, Validators.minLength(1)),
       languageSkills: new FormArray([], Validators.minLength(1))
     });
+  }
+
+  addStudentParticipant($event?) {
+    const formGroup = this.newStudentParticipantFormGroup();
 
     (this.aboutForm.get('languagesUsed') as FormArray).controls.forEach(
       langUsed => {
@@ -463,9 +468,9 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
     return false;
   }
 
-  addAdultParticipant($event?) {
 
-    const formGroup = this.formBuilder.group({
+  newAdultParticipantFormGroup() {
+    return this.formBuilder.group({
       uuid: new FormControl(uuid.v4(), Validators.required),
       nickname: new FormControl(null, Validators.compose([Validators.required, Validators.maxLength(150)])),
       avatar: new FormControl(AdultParticipant.getRandomAvatar(), Validators.required),
@@ -473,7 +478,10 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
       isSubmitter: new FormControl(null, Validators.required),
       isTeacher: new FormControl(null, Validators.required)
     });
+  }
 
+  addAdultParticipant($event?) {
+    const formGroup = this.newAdultParticipantFormGroup();
     (this.participantsForm.get('adults') as FormArray).push(formGroup);
 
     if ($event) { $event.target.blur(); }
@@ -489,8 +497,44 @@ export class SampleEntryComponent implements OnInit, AfterViewInit {
 
   addLookedUpParticipants(data) {
     this.participantLookupPanel.removeModal();
-    // TODO:
-    // this.sample[data.type].push(...data.participants);
+
+    if (data.type === 'students') {
+      data.participants.forEach(
+        participant => {
+          if (!(this.participantsForm.get('students') as FormArray).controls.some(
+              participantForm => participantForm.get('uuid').value === participant.uuid)) {
+
+            const formGroup = this.newStudentParticipantFormGroup();
+            formGroup.patchValue(participant);
+
+            // add the languages
+            participant.languageSkills.forEach(
+              langSkill => {
+                let langSkillFormGroup = this.createLanguageSkill(langSkill.language);
+                langSkillFormGroup.patchValue(langSkill);
+                (formGroup.get('languageSkills') as FormArray).push(langSkillFormGroup);
+              }
+            );
+            formGroup.get('languageKeys').setValue(participant.languageSkills.map(langSkill => langSkill.language));
+
+            (this.participantsForm.get('students') as FormArray).push(formGroup);
+          }
+        }
+      );
+    }
+
+    if (data.type === 'adults') {
+      data.participants.forEach(
+        participant => {
+          if (!(this.participantsForm.get('adults') as FormArray).controls.some(
+              participantForm => participantForm.get('uuid').value === participant.uuid)) {
+            const formGroup = this.newAdultParticipantFormGroup();
+            formGroup.patchValue(participant);
+            (this.participantsForm.get('adults') as FormArray).push(formGroup);
+          }
+        }
+      );
+    }
   }
 
   clearParticipantLanguage(event: Event, student: FormGroup) {
