@@ -84,16 +84,18 @@
 
 .preview-panel {
   background: mix($light-blue, $white, 50%);
-  padding: 5px 20px !important;
-  width: 800px;
+  display: inline-flex !important;
+  flex-direction: column;
+  height: 90%;
+  width: 90%;
+  padding: 5px !important;
 
   > div {
-    max-height: 90%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 
     .panel {
-      max-height: 90vh;
       overflow-y: auto;
     }
   }

@@ -246,14 +246,19 @@
   color: rgba(0, 0, 0, .54);
 }
 
-
+lr-samples-carousel {
+  display: flex;
+  flex-direction: column;
+}
 
 .perspective-container {
 
-  position: relative;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   perspective: 1200px;
+  position: relative;
   transform-style: preserve-3d;
+  width: 100%;
 
   > div {
 
@@ -265,6 +270,8 @@
     // visibility: visible;
     // overflow: hidden;
     // backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
     transform: translate3d(0, 0, 0);
   }
 
