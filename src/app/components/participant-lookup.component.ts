@@ -102,7 +102,6 @@ export class ParticipantLookupComponent {
   }
 
   showPreview($event, participant) {
-    console.log(participant);
     this.samplesPreviewPanel.displayModal($event);
     this.samplesListService.filters.person = participant.uuid;
     this.samplesListService.update()

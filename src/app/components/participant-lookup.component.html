@@ -16,11 +16,11 @@
 
     <div class="g">
       <div class="u-1-3">
-        <span class="accent">Show Participants:</span>
+        <span class="accent">Previously Used By:</span>
       </div>
       <div class="u-2-3">
         <ui-switch-toggle name="submitted-by-filter" #submittedByToggle
-                          [options]="[{label: 'Mine', value: 'own'}, {label: 'Someone Else', value: 'other'}]"
+                          [options]="[{label: 'Me', value: 'own'}, {label: 'Someone Else', value: 'other'}]"
                           (change)="getParticipants()"
                           value="own">
         </ui-switch-toggle>
@@ -41,7 +41,7 @@
         </ui-autocomplete>
       </div>
     </div>
-    <div class="g">
+    <!--div class="g">
       <div class="u-1-3">
         <span class="accent">Nickname:</span>
       </div>
@@ -54,7 +54,7 @@
           <i class="fa fa-search"></i> Search
         </button>
       </div>
-    </div>
+    </div-->
   </div>
 
 
@@ -90,12 +90,12 @@
 
     <ui-data-table-column header="nickname"
                           property="nickname"
-                          [sortable]="true">
+                          [sortable]="false">
     </ui-data-table-column>
 
     <ui-data-table-column header="gender"
                           property="gender"
-                          [sortable]="true">
+                          [sortable]="false">
       <ng-template #dataTableCell let-item="item">{{genders[item.gender].label}}</ng-template>
     </ui-data-table-column>
 
@@ -107,7 +107,7 @@
 
     <ui-data-table-column header="last used"
                           property="lastUsed"
-                          [sortable]="true">
+                          [sortable]="false">
       <ng-template #dataTableCell let-item="item">{{item.samples[0][1] | date}}</ng-template>
     </ui-data-table-column>
 
