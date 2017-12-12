@@ -427,7 +427,19 @@ export class LmsBridgeComponent implements OnInit {
 
       this.apiService.getPeerReview(sampleUuid, evaluationsRequired).subscribe(
         response => {
-          if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
+
+
+          if (!response.nextSample) {
+            this.hideRouter = true;
+            this.assignmentCompletionStatus = {
+              class: 'warning',
+              icon: 'sliders',
+              content: `
+                There are no suitable samples available for peer-evaluation at present.  Please check back later.
+              `
+            };
+
+          } else if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
             if (response.evaluationsForAssignment === evaluationsRequired - 1) {
               // this is the last one
               this.routing = 'peerEvaluationFinal';
@@ -441,7 +453,7 @@ export class LmsBridgeComponent implements OnInit {
                 You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
                 <br>Please submit your review for the submission shown below.
               `
-            }
+            };
 
             let navigationExtras: NavigationExtras = {
               queryParams: {
@@ -455,7 +467,6 @@ export class LmsBridgeComponent implements OnInit {
               replaceUrl: false
             };
             this.router.navigate(['evaluate'], navigationExtras);
-
 
           } else {
             this.hideRouter = true;
