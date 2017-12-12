@@ -215,7 +215,11 @@ export class ApiService {
 
     if (params.search) { _params.set('search', params.search); }
 
-    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+    // const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+    const options: RequestOptions = new RequestOptions({
+      headers: this.getHeadersWithAuth(this.headers),
+      search: _params
+    });
 
     return this.http.get(participantsURI + participantType + '/', options)
                     .map(
