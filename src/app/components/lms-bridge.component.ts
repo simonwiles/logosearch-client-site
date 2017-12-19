@@ -428,17 +428,16 @@ export class LmsBridgeComponent implements OnInit {
       this.apiService.getPeerReview(sampleUuid, evaluationsRequired).subscribe(
         response => {
 
-
-          if (!response.nextSample) {
+          if (response.evaluationsForAssignment >= evaluationsRequired) {
             this.hideRouter = true;
             this.assignmentCompletionStatus = {
-              class: 'warning',
+              class: 'valid',
               icon: 'sliders',
               content: `
-                There are no suitable samples available for peer-evaluation at present.  Please check back later.
+                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
+                <br>Your peer-evaluation assignment is now complete!  Thank you!
               `
-            };
-
+            }
           } else if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
             if (response.evaluationsForAssignment === evaluationsRequired - 1) {
               // this is the last one
@@ -471,13 +470,12 @@ export class LmsBridgeComponent implements OnInit {
           } else {
             this.hideRouter = true;
             this.assignmentCompletionStatus = {
-              class: 'valid',
+              class: 'warning',
               icon: 'sliders',
               content: `
-                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
-                <br>Your peer-evaluation assignment is now complete!  Thank you!
+                There are no suitable samples available for peer-evaluation at present.  Please check back later.
               `
-            }
+            };
           }
         }
       );
