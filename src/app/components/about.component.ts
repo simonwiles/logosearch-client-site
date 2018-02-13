@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   template: `
     <div class="panel">
       <h3>About the Site</h3>
-      <p>This site is for development of the UL Language Repository. If you find
+      <p>This site is for development of the LogoSearch platform. If you find
          yourself here and have questions or comments, please get in touch with me --
          <a href="mailto:simonjwiles@gmail.com">simonjwiles@gmail.com</a>.
       </p>

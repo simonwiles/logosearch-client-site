@@ -164,11 +164,11 @@ export class ProfileComponent implements AfterViewInit, OnDestroy, OnInit {
     this.dialogHeader = 'Remove Social Login';
     const providerName = this.dialogProvider.name;
     this.dialogContent = `
-    Your login association has been deleted from the Language Repository site.
+    Your login association has been deleted from LogoSearch.
     However, to revoke access to your ${providerName}
     account completely, you must remove the permissions on your
     ${providerName} account directly. (This action can be reversed at any time
-    by simply logging in to the Language Repository again using your
+    by simply logging in to LogoSearch again using your
     ${providerName} account.) Click the button below to be taken to your
     ${providerName} account settings.
     `;

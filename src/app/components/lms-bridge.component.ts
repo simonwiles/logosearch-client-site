@@ -191,7 +191,7 @@ export class LmsBridgeComponent implements OnInit {
   }
 
   logInUser(lagunitaUser) {
-    this.spinnerText = 'Logging-in to UL Language Repository...';
+    this.spinnerText = 'Logging-in to LogoSearch...';
     this.changeDetectorRef.detectChanges();
 
     return this.authService.lmsBridgeLogin(
