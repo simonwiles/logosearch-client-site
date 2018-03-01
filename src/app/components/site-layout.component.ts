@@ -1,6 +1,7 @@
 import { Component }             from '@angular/core';
-import { environment }           from '../../environments/environment';
+import { Router }                from '@angular/router';
 
+import { environment }           from '../../environments/environment';
 
 import { AuthService }           from '../services/auth.service';
 import { NotificationsService }  from '../services/notifications.service';
@@ -13,6 +14,7 @@ export class SiteLayoutComponent {
   public environment = environment;
 
   constructor(
+    public router: Router,
     public authService: AuthService,
     public notificationsService: NotificationsService) {
 

@@ -15,13 +15,13 @@
         <li [routerLinkActive]="['selected']"><a [routerLink]="['/about']">
           <i class="fa fa-info-circle"></i> About
         </a></li>
-        <li [routerLinkActive]="['selected']"><a [routerLink]="['/samples']">
+        <li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn || router.url === '/samples'"><a [routerLink]="['/samples']">
           <i class="fa fa-comments"></i> Browse Samples
         </a></li>
         <!--li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn"><a [routerLink]="['/my-samples']">
           <i class="fa fa-user-plus"></i> My Samples
         </a></li-->
-        <li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn"><a [routerLink]="['/sample-entry']">
+        <li [routerLinkActive]="['selected']" *ngIf="authService.isLoggedIn || router.url === '/sample-entry'"><a [routerLink]="['/sample-entry']">
           <i class="fa fa-cloud-upload"></i> Submit a Sample
         </a></li>
       </ul>
