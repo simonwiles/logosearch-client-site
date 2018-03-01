@@ -202,3 +202,30 @@ footer {
 .buorg {
   font-family: $font-main !important;
 }
+
+
+.about {
+
+  padding: 20px 60px;
+
+  p, li {
+    line-height: 1.4em;
+  }
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  h2, h3 {
+    color: $cardinal;
+    font-family: $font-header;
+  }
+
+  em {
+    font-style: normal;
+    font-family: $font-header;
+    font-weight: bold;
+  }
+
+
+}
