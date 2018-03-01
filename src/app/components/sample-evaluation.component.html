@@ -5,7 +5,7 @@
   <header>
     <span>{{ evaluationTool.name }}</span>
     <span *ngIf="evaluation?.submittedBy">
-      {{evaluation.submittedBy.displayName}}
+      {{evaluation.submittedAt}}
       {{(evaluation.evaluatorIsSampleSubmitter) ? ' (submitter)': ''}}
     </span>
   </header>

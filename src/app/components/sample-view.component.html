@@ -16,7 +16,7 @@
          href="{{environment.baseURL}}sample/{{sample.uuid}}"
          uiTooltip="Direct Link to this Sample"
          uiTooltipPosition="right"><i class="fa fa-link"></i></a>
-      <p class="submission-details">Submitted by {{sample?.submittedBy.displayName}} on <span>{{sample?.submittedAt | date}}</span></p>
+      <p class="submission-details">Submitted on <span>{{sample?.submittedAt | date}}</span></p>
     </div>
     <div class="recording">
       <span *ngIf="!sample.recording.recordingFile">[no audio recording available]</span>
