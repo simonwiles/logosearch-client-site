@@ -2,21 +2,36 @@
 
   <div class="heading">Login to LogoSearch</div>
 
-  <div *ngIf="errorMessage" class="ui-state-error">
-    <i class="fa fa-exclamation-triangle "></i> Error: {{errorMessage}}
+  <div class="content">
+
+    <div *ngIf="errorMessage" class="ui-state-error">
+      <i class="fa fa-exclamation-triangle "></i> Error: {{errorMessage}}
+    </div>
+
+    <div class="message">
+      Access is currently available by invitation only.<br><br>
+      For more information, please contact our Project Coordinator,
+      Hsiaolin Hsieh <a href="mailto:hsiaolin@stanford.edu">hsiaolin@stanford.edu</a>.
+    </div>
+
+    <div class="input-field labelled">
+      <input type="email" name="email" [(ngModel)]="email" required pattern=".+@.+" #_email="ngModel">
+      <label for="email">Email</label>
+      <span *ngIf="!(_email.valid || _email.pristine)"
+            class="alert">Please enter a valid email address!</span>
+    </div>
+
+    <div class="input-field labelled">
+      <input type="password" name="password" [(ngModel)]="password" required>
+      <label for="password">Password</label>
+    </div>
+
+    <input type="submit" value="Login" class="button-style">
+
   </div>
 
-  <div class="left">
-    <label for="email">Email</label> <span [hidden]="_email.valid || _email.pristine">(invalid)</span><br>
-    <input type="email" name="email" [(ngModel)]="email"
-           #_email="ngModel" required pattern=".+@.+"> <br>
-    <label for="password">Password</label> <br>
-    <input type="password" name="password" [(ngModel)]="password" required> <br>
-    <input type="submit" value="Login">
-  </div>
-
-  <div class="right">
-    <!--div class="connect">Login with</div>
+  <!--div class="right">
+    <div class="connect">Login with</div>
     <button class="facebook">
       <i class="fa fa-facebook" aria-hidden="true"></i> Facebook
     </button>
@@ -31,6 +46,6 @@
     <br>
     <button class="open-id" (click)="doOpenIdLogin()">
       <i class="fa fa-openid" aria-hidden="true"></i> OpenID
-    </button-->
-  </div>
+    </button>
+  </div-->
 </form>
