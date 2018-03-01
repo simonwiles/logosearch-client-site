@@ -48,7 +48,6 @@ $select-down-arrow: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy
 
   ~ label {
     color: $invalid-warning !important;
-    font-weight: bold;
 
     // &::before {
     //   color: $invalid-warning;
@@ -172,7 +171,7 @@ button.text-style {
 }
 
 
-button.button-style {
+.button-style {
   @extend %clickable;
   background-color: $accent-bg;
   background-image: linear-gradient(to bottom, rgba($white, .2), transparent);
@@ -310,7 +309,6 @@ ui-select.ng-invalid.ng-touched {
 
   ~ label {
     color: $invalid-warning !important;
-    font-weight: bold;
   }
 }
 
@@ -321,7 +319,6 @@ ui-switch-toggle.ng-touched.ng-invalid {
 
     label {
       color: $invalid-warning;
-      font-weight: bold;
     }
   }
 }
