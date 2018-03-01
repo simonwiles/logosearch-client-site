@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   apiURL: 'https://localhost:8000/api/',
-  baseURL: 'https://localhost:4200/',
+  baseURL: '/',
   baseHref: '/',
   mediaURL: 'https://localhost:8000/media/',
   lagunitaHost: 'https://lagunita.stanford.edu',

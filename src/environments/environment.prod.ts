@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
-  apiURL: 'https://lr.simonwiles.net/api/',
-  baseURL: 'https://lr.simonwiles.net/',
+  apiURL: '/api/',
+  baseURL: '/',
   baseHref: '/',
-  mediaURL: 'https://lr.simonwiles.net/media/',
+  mediaURL: '/media/',
   lagunitaHost: 'https://lagunita.stanford.edu',
   lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu',
 
