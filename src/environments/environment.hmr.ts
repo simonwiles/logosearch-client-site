@@ -1,10 +1,10 @@
 export const environment = {
-  production: true,
-  hmr: false,
-  apiURL: '/api/',
+  production: false,
+  hmr: true,
+  apiURL: 'https://localhost:8000/api/',
   baseURL: '/',
   baseHref: '/',
-  mediaURL: '/media/',
+  mediaURL: 'https://localhost:8000/media/',
   lagunitaHost: 'https://lagunita.stanford.edu',
   lagunitaPreviewHost: 'https://preview.lagunita.stanford.edu',
 
