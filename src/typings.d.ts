@@ -11,6 +11,8 @@ interface Window {
   DOMParser: any;
   addResizeListener: any;
   removeResizeListener: any;
+  onYouTubeIframeAPIReady: any;
+  YT: any;
 }
 
 interface String {

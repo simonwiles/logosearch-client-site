@@ -1,30 +1,96 @@
 .homepage {
   background-color: $white;
-  margin: -5px -15px;
-  padding: 15px 0;
+  margin: -5px -15px 0;
+  padding: 0;
   text-align: center;
 
-  .main-image {
-    filter: grayscale(1) brightness(.9) contrast(1.2);
-    width: 90%;
+  .main-image,
+  .video {
     border-radius: 1%;
-    // box-shadow: 0 0 2px $black;
-    @extend %shadow-z-1;
+    width: 90%;
   }
 
-  .items {
-    font-family: $font-header;
-    font-size: 2em;
-    min-height: 100px;
-    padding: 1em 0 0;
-    vertical-align: middle;
+  .main-image {
+    @extend %shadow-z-1;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    transition: opacity 2s ease;
+  }
 
-    > div {
-      @extend %clickable;
+  .video {
+    height: 0;
+    left: 5%;
+    margin: 0 auto;
+    overflow: hidden;
+    padding-bottom: 50.625%;
+    position: absolute;
+    top: 0;
+
+    iframe {
+      height: 100%;
+      left: 0;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      transition: opacity 2s ease;
+      width: 100%;
+    }
+  }
+
+  .video-button {
+    background: rgba(100, 100, 100, .6);
+    border: 0;
+    border-radius: 8px;
+    color: $white;
+    cursor: pointer;
+    display: flex;
+    font-family: $font-header;
+    font-size: 24px;
+    margin: 0;
+    max-width: 84%;
+    overflow: hidden;
+    position: absolute;
+    right: 8%;
+    bottom: 5%;
+    transition: opacity .5s ease;
+    padding: 0;
+
+    .title {
+      padding: 10px;
+      margin: 0;
+      flex: 1 1 auto;
     }
 
-    img {
-      margin-bottom: 8px;
+    .button {
+      background-color: rgba($cardinal, .8);
+      padding: 10px;
+      transition: background-color .2s ease;
+      flex: 0 1 96px;
+      white-space: nowrap;
+
+      &::after {
+        content: '';
+        height: 100%;
+        display: inline-block;
+        vertical-align: middle;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      .button {
+        background-color: rgba($light-blue, .6);
+      }
+    }
+  }
+
+  @media screen and (max-width: 1240px) {
+    .video-button {
+      font-size: 18px;
+
+      .title {
+      }
     }
   }
 }
