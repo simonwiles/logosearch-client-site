@@ -1,7 +1,7 @@
 <header class="page-header cf">
 
-  <div class="slr-logo"><img src="assets/img/logo_120x82.png" alt="LogoSearch"></div>
-  <div>
+  <div class="logosearch-logo"><img src="assets/img/logo_120x82.png" alt="LogoSearch"></div>
+  <div class="header-bar">
     <h1><a href="{{environment.baseURL}}">LogoSearch</a></h1>
     <a href="http://ell.stanford.edu/" class="ulo-logo">
       <img src="assets/img/UL_GSE.191x55.png" alt="Understanding Language Online">
@@ -27,7 +27,6 @@
       </ul>
     </nav>
 
-
     <div class="login-status">
       <a *ngIf="!authService.isLoggedIn" [routerLink]="['/login']">
         <i class="fa fa-sign-in"></i> Login
@@ -44,25 +43,18 @@
   </div>
 </header>
 
-<!--
-   <lr-dropdown *ngIf="authService.isLoggedIn" [model]="userMenu" [toRight]="true">
-      </lr-dropdown>
-
--->
-
 <article class="page-content">
   <router-outlet></router-outlet>
 </article>
 
 <footer>
-
-  <div class="g">
-    <div id="bottom-logo" class="u-1-5">
+  <div class="footer-wrap ui-helper-clearfix">
+    <div id="bottom-logo">
       <a href="http://www.stanford.edu" style="border: medium none;">
         <img src="assets/img/SUSig_Stack.113x50.png" alt="Stanford University">
       </a>
     </div>
-    <div class="u-4-5">
+    <div id="bottom-menu">
       <ul>
         <li class="home"><a href="http://www.stanford.edu">SU Home</a></li>
         <li class="maps alt"><a href="http://visit.stanford.edu/plan/maps.html">Maps &amp; Directions</a></li>
@@ -70,19 +62,17 @@
         <li class="terms alt"><a href="http://www.stanford.edu/site/terms.html">Terms of Use</a></li>
         <li class="emergency-info"><a href="http://emergency.stanford.edu">Emergency Info</a></li>
       </ul>
-      <div id="copyright">
-        <p class="vcard">© <span class="fn org">Stanford University</span>,
-          <span class="adr">
-            <span class="locality">Stanford</span>, <span class="region">California</span> <span class="postal-code">94305</span>
-          </span>.&nbsp;&nbsp;
-          <span id="copyright-complaint">
-            <a href="http://www.stanford.edu/group/security/dmca.html" class="copyright-complaint">Copyright Complaints</a>
-          </span>
-        </p>
-      </div>
+    </div>
+    <div id="copyright">
+      <p class="vcard">© <span class="fn org">Stanford University</span>,
+        <span class="adr">
+          <span class="locality">Stanford</span>, <span class="region">California</span> <span class="postal-code">94305</span></span>.&nbsp;&nbsp;
+        <span id="copyright-complaint">
+          <a href="http://www.stanford.edu/group/security/dmca.html" class="copyright-complaint">Copyright Complaints</a>
+        </span>
+      </p>
     </div>
   </div>
-
 </footer>
 
 <ui-notifications [notificationsService]="notificationsService" [options]="{timeout: 5000, position: ['top', 'right']}"></ui-notifications>

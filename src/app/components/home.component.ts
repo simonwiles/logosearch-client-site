@@ -14,7 +14,8 @@ import { AfterViewInit, Component, ViewChild } from '@angular/core';
       <img #image class="main-image" src="assets/img/homepage_kids_1120x630.jpg" alt="Kids in a Classroom">
       <div #button class="video-button" (click)="playVideo()">
         <div class="title">A Tool for Research on Equity and Fairness in Linguistically Diverse Classrooms</div>
-        <div class="button"><i class="fa fa-play-circle"></i> Play</div>
+        <div class="play" *ngIf="!playing"><i class="fa fa-play-circle"></i> Play</div>
+        <div class="pause" *ngIf="playing"><i class="fa fa-pause-circle"></i> Pause</div>
       </div>
     </div>
   `
@@ -25,6 +26,7 @@ export class HomeComponent implements AfterViewInit {
   @ViewChild('image') image;
   @ViewChild('button') button;
 
+  public playing = false;
   private ytPlayer: any;
 
   ngAfterViewInit() {
@@ -50,11 +52,11 @@ export class HomeComponent implements AfterViewInit {
       events: {
         'onStateChange': (event) => {
           if (event.data == window.YT.PlayerState.ENDED) {
+            homeComponent.playing = false;
             homeComponent.ytFrame.nativeElement.style.opacity = 0;
             homeComponent.image.nativeElement.style.opacity = 1;
             homeComponent.image.nativeElement.style.pointerEvents = 'auto';
-            homeComponent.button.nativeElement.style.opacity = 1;
-            homeComponent.button.nativeElement.style.pointerEvents = 'auto';
+            homeComponent.button.nativeElement.classList.remove('hide');
           }
         }
       }
@@ -62,11 +64,16 @@ export class HomeComponent implements AfterViewInit {
   }
 
   playVideo() {
-    this.ytPlayer.playVideo();
-    this.ytFrame.nativeElement.style.opacity = 1;
-    this.image.nativeElement.style.opacity = 0;
-    this.image.nativeElement.style.pointerEvents = 'none';
-    this.button.nativeElement.style.opacity = 0;
-    this.button.nativeElement.style.pointerEvents = 'none';
+    if (this.playing) {
+      this.ytPlayer.pauseVideo();
+      this.playing = false;
+    } else {
+      this.ytPlayer.playVideo();
+      this.playing = true;
+      this.ytFrame.nativeElement.style.opacity = 1;
+      this.image.nativeElement.style.opacity = 0;
+      this.image.nativeElement.style.pointerEvents = 'none';
+      this.button.nativeElement.classList.add('hide');  // this one's done with a class, so that it can be manipulated with CSS media-queries
+    }
   }
 }

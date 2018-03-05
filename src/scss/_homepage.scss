@@ -1,6 +1,5 @@
 .homepage {
   background-color: $white;
-  margin: -5px -15px 0;
   padding: 0;
   text-align: center;
 
@@ -23,7 +22,7 @@
     left: 5%;
     margin: 0 auto;
     overflow: hidden;
-    padding-bottom: 50.625%;
+    padding-bottom: 50.62%;  // (315 / 560) * 0.9 (because container width is 90%)
     position: absolute;
     top: 0;
 
@@ -42,6 +41,7 @@
     background: rgba(100, 100, 100, .6);
     border: 0;
     border-radius: 8px;
+    bottom: 5%;
     color: $white;
     cursor: pointer;
     display: flex;
@@ -50,46 +50,79 @@
     margin: 0;
     max-width: 84%;
     overflow: hidden;
+    padding: 0;
     position: absolute;
     right: 8%;
-    bottom: 5%;
     transition: opacity .5s ease;
-    padding: 0;
 
     .title {
-      padding: 10px;
-      margin: 0;
       flex: 1 1 auto;
+      margin: 0;
+      padding: 10px;
     }
 
-    .button {
+    .pause,
+    .play {
       background-color: rgba($cardinal, .8);
+      flex: 0 1 96px;
       padding: 10px;
       transition: background-color .2s ease;
-      flex: 0 1 96px;
       white-space: nowrap;
 
       &::after {
         content: '';
-        height: 100%;
         display: inline-block;
+        height: 100%;
         vertical-align: middle;
       }
     }
 
     &:hover,
     &:focus {
-      .button {
+      .pause,
+      .play {
         background-color: rgba($light-blue, .6);
       }
     }
+
+    &.hide {
+      opacity: 0;
+      pointer-events: none;
+    }
+
   }
 
   @media screen and (max-width: 1240px) {
     .video-button {
       font-size: 18px;
+    }
+  }
 
-      .title {
+  @media screen and (max-width: 760px) {
+
+    .main-image,
+    .video {
+      width: 100%;
+    }
+
+    .video {
+      left: 0;
+      padding-bottom: 56.25%;  // (315 / 560)
+    }
+
+    .video-button {
+      border-radius: .3em;
+      font-size: 14px;
+      left: 0;
+      margin: 10px 0 0;
+      max-width: 100%;
+      position: relative;
+      width: 100%;
+
+
+      &.hide {
+        opacity: 1;
+        pointer-events: auto;
       }
     }
   }
