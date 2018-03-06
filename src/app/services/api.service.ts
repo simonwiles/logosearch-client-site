@@ -124,15 +124,18 @@ export class ApiService {
   }
 
 
-  public getSamples(params?): Observable<any> {
+  public getSamples(params?, stats=false): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
 
     let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+
+    if (stats) { _params.set('stats', '1'); }
+
     if (params) {
 
       if (params.offset) { _params.set('offset', params.offset); }
 
-      if (params.limit) { _params.set('limit', params.limit); }
+      if (params.limit !== undefined) { _params.set('limit', params.limit); }
 
       if (params.sortBy) {
         _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
@@ -186,14 +189,15 @@ export class ApiService {
                     .map(
                       (response: Response) => {
                         let data = response.json();
-                        data.results = data.results.map(
-                          sample => new Sample(sample)
-                        );
-                        data.params = _params;
+                        data.results = (data.results) ? data.results.map(sample => new Sample(sample)) : [];
                         return data;
                       }
                     )
                     .catch(error => this.handleError(error));
+  }
+
+  public getSampleStats(params?): Observable<any> {
+    return this.getSamples(params, true);
   }
 
   public getParticipants(params): Observable<any> {
