@@ -94,7 +94,7 @@ export class SampleBrowserComponent {
   }
 
   public set displayType(displayType) {
-    if (['table', 'cards', 'carousel'].indexOf(displayType) > ['table', 'cards', 'carousel'].indexOf(this._displayType)) {
+    if (['table', 'cards', 'carousel', 'analysis'].indexOf(displayType) > ['table', 'cards', 'carousel', 'analysis'].indexOf(this._displayType)) {
       this.slideDirection = 'forward';
     } else {
       this.slideDirection = 'back';

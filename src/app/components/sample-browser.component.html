@@ -23,6 +23,7 @@
         <li [ngClass]="{'selected': displayType === 'table'}"><a (click)="displayType = 'table'"><i class="fa fa-th-list"></i></a></li>
         <!--li [ngClass]="{'selected': displayType === 'cards'}"><a (click)="displayType = 'cards'"><i class="fa fa-th-large"></i></a></li-->
         <li [ngClass]="{'selected': displayType === 'carousel'}"><a (click)="displayType = 'carousel'"><i class="fa fa-clone"></i></a></li>
+        <li [ngClass]="{'selected': displayType === 'analysis'}"><a (click)="displayType = 'analysis'"><i class="fa fa-bar-chart"></i></a></li>
       </ul>
     </div>
 
@@ -266,6 +267,9 @@
     </div>
     <div *ngIf="displayType === 'carousel'" class="display-main" [@slideForwardBack]="slideDirection">
       <lr-samples-carousel [noItemsMsgHtml]="noItemsMsgHtml"></lr-samples-carousel>
+    </div>
+    <div *ngIf="displayType === 'analysis'" class="display-main" [@slideForwardBack]="slideDirection">
+      <lr-samples-analysis></lr-samples-analysis>
     </div>
   </div>
 </div>

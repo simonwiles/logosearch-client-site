@@ -61,6 +61,7 @@ import { SampleBrowserComponent }       from './components/sample-browser.compon
 import { SampleEntryComponent }         from './components/sample-entry.component';
 import { SampleEvaluationComponent }    from './components/sample-evaluation.component';
 import { SampleViewComponent }          from './components/sample-view.component';
+import { SamplesAnalysisComponent }     from './components/samples-analysis.component';
 import { SamplesCardsComponent }        from './components/samples-cards.component';
 import { SamplesCarouselComponent }     from './components/samples-carousel.component';
 import { SamplesTableComponent }        from './components/samples-table.component';
@@ -89,6 +90,7 @@ import { SamplesTableComponent }        from './components/samples-table.compone
     SampleViewComponent,
     SampleEvaluationComponent,
     SampleBrowserComponent,
+    SamplesAnalysisComponent,
     SamplesCardsComponent,
     SamplesCarouselComponent,
     SamplesTableComponent
