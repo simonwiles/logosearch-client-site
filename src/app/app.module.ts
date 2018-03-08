@@ -43,6 +43,8 @@ import { SamplesListService }           from './services/samples-list.service';
 
 import { TranscriptionRendererService } from './services/transcription-renderer.service';
 
+import { ChartJsDirective }             from './directives/chart-js.directive';
+
 import { MapToIterable }                from './pipes/map-to-iterable.pipe';
 import { SafePipe }                     from './pipes/safe.pipe';
 
@@ -71,6 +73,8 @@ import { SamplesTableComponent }        from './components/samples-table.compone
   declarations: [
     TabPanelComponent,
     TabViewComponent,
+
+    ChartJsDirective,
 
     MapToIterable,
     SafePipe,

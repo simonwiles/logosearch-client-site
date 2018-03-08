@@ -13,6 +13,7 @@ interface Window {
   removeResizeListener: any;
   onYouTubeIframeAPIReady: any;
   YT: any;
+  Chart: any;
 }
 
 interface String {
