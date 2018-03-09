@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'lr-home',
@@ -29,8 +29,10 @@ export class HomeComponent implements AfterViewInit {
   public playing = false;
   private ytPlayer: any;
 
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+
   ngAfterViewInit() {
-    if (window['YT']) {
+    if (this.ytPlayer) {
       // if the YouTubeIframeAPI is already loaded, then we've navigated away from the homepage
       //  and then back again, and (for some reason) the reference to this.ytPlayer seems to get
       //  lost, so we need to initialize it again.
@@ -53,6 +55,7 @@ export class HomeComponent implements AfterViewInit {
         'onStateChange': (event) => {
           if (event.data == window.YT.PlayerState.ENDED) {
             homeComponent.playing = false;
+            homeComponent.changeDetectorRef.detectChanges();
             homeComponent.ytFrame.nativeElement.style.opacity = 0;
             homeComponent.image.nativeElement.style.opacity = 1;
             homeComponent.image.nativeElement.style.pointerEvents = 'auto';
