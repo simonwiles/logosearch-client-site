@@ -1,6 +1,8 @@
 html.site {
   overflow-y: scroll;
 
+  body { background-color: $page-bg; }
+
   body::before {
     box-shadow: 0 0 10px rgba($black, .8);
     content: '';
@@ -91,6 +93,12 @@ footer {
   > * {
     text-align: initial;
   }
+
+  > * > .panel {
+    margin: 10px 1%;
+    padding: 20px;
+    width: 98%;
+  }
 }
 
 
@@ -153,7 +161,7 @@ footer {
   margin-bottom: 10px;
 
   .footer-wrap {
-    background-color: #e3dfd5;
+    background-color: $cloud;
     border-radius: .3em;
     color: $cardinal;
     font-family: 'Source Sans Pro', Helvetica, Arial, Verdana, sans-serif;

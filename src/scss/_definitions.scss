@@ -4,11 +4,16 @@ $white: #fff;
 $black: #000;
 $gray: #909090;
 
-
-$orange: #ed7d31;
+// stanford colours -- https://identity.stanford.edu/color.html
+$cardinal: #8c1515;
+$sandstone: #d2c295;
+$light-sandstone: #f9f6ef;
+$cloud: #dad7cb;
+$light-sage: #c7d1c5;
+$fog: #f4f4f4;
+$driftwood: #b6b1a9;
 
 // ul colours
-$cardinal: #8c1515;
 $ul-teal: #007c92;
 $ul-green: #009b76;
 $ul-dark-grey: #4d4f53;
@@ -17,7 +22,7 @@ $ul-gold: #eaab00;
 
 
 $dark-blue: #2b3d50;
-$light-blue: #a8d8eb;
+$light-blue: $light-sage; // #a8d8eb;
 $light-blue: mix($light-blue, $white, 80%);
 
 // notifications
@@ -31,11 +36,11 @@ $blue1: #03a9f4;
 $blue2: desaturate(darken($blue1, 20), 10);  // formerly: #0288d1;
 
 // ui colours
+$page-bg: $light-sandstone;
 $main-accent: $cardinal;
-//$accent-bg: mix($main-accent, $white, 80%);
 $accent-bg: $main-accent;
 $accent-disabled: mix($main-accent, $gray, 50%);
-$panel: #eff0f1;
+$panel: $light-sandstone;
 $alert: #f00;
 $invalid-warning: #f00;
 $valid-confirmation: #008000;
