@@ -124,66 +124,10 @@ export class ApiService {
   }
 
 
-  public getSamples(params?, stats=false): Observable<any> {
+  public getSamples(params?): Observable<any> {
     const samplesURI: string = environment.apiURL + 'samples/';
-
-    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
-
-    if (stats) { _params.set('stats', '1'); }
-
-    if (params) {
-
-      if (params.offset) { _params.set('offset', params.offset); }
-
-      if (params.limit !== undefined) { _params.set('limit', params.limit); }
-
-      if (params.sortBy) {
-        _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
-      }
-
-      if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
-
-      if (params.subjectArea) {
-        _params.set('subjectArea', ((params.subjectAreaOperator === true) ? '+' : '') + params.subjectArea);
-      }
-
-      if (params.gradeLevel) {
-        _params.set('gradeLevel', ((params.gradeLevelOperator === true) ? '+' : '') + params.gradeLevel);
-      }
-
-      if (params.participantFilters && params.participantFilters.length) {
-        let _pfilters = params.participantFilters.filter(fobj => fobj.valid)
-        .map(
-          fobj => Object.keys(fobj)
-                    .filter(key => key !== 'count' && key !== 'valid')
-                    .map(key => (fobj[key] === 'any') ? '' : fobj[key])
-                    .join('_') + ':' + fobj.count
-        );
-        _params.set('p', _pfilters.join(','));
-      }
-
-      if (params.search) { _params.set('search', params.search); }
-
-      if (params.langUsageFilters && params.langUsageFilters.length) {
-        let _lufilters = params.langUsageFilters.filter(fobj => fobj.valid).map(
-          fobj => `${fobj.lang}_${fobj.operator}_${fobj.usage}`
-        );
-        _params.set('langUsage', _lufilters.join(','));
-      }
-
-      if (params.numTurns && params.numTurns.valid) {
-        _params.set('numTurns', `${params.numTurns.operator}:${params.numTurns.count}`);
-      }
-
-      if (params.hasEll && params.hasEll !== 'any') { _params.set('hasEll', params.hasEll); }
-      if (params.hasRecording) { _params.set('hasRecording', params.hasRecording); }
-
-      if (params.person) { _params.set('person', params.person); }
-
-      if (params.assignment) { _params.set('assignment', params.assignment); }
-
-    }
-    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: _params });
+    params = this.buildSamplesFilteringParams(params);
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: params });
 
     return this.http.get(samplesURI, options)
                     .map(
@@ -197,7 +141,13 @@ export class ApiService {
   }
 
   public getSampleStats(params?): Observable<any> {
-    return this.getSamples(params, true);
+    const samplesURI: string = environment.apiURL + 'samples/stats/';
+    params = this.buildSamplesFilteringParams(params);
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: params });
+
+    return this.http.get(samplesURI, options)
+                    .map((response: Response) => response.json())
+                    .catch(error => this.handleError(error));
   }
 
   public getParticipants(params): Observable<any> {
@@ -326,6 +276,65 @@ export class ApiService {
     return this.http.put(evaluationsURI, evaluationJSON, options)
                     .map(response => response.json())
                     .catch(error => this.handleError(error));
+  }
+
+
+  private buildSamplesFilteringParams(params?): URLSearchParams {
+    let _params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
+
+    if (params) {
+
+      if (params.offset) { _params.set('offset', params.offset); }
+
+      if (params.limit) { _params.set('limit', params.limit); }
+
+      if (params.sortBy) {
+        _params.set('ordering', ((params.sortAsc) ? '' : '-') + params.sortBy);
+      }
+
+      if (params.submittedBy) { _params.set('submittedBy', params.submittedBy); }
+
+      if (params.subjectArea) {
+        _params.set('subjectArea', ((params.subjectAreaOperator === true) ? '+' : '') + params.subjectArea);
+      }
+
+      if (params.gradeLevel) {
+        _params.set('gradeLevel', ((params.gradeLevelOperator === true) ? '+' : '') + params.gradeLevel);
+      }
+
+      if (params.participantFilters && params.participantFilters.length) {
+        let _pfilters = params.participantFilters.filter(fobj => fobj.valid)
+        .map(
+          fobj => Object.keys(fobj)
+                    .filter(key => key !== 'count' && key !== 'valid')
+                    .map(key => (fobj[key] === 'any') ? '' : fobj[key])
+                    .join('_') + ':' + fobj.count
+        );
+        _params.set('p', _pfilters.join(','));
+      }
+
+      if (params.search) { _params.set('search', params.search); }
+
+      if (params.langUsageFilters && params.langUsageFilters.length) {
+        let _lufilters = params.langUsageFilters.filter(fobj => fobj.valid).map(
+          fobj => `${fobj.lang}_${fobj.operator}_${fobj.usage}`
+        );
+        _params.set('langUsage', _lufilters.join(','));
+      }
+
+      if (params.numTurns && params.numTurns.valid) {
+        _params.set('numTurns', `${params.numTurns.operator}:${params.numTurns.count}`);
+      }
+
+      if (params.hasEll && params.hasEll !== 'any') { _params.set('hasEll', params.hasEll); }
+      if (params.hasRecording) { _params.set('hasRecording', params.hasRecording); }
+
+      if (params.person) { _params.set('person', params.person); }
+
+      if (params.assignment) { _params.set('assignment', params.assignment); }
+    }
+
+    return _params;
   }
 
 
