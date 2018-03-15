@@ -94,7 +94,7 @@ footer {
     text-align: initial;
   }
 
-  > * > .panel {
+  > * > .panel:not(.login-form) {
     margin: 10px 1%;
     padding: 20px;
     width: 98%;
