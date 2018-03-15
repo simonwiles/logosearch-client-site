@@ -10,14 +10,14 @@
        <i class="fa fa-minus-square"></i>
         hide filters
       </button>
-      <button class="button-style" (click)="resetFilters()" *ngIf="samplesListService.itemCount !== samplesListService.itemTotal" [@expandInOutHorizontal]>
+      <button class="button-style" (click)="resetFilters()" *ngIf="itemCount !== itemTotal" [@expandInOutHorizontal]>
         <i class="fa fa-eraser"></i>
         reset filters
       </button>
       <h3 [innerHtml]="{
-        'true': uiFormatThousands(samplesListService.itemTotal) + ' Total Samples',
-        'false': 'Filtered ' + uiFormatThousands(samplesListService.itemCount) + ' of ' + uiFormatThousands(samplesListService.itemTotal) + ' Total Samples'
-      }[(samplesListService.itemCount === samplesListService.itemTotal).toString()]">
+        'true': uiFormatThousands(itemTotal) + ' Total Samples',
+        'false': 'Filtered ' + uiFormatThousands(itemCount) + ' of ' + uiFormatThousands(itemTotal) + ' Total Samples'
+      }[(itemCount === itemTotal).toString()]">
       </h3>
       <ul class="ui-button-bar">
         <li [ngClass]="{'selected': displayType === 'table'}"><a (click)="displayType = 'table'"><i class="fa fa-th-list"></i></a></li>
@@ -44,14 +44,14 @@
                      [options]="subjectAreaItems"
                      [multiple]="true"
                      placeholder="Select subject area(s)"
-                     (selected)="samplesListService.update()"
-                     (deselected)="samplesListService.update()"
+                     (selected)="updateFilters()"
+                     (deselected)="updateFilters()"
                      [allowClear]="true">
           </ui-select>
         </div>
         <div class="u-2-24">
           <ui-toggle [(ngModel)]="filters.subjectAreaOperator"
-                     (change)="samplesListService.update()"
+                     (change)="updateFilters()"
                      idString="subject-area-operator"
                      [checked]="false"
                      [disabled]="(filters.subjectArea === null || filters.subjectArea.length < 2)"
@@ -65,14 +65,14 @@
                      [options]="gradeLevels"
                      [multiple]="true"
                      placeholder="Select grade level(s)"
-                     (selected)="samplesListService.update()"
-                     (deselected)="samplesListService.update()"
+                     (selected)="updateFilters()"
+                     (deselected)="updateFilters()"
                      [allowClear]="true">
           </ui-select>
         </div>
         <div class="u-2-24">
           <ui-toggle [(ngModel)]="filters.gradeLevelOperator"
-                     (change)="samplesListService.update()"
+                     (change)="updateFilters()"
                      idString="grade-level-operator"
                      [checked]="false"
                      [disabled]="(filters.gradeLevel === null || filters.gradeLevel.length < 2)"
@@ -150,8 +150,8 @@
           <input type="text"
                  [(ngModel)]="samplesListService.searchTerm"
                  uiTooltip="Search in Context, Objective, Prompt, and in the Transcript"
-                 (keyup.enter)="samplesListService.update()">
-          <button class="button-style" (click)="samplesListService.update()">
+                 (keyup.enter)="updateFilters()">
+          <button class="button-style" (click)="updateFilters()">
             <i class="fa fa-search"></i> Search
           </button>
         </div>
@@ -231,7 +231,7 @@
           <ui-switch-toggle name="has-recording"
                             [options]="[{label: 'Any', value: null}, {label: 'Yes', value: 'true'}, {label: 'No', value: 'false'}]"
                             [(ngModel)]="filters.hasRecording"
-                            (ngModelChange)="samplesListService.update()">
+                            (ngModelChange)="updateFilters()">
           </ui-switch-toggle>
         </div>
         <div class="u-4-24 switch-toggle-filter"
@@ -246,7 +246,7 @@
           <ui-switch-toggle name="has-ell"
                             [options]="[{label: 'Any', value: null}, {label: 'All', value: 'all'}, {label: 'Some', value: 'some'}, {label: 'None', value: 'none'}]"
                             [(ngModel)]="filters.hasEll"
-                            (ngModelChange)="samplesListService.update()">
+                            (ngModelChange)="updateFilters()">
           </ui-switch-toggle>
         </div>
         <div class="u-4-24">
@@ -269,7 +269,7 @@
       <lr-samples-carousel [noItemsMsgHtml]="noItemsMsgHtml"></lr-samples-carousel>
     </div>
     <div *ngIf="displayType === 'analysis'" class="display-main" [@slideForwardBack]="slideDirection">
-      <lr-samples-analysis></lr-samples-analysis>
+      <lr-samples-analysis [parentComponent]="samplesBrowser"></lr-samples-analysis>
     </div>
   </div>
 </div>

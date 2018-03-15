@@ -95,9 +95,7 @@ export class ApiDataService implements IApiDataService {
 
     this.reset();
 
-    this._update
-      .debounceTime(200)
-      .subscribe((forceReload?) => { this.reloadItems(forceReload); });
+    this._update.subscribe((forceReload?) => { this.reloadItems(forceReload); });
   }
 
   update(forceReload?) {

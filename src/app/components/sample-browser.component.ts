@@ -1,3 +1,6 @@
+import { Observable }                     from 'rxjs/Observable';
+import { Subject }                        from 'rxjs/Subject';
+
 import { Location }                       from '@angular/common';
 
 import { ChangeDetectorRef,
@@ -74,6 +77,8 @@ export class SampleBrowserComponent {
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
 
   public environment = environment;
+  public itemCount: number;
+  public itemTotal: number;
 
   public genders: any = Object.values(Gender);
   public gradeLevels: any = Object.keys(GradeLevel).map(_ => ({ label: GradeLevel[_], value: _ }));
@@ -86,6 +91,7 @@ export class SampleBrowserComponent {
   public samplesBrowser = this;
   public expandFilters = false;
   public slideDirection = 'forward';
+  public filtersUpdated: Observable<any>;
 
   public get displayType() {
     return this._displayType;
@@ -108,6 +114,7 @@ export class SampleBrowserComponent {
   private _subjectAreaCounts: any = {};
   private _displayType = 'table';
 
+  private _filtersUpdated: Subject<any> = new Subject<any>();
 
   constructor(
     public samplesListService: SamplesListService,
@@ -116,7 +123,13 @@ export class SampleBrowserComponent {
     private location: Location,
     private transcriptionRendererService: TranscriptionRendererService) {
 
+    // the public interface should be "read-only" (i.e. observables, not subjects)
+    this.filtersUpdated = this._filtersUpdated.asObservable();
+
     this.filters = this.samplesListService.filters;  // grab a local ref for ease;
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // currently deactived code to alllow parsing of url get params:
 
     // if (this.activatedRoute.snapshot.data['displayType']) {
     //   this.displayType = this.activatedRoute.snapshot.data['displayType'];
@@ -127,13 +140,26 @@ export class SampleBrowserComponent {
     //   this.filters.submittedBy = '115742ab-dc20-435f-9533-f57c41a4efd0';
     // }
 
-    if (this.location.path().indexOf('?') > -1) {
-      // const tree: UrlTree = this.router.parseUrl(this.location.path());
-      // const q = tree.queryParams;
-      this.samplesListService.update();
-    } else {
-      this.samplesListService.update();
-    }
+    // if (this.location.path().indexOf('?') > -1) {
+    //   // const tree: UrlTree = this.router.parseUrl(this.location.path());
+    //   // const q = tree.queryParams;
+    //   this._filtersUpdated.next(this.filters);
+    // } else {
+    //   this._filtersUpdated.next(this.filters);
+    // }
+    /////////////////////////////////////////////////////////////////////////////////
+
+    this._filtersUpdated.debounceTime(200).subscribe(
+      filters => {
+        console.log(`filters updates! (displayType: ${this.displayType})`);
+        if (this.displayType !== 'analysis') {
+          this.samplesListService.update();
+        }
+      }
+    );
+
+    this._filtersUpdated.next(this.filters);
+
 
     this.samplesListService.updated.subscribe(
       data => this.samplesUpdated(data)
@@ -155,6 +181,9 @@ export class SampleBrowserComponent {
     // const newUri = path.slice(0, path.indexOf('?')) + Location.normalizeQueryParams(data.params.toString();
     // this.location.replaceState(newUri);
 
+    this.itemCount = data.count;
+    this.itemTotal = data.total;
+
     if (data.facets) {
       this.subjectAreaItems = this.subjectAreas.map(
         item => ({
@@ -167,9 +196,13 @@ export class SampleBrowserComponent {
 
   }
 
+  updateFilters() {
+    this._filtersUpdated.next(this.filters);
+  }
+
   filterSubjectArea(key) {
     this.filters.subjectArea = [key];
-    this.samplesListService.update();
+    this._filtersUpdated.next(this.filters);
   }
 
   participantTypeUpdated(filter, languageSelect) {
@@ -182,7 +215,7 @@ export class SampleBrowserComponent {
 
   updateFilterValidity(filter) {
     filter.valid = Object.keys(filter).every(key => filter[key] !== null && filter[key] !== '');
-    if (filter.valid) { this.samplesListService.update(); }
+    if (filter.valid) { this._filtersUpdated.next(this.filters); }
   }
 
   newParticipantFilter() {
@@ -195,12 +228,12 @@ export class SampleBrowserComponent {
 
   removeParticipantFilter(filter) {
     this.filters.participantFilters = this.filters.participantFilters.filter(_filter => _filter !== filter);
-    if (filter.valid) { this.samplesListService.update(); }
+    if (filter.valid) { this._filtersUpdated.next(this.filters); }
   }
 
   removeLangUsageFilter(filter) {
     this.filters.langUsageFilters = this.filters.langUsageFilters.filter(_filter => _filter !== filter);
-    if (filter.valid) { this.samplesListService.update(); }
+    if (filter.valid) { this._filtersUpdated.next(this.filters); }
   }
 
   highlight(text, term) {
@@ -231,13 +264,13 @@ export class SampleBrowserComponent {
       operator: null,
       count: null
     };
-    this.samplesListService.update();
+    this._filtersUpdated.next(this.filters);
   }
 
   resetFilters() {
     this.samplesListService.reset();
     this.filters = this.samplesListService.filters;
-    this.samplesListService.update();
+    this._filtersUpdated.next(this.filters);
   }
 
   buildExpansion(item, searchTerm?) {
