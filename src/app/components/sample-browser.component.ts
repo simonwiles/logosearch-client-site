@@ -145,11 +145,6 @@ export class SampleBrowserComponent {
     // this.location.replaceState(newUri);
 
     if (data.facets) {
-      // TODO: this is a weird problem caused by the fact that my CamelCaseJSONParser and *Renderer operate
-      //       automatically on all object properties passed into and out of the REST api, but do not
-      //       operate on values, so sometimes 'scienceOther' in results in 'science_other' out...
-      this._subjectAreaCounts = Object.assign({science_other: data.facets.subjectArea.scienceOther}, data.facets.subjectArea);
-
       this.subjectAreaItems = this.subjectAreas.map(
         item => ({
           label: `${item.label} <span class="item-count">[${this._subjectAreaCounts[item.value]}]</span>`,
