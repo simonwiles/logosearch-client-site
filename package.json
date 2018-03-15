@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --sourcemap --extractCss --ssl 1 --ssl-key /etc/ssl/private/server-config/localhost.selfsigned.key --ssl-cert /etc/ssl/certs/server-config/localhost.selfsigned.crt",
+    "hmr": "ng serve --hmr --environment=hmr --ssl 1 --ssl-key /etc/ssl/private/localhost.selfsigned.key --ssl-cert /etc/ssl/certs/localhost.selfsigned.crt",
     "build": "ng build",
     "lint": "ng lint"
   },
