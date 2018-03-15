@@ -9,9 +9,7 @@ import { animate,
          transition,
          trigger }                        from '@angular/core';
 
-// import { ActivatedRoute,
-//          Router,
-//          UrlTree }                        from '@angular/router';
+import { ActivatedRoute }                 from '@angular/router';
 
 import { environment }                    from '../../environments/environment';
 
@@ -113,6 +111,7 @@ export class SampleBrowserComponent {
 
   constructor(
     public samplesListService: SamplesListService,
+    private activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
     private location: Location,
     private transcriptionRendererService: TranscriptionRendererService) {
@@ -141,6 +140,14 @@ export class SampleBrowserComponent {
     );
   }
 
+  ngAfterViewInit() {
+    if (this.activatedRoute.snapshot.firstChild) {
+      const routingData = this.activatedRoute.snapshot.firstChild.data;
+      if (routingData.displayType) {
+        setTimeout(() => this.displayType = routingData.displayType, 0);
+      }
+    }
+  }
 
   samplesUpdated(data) {
 

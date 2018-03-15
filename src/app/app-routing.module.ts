@@ -41,7 +41,11 @@ const routes: Routes = [
       { path: 'user/:uuid', component: ProfileComponent },
       { path: 'users', component: ProfileComponent },
       { path: 'sample/:uuid', component: SampleViewComponent },
-      { path: 'samples', component: SampleBrowserComponent },
+      { path: 'samples', component: SampleBrowserComponent,
+        children: [
+          { path: 'analysis', component: SampleBrowserComponent, data: { displayType: 'analysis' } }
+        ]
+      },
       { path: 'evaluate/:sampleUuid', component: SampleEvaluationComponent },
       { path: 'evaluate', component: SampleEvaluationComponent },
 
