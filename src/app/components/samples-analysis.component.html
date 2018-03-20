@@ -3,8 +3,87 @@
 
   <p>Analysis goes here!</p>
 
+  <p>Total Samples: {{ total }} ({{ count }} filtered)</p>
+
+  <!--div>of which:
+    <ul>
+      <li *ngFor="let subjectArea of chartData.subjectArea; let i = index">
+        {{ subjectArea.label }} : {{ subjectArea.count }}
+      </li>
+    </ul>
+  </div-->
+
 </div>
 
-<div class="reload-mask" *ngIf="reloading">
-  <i class="fa fa-spin fa-spinner"></i>
+<div *ngIf="statsLoaded" style="width: 50%; float: left;">
+  <canvas chartJs
+          style="height:300px"
+          type="horizontalBar"
+          [labels]="chartData.subjectArea.labels"
+          [datasets]="chartData.subjectArea.datasets"
+          [options]="chartData.subjectArea.options"
+          [legend]="false"
+          [title]="'By Subject Area'"></canvas>
 </div>
+
+<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
+  <canvas chartJs
+          style="height:200px"
+          type="pie"
+          [labels]="chartData.hasRecording.labels"
+          [datasets]="chartData.hasRecording.datasets"
+          [options]="chartData.hasRecording.options"
+          [legend]="{'position':'bottom'}"
+          [title]="'Has Recording?'"></canvas>
+</div>
+
+<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
+  <canvas chartJs
+          style="height:200px"
+          type="pie"
+          [labels]="chartData.hasElls.labels"
+          [datasets]="chartData.hasElls.datasets"
+          [options]="chartData.hasElls.options"
+          [legend]="{'position':'bottom'}"
+          [title]="'Has Ells?'"></canvas>
+</div>
+
+<hr>
+<h3>Participants in these Samples</h3>
+
+<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
+  <canvas chartJs
+          style="height:200px"
+          type="pie"
+          [labels]="chartData.adultsByGender.labels"
+          [datasets]="chartData.adultsByGender.datasets"
+          [options]="chartData.adultsByGender.options"
+          [legend]="{'position':'bottom'}"
+          [title]="'Adults By Gender'"></canvas>
+</div>
+
+<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
+  <canvas chartJs
+          style="height:200px"
+          type="pie"
+          [labels]="chartData.studentsByGender.labels"
+          [datasets]="chartData.studentsByGender.datasets"
+          [options]="chartData.studentsByGender.options"
+          [legend]="{'position':'bottom'}"
+          [title]="'Students By Gender'"></canvas>
+</div>
+
+<div *ngIf="statsLoaded" style="width: 50%; float: left;">
+  <canvas chartJs
+          style="height:300px"
+          type="horizontalBar"
+          [labels]="chartData.studentsByGradeLevel.labels"
+          [datasets]="chartData.studentsByGradeLevel.datasets"
+          [options]="chartData.studentsByGradeLevel.options"
+          [legend]="false"
+          [title]="'By Subject Area'"></canvas>
+</div>
+
+<!--div class="reload-mask" *ngIf="samplesListService.reloading || reloading">
+  <i class="fa fa-spin fa-spinner"></i>
+</div-->

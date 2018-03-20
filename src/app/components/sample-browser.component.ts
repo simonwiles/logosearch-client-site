@@ -98,13 +98,14 @@ export class SampleBrowserComponent {
   }
 
   public set displayType(displayType) {
-    if (['table', 'cards', 'carousel', 'analysis'].indexOf(displayType) > ['table', 'cards', 'carousel', 'analysis'].indexOf(this._displayType)) {
+    const displayTypes = ['table', 'cards', 'carousel', 'analysis'];
+    if (displayTypes.indexOf(displayType) > displayTypes.indexOf(this._displayType)) {
       this.slideDirection = 'forward';
     } else {
       this.slideDirection = 'back';
     }
+    this._displayType == 'analysis' && this.samplesListService.update();
     this.changeDetectorRef.detectChanges();
-
     this._displayType = displayType;
   }
 
@@ -143,27 +144,16 @@ export class SampleBrowserComponent {
     // if (this.location.path().indexOf('?') > -1) {
     //   // const tree: UrlTree = this.router.parseUrl(this.location.path());
     //   // const q = tree.queryParams;
-    //   this._filtersUpdated.next(this.filters);
+    //   this._filtersUpdated.next();
     // } else {
-    //   this._filtersUpdated.next(this.filters);
+    //   this._filtersUpdated.next();
     // }
     /////////////////////////////////////////////////////////////////////////////////
 
-    this._filtersUpdated.debounceTime(200).subscribe(
-      filters => {
-        console.log(`filters updates! (displayType: ${this.displayType})`);
-        if (this.displayType !== 'analysis') {
-          this.samplesListService.update();
-        }
-      }
-    );
+    this._filtersUpdated.debounceTime(200).subscribe(() => this.displayType !== 'analysis' && this.samplesListService.update());
+    this.samplesListService.updated.subscribe(data => this.samplesUpdated(data));
 
-    this._filtersUpdated.next(this.filters);
-
-
-    this.samplesListService.updated.subscribe(
-      data => this.samplesUpdated(data)
-    );
+    this._filtersUpdated.next();
   }
 
   ngAfterViewInit() {
@@ -197,12 +187,12 @@ export class SampleBrowserComponent {
   }
 
   updateFilters() {
-    this._filtersUpdated.next(this.filters);
+    this._filtersUpdated.next();
   }
 
   filterSubjectArea(key) {
     this.filters.subjectArea = [key];
-    this._filtersUpdated.next(this.filters);
+    this._filtersUpdated.next();
   }
 
   participantTypeUpdated(filter, languageSelect) {
@@ -215,7 +205,7 @@ export class SampleBrowserComponent {
 
   updateFilterValidity(filter) {
     filter.valid = Object.keys(filter).every(key => filter[key] !== null && filter[key] !== '');
-    if (filter.valid) { this._filtersUpdated.next(this.filters); }
+    if (filter.valid) { this._filtersUpdated.next(); }
   }
 
   newParticipantFilter() {
@@ -228,12 +218,12 @@ export class SampleBrowserComponent {
 
   removeParticipantFilter(filter) {
     this.filters.participantFilters = this.filters.participantFilters.filter(_filter => _filter !== filter);
-    if (filter.valid) { this._filtersUpdated.next(this.filters); }
+    if (filter.valid) { this._filtersUpdated.next(); }
   }
 
   removeLangUsageFilter(filter) {
     this.filters.langUsageFilters = this.filters.langUsageFilters.filter(_filter => _filter !== filter);
-    if (filter.valid) { this._filtersUpdated.next(this.filters); }
+    if (filter.valid) { this._filtersUpdated.next(); }
   }
 
   highlight(text, term) {
@@ -264,13 +254,13 @@ export class SampleBrowserComponent {
       operator: null,
       count: null
     };
-    this._filtersUpdated.next(this.filters);
+    this._filtersUpdated.next();
   }
 
   resetFilters() {
     this.samplesListService.reset();
     this.filters = this.samplesListService.filters;
-    this._filtersUpdated.next(this.filters);
+    this._filtersUpdated.next();
   }
 
   buildExpansion(item, searchTerm?) {
