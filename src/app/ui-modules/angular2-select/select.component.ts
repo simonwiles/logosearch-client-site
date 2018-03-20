@@ -116,6 +116,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
   @Input() multiple: boolean;
   @Input() placeholder: string;
   @Input() allowClear: boolean;
+  @Input() disabled = false;
 
   @Output() opened: EventEmitter<any> = new EventEmitter<any>();
   @Output() closed: EventEmitter<any> = new EventEmitter<any>();
@@ -132,7 +133,6 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
 
 
   // State variables.
-  isDisabled = false;
   isBelow = true;
   isOpen = false;
   hasFocus = false;
@@ -307,7 +307,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
    **************************************************************************/
 
   toggleDropdown() {
-    if (!this.isDisabled) {
+    if (!this.disabled) {
       this.isOpen ? this.close(true) : this.open();
     }
   }
@@ -532,6 +532,7 @@ export class SelectComponent implements ControlValueAccessor, OnInit, OnChanges 
     result[c] = true;
     result[c + '--open'] = this.isOpen;
     result[c + '--focus'] = this.hasFocus;
+    result[c + '--disabled'] = this.disabled;
     result[c + '--' + this.theme] = true;
     result[c + '--' + (this.isBelow ? 'below' : 'above')] = true;
 
