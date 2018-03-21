@@ -95,8 +95,7 @@
                 <i class="fa fa-close"></i>
               </button>
               <select [(ngModel)]="participantFilter.ptype" name="pType{{i}}" required
-                      (ngModelChange)="updateFilterValidity(participantFilter)">
-                <option value="" disabled selected>type..</option>
+                      (ngModelChange)="participantTypeUpdated(participantFilter, languageSelect)">
                 <option value="a">Adult</option>
                 <option value="s" selected>Student</option>
               </select>
@@ -105,7 +104,7 @@
                 <option value="" disabled selected>gender...</option>
                 <option *ngFor="let gender of genders"
                         [value]="gender.value">{{gender.label}}</option>
-                <option value="any">Any</option>
+                <option value="any">[Any Gender]</option>
               </select>
               <div class="fill">
                 <ui-select #languageSelect
@@ -113,7 +112,8 @@
                            [(ngModel)]="participantFilter.lang"
                            (ngModelChange)="updateFilterValidity(participantFilter)"
                            [options]="languagesWithAny"
-                           [allowClear]="false">
+                           [allowClear]="false"
+                           [disabled]="participantFilter.ptype==='a'?true:false">
                 </ui-select>
               </div>
               <select [(ngModel)]="participantFilter.operator" name="pOperator{{i}}" required
@@ -271,6 +271,6 @@
 </div>
 
 
-<!--ui-collapsible [shown]="false" header="diagnostic">
+<ui-collapsible *ngIf="!environment.production" [shown]="false" header="diagnostic">
   <pre>{{filters | json}}</pre>
-</ui-collapsible-->
+</ui-collapsible>

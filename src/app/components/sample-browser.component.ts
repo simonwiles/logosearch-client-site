@@ -13,6 +13,8 @@ import { animate,
 //          Router,
 //          UrlTree }                        from '@angular/router';
 
+import { environment }                    from '../../environments/environment';
+
 import { SamplesListService }             from '../services/samples-list.service';
 import { TranscriptionRendererService }   from '../services/transcription-renderer.service';
 
@@ -72,6 +74,8 @@ import { FormatThousands }                from '../ui-modules/ui-pipes/format-th
 export class SampleBrowserComponent {
 
   @Input() noItemsMsgHtml = '<p class="no-items-msg">No samples found that match the current criteria!</p>';
+
+  public environment = environment;
 
   public genders: any = Object.values(Gender);
   public gradeLevels: any = Object.keys(GradeLevel).map(_ => ({ label: GradeLevel[_], value: _ }));
@@ -159,6 +163,14 @@ export class SampleBrowserComponent {
   filterSubjectArea(key) {
     this.filters.subjectArea = [key];
     this.samplesListService.update();
+  }
+
+  participantTypeUpdated(filter, languageSelect) {
+    if (filter.ptype === 'a') {
+      languageSelect.clear();
+      languageSelect.select('any');
+    }
+    this.updateFilterValidity(filter);
   }
 
   updateFilterValidity(filter) {
