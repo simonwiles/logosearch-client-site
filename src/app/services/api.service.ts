@@ -150,6 +150,16 @@ export class ApiService {
                     .catch(error => this.handleError(error));
   }
 
+  public getSampleAnalysis(params?): Observable<any> {
+    const samplesURI: string = environment.apiURL + 'samples/analysis/';
+    params = this.buildSamplesFilteringParams(params);
+    const options: RequestOptions = new RequestOptions({ headers: this.headers, search: params });
+
+    return this.http.get(samplesURI, options)
+                    .map((response: Response) => response.json())
+                    .catch(error => this.handleError(error));
+  }
+
   public getParticipants(params): Observable<any> {
     const participantsURI: string = environment.apiURL + 'participants/';
 

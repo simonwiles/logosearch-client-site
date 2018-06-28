@@ -1,0 +1,65 @@
+.samples-analysis {
+
+  .facet {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    align-items: stretch;
+    background: rgba($light-blue, .4);
+    padding: 0 5px;
+  }
+
+  .legend {
+    align-items: stretch;
+    display: flex;
+    // border: 1px solid #ccc;
+    //background: rgba($light-blue, .4);
+    border-radius: 4px;
+    padding: 4px 5px;
+    font-size: 12px;
+    line-height: 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-direction: column;
+
+    h3 {
+      padding: 4px 0;
+      margin: 0;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+    }
+
+    div {
+      white-space: nowrap;
+    }
+
+    .swatch {
+      flex: 1 0 auto;
+      height: 12px;
+      max-width: 40px;
+
+    }
+
+    .label {
+      text-transform: capitalize;
+      padding: 0 5px 0 10px;
+    }
+
+    .value {
+      font-weight: bold;
+      padding: 0 5px;
+      flex: 1 0 auto;
+      text-align: right;
+    }
+
+    .proportion {
+      padding: 0 5px;
+      flex: 0 0 50px;
+      text-align: right;
+    }
+  }
+}

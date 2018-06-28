@@ -1,89 +1,113 @@
 
-<div class="samples-analysis">
+<div *ngIf="stats" class="samples-analysis ui-helper-clearfix">
 
-  <p>Analysis goes here!</p>
+  <h3>{{ stats.count | number }} Samples (of {{ stats.total | number }} total)</h3>
 
-  <p>Total Samples: {{ total }} ({{ count }} filtered)</p>
+  <div class="ui-helper-clearfix">
+    <div style="width: 50%; float: left;">
+      <canvas chartJs
+              style="height:300px"
+              type="horizontalBar"
+              [labels]="chartData.subjectArea.labels"
+              [datasets]="chartData.subjectArea.datasets"
+              [options]="chartData.subjectArea.options"
+              [legend]="false"
+              [title]="'By Subject Area'"></canvas>
+    </div>
 
-  <!--div>of which:
-    <ul>
-      <li *ngFor="let subjectArea of chartData.subjectArea; let i = index">
-        {{ subjectArea.label }} : {{ subjectArea.count }}
-      </li>
-    </ul>
-  </div-->
+    <div style="width: 300px; float: left; height: 300px">
+      <canvas chartJs
+              style="height:200px"
+              type="pie"
+              [labels]="chartData.hasRecording.labels"
+              [datasets]="chartData.hasRecording.datasets"
+              [options]="chartData.hasRecording.options"
+              [legend]="{'position':'bottom'}"
+              [title]="'Has Recording?'"></canvas>
+    </div>
+
+    <div class="facet ui-helper-clearfix" style="width: 300px; float: left; height: 300px;flex-direction: column">
+      <div class="legend">
+        <h3>ELL Participation</h3>
+        <div *ngFor="let label of chartData.hasElls.labels; let idx = index" class="legend-row">
+          <div class="swatch" [style.background-color]="chartData.hasElls.datasets[0].backgroundColor[idx]"></div>
+          <div class="label">{{ label }}</div>
+          <div class="value">{{ chartData.hasElls.datasets[0].data[idx] | number }}</div>
+          <div class="proportion">({{ (chartData.hasElls.datasets[0].data[idx] / stats.count) * 100 | number:'1.1-1' }}%)</div>
+        </div>
+      </div>
+      <canvas chartJs
+              style="height: 200px; width: 290px;"
+              type="pie"
+              [labels]="chartData.hasElls.labels"
+              [datasets]="chartData.hasElls.datasets"
+              [options]="chartData.hasElls.options"></canvas>
+    </div>
+  </div>
+
+  <hr>
+  <h3>Participants in these Samples (Total: {{ stats.participants.students.count | number }} students and {{ stats.participants.adults.count | number }} adults)</h3>
+
+  <div class="facet" style="width:49%;float:left">
+    <div class="legend" style="flex: 1 0 auto; margin-bottom: 0">
+      <h3>Adults by Gender</h3>
+      <div *ngFor="let label of chartData.adultsByGender.labels; let idx = index" class="legend-row">
+        <div class="swatch" [style.background-color]="chartData.adultsByGender.datasets[0].backgroundColor[idx]"></div>
+        <div class="label">{{ label }}</div>
+        <div class="value">{{ chartData.adultsByGender.datasets[0].data[idx] | number }}</div>
+        <div class="proportion">({{ (chartData.adultsByGender.datasets[0].data[idx] / stats.participants.adults.count) * 100 | number:'1.1-1' }}%)</div>
+      </div>
+    </div>
+    <canvas chartJs
+            style="height:100px;max-width:100px;padding:10px;"
+            type="pie"
+            [labels]="chartData.adultsByGender.labels"
+            [datasets]="chartData.adultsByGender.datasets"
+            [options]="chartData.adultsByGender.options"></canvas>
+  </div>
+
+  <div class="facet" style="width:49%;float:right">
+    <div class="legend" style="flex: 1 0 auto; margin-bottom: 0">
+      <h3>Students by Gender</h3>
+      <div *ngFor="let label of chartData.studentsByGender.labels; let idx = index" class="legend-row">
+        <div class="swatch" [style.background-color]="chartData.studentsByGender.datasets[0].backgroundColor[idx]"></div>
+        <div class="label">{{ label }}</div>
+        <div class="value">{{ chartData.studentsByGender.datasets[0].data[idx] | number }}</div>
+        <div class="proportion">({{ (chartData.studentsByGender.datasets[0].data[idx] / stats.participants.students.count) * 100 | number:'1.1-1' }}%)</div>
+      </div>
+    </div>
+    <canvas chartJs
+            style="height:100px;max-width:100px;padding:10px;"
+            type="pie"
+            [labels]="chartData.studentsByGender.labels"
+            [datasets]="chartData.studentsByGender.datasets"
+            [options]="chartData.studentsByGender.options"></canvas>
+  </div>
+
+  <div style="width: 50%; float: left;">
+    <canvas chartJs
+            style="height:300px"
+            type="horizontalBar"
+            [labels]="chartData.studentsByGradeLevel.labels"
+            [datasets]="chartData.studentsByGradeLevel.datasets"
+            [options]="chartData.studentsByGradeLevel.options"
+            [legend]="false"
+            [title]="'By Grade Level'"></canvas>
+  </div>
+
+  <div style="width: 49%; float: right;position:relative;min-height:200px;padding-top:20px">
+    <div *ngIf="reloading" class="reload-mask">
+      <i class="fa fa-spin fa-spinner"></i>
+    </div>
+    <button class="button-style" (click)="getAnalysis()">Analyze Turns</button>
+    <span *ngIf="reloading" style="float:right">{{ reloadingTimer }} seconds elapsed...</span>
+    <div *ngIf="analysis">
+      <p>Boys -- Avg. Turn Length: {{ analysis.boys.avgLength | number }} words (Total Turns: {{ analysis.boys.turns | number }})</p>
+      <p>Girls -- Avg. Turn Length: {{ analysis.girls.avgLength | number }} words (Total Turns: {{ analysis.girls.turns | number }})</p>
+    </div>
+  </div>
 
 </div>
-
-<div *ngIf="statsLoaded" style="width: 50%; float: left;">
-  <canvas chartJs
-          style="height:300px"
-          type="horizontalBar"
-          [labels]="chartData.subjectArea.labels"
-          [datasets]="chartData.subjectArea.datasets"
-          [options]="chartData.subjectArea.options"
-          [legend]="false"
-          [title]="'By Subject Area'"></canvas>
-</div>
-
-<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
-  <canvas chartJs
-          style="height:200px"
-          type="pie"
-          [labels]="chartData.hasRecording.labels"
-          [datasets]="chartData.hasRecording.datasets"
-          [options]="chartData.hasRecording.options"
-          [legend]="{'position':'bottom'}"
-          [title]="'Has Recording?'"></canvas>
-</div>
-
-<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
-  <canvas chartJs
-          style="height:200px"
-          type="pie"
-          [labels]="chartData.hasElls.labels"
-          [datasets]="chartData.hasElls.datasets"
-          [options]="chartData.hasElls.options"
-          [legend]="{'position':'bottom'}"
-          [title]="'Has Ells?'"></canvas>
-</div>
-
-<hr>
-<h3>Participants in these Samples</h3>
-
-<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
-  <canvas chartJs
-          style="height:200px"
-          type="pie"
-          [labels]="chartData.adultsByGender.labels"
-          [datasets]="chartData.adultsByGender.datasets"
-          [options]="chartData.adultsByGender.options"
-          [legend]="{'position':'bottom'}"
-          [title]="'Adults By Gender'"></canvas>
-</div>
-
-<div *ngIf="statsLoaded" style="width: 16.66%; float: left;">
-  <canvas chartJs
-          style="height:200px"
-          type="pie"
-          [labels]="chartData.studentsByGender.labels"
-          [datasets]="chartData.studentsByGender.datasets"
-          [options]="chartData.studentsByGender.options"
-          [legend]="{'position':'bottom'}"
-          [title]="'Students By Gender'"></canvas>
-</div>
-
-<div *ngIf="statsLoaded" style="width: 50%; float: left;">
-  <canvas chartJs
-          style="height:300px"
-          type="horizontalBar"
-          [labels]="chartData.studentsByGradeLevel.labels"
-          [datasets]="chartData.studentsByGradeLevel.datasets"
-          [options]="chartData.studentsByGradeLevel.options"
-          [legend]="false"
-          [title]="'By Subject Area'"></canvas>
-</div>
-
 <!--div class="reload-mask" *ngIf="samplesListService.reloading || reloading">
   <i class="fa fa-spin fa-spinner"></i>
 </div-->

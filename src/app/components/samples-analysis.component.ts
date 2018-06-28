@@ -41,8 +41,10 @@ export class SamplesAnalysisComponent {
   @Input() parentComponent: any;
 
   public chartJsLoaded = false;
-  public statsLoaded = false;
-  public reloading;
+  public stats: any;
+  public analysis: any;
+  public reloading = false;
+  public reloadingTimer = 0;
 
   private ulColors = {
     cardinal: '#8c1515',
@@ -76,7 +78,7 @@ export class SamplesAnalysisComponent {
         backgroundColor: Object.values(this.ulColors)
       }],
       labels: ['all', 'some', 'none'],
-      options: {responsive: true, maintainAspectRatio: false}
+      options: {responsive: false, maintainAspectRatio: false}
     },
     adultsByGender: {
       datasets: [{
@@ -106,10 +108,39 @@ export class SamplesAnalysisComponent {
 
 
   private subjectAreas = SubjectArea;
+  // FIXME: the whole system of grade-level keys (and subject areas too)
+  //        needs to be overhauled, and then this won't be necessary,
+  //        but, in the interests of a quick fix...
+  // private gradeLevels = GradeLevel;
+  private gradeLevels = new Map();
 
   constructor(
     private apiService: ApiService,
-    private changeDetectorRef: ChangeDetectorRef) { }
+    private changeDetectorRef: ChangeDetectorRef) {
+
+    this.gradeLevels.set('unknownElementary', 'Unknown (Elementary)');
+    this.gradeLevels.set('unknownMiddleschool', 'Unknown (Middle School)');
+    this.gradeLevels.set('unknownHighschool', 'Unknown (High School)');
+    this.gradeLevels.set('unknown', 'Unknown');
+    this.gradeLevels.set('preK', 'Pre-Kindergarden');
+    this.gradeLevels.set('k', 'Kindergarden');
+    this.gradeLevels.set('one', 'First Grade');
+    this.gradeLevels.set('two', 'Second Grade');
+    this.gradeLevels.set('three', 'Third Grade');
+    this.gradeLevels.set('four', 'Fourth Grade');
+    this.gradeLevels.set('five', 'Fifth Grade');
+    this.gradeLevels.set('six', 'Sixth Grade');
+    this.gradeLevels.set('seven', 'Seventh Grade');
+    this.gradeLevels.set('eight', 'Eighth Grade');
+    this.gradeLevels.set('nine', 'Ninth Grade');
+    this.gradeLevels.set('ten', 'Tenth Grade');
+    this.gradeLevels.set('eleven', 'Eleventh Grade');
+    this.gradeLevels.set('twelve', 'Twelfth Grade');
+    this.gradeLevels.set('twelvePlus', 'Beyond Twelfth Grade');
+
+    this.chartData.studentsByGradeLevel.labels = Array.from(this.gradeLevels.values());
+
+  }
 
   ngOnInit() {
 
@@ -227,10 +258,8 @@ export class SamplesAnalysisComponent {
       backgroundColor: Object.values(this.ulColors)
     }];
 
-    const gradeLeves = this.mapAndSortDict(data.participants.students.gradeLevel);
-    this.chartData.studentsByGradeLevel.labels = gradeLeves.map(obj => obj.label);
     this.chartData.studentsByGradeLevel.datasets = [{
-      data: gradeLeves.map(obj => obj.count),
+      data: Array.from(this.gradeLevels.keys()).map(key => data.participants.students.gradeLevel[key]),
       backgroundColor: this.ulColors.cardinal
     }];
   }
@@ -245,7 +274,27 @@ export class SamplesAnalysisComponent {
         this.mapHasEllsStatistics(data);
         this.mapAdultsStatistics(data);
         this.mapStudentsStatistics(data);
-        this.statsLoaded = true;
+        this.stats = data;
+        this.analysis = null;
+        this.changeDetectorRef.detectChanges();
+        this.reloading = false;
+      }
+    );
+  }
+
+  getAnalysis() {
+    this.reloading = true;
+    this.reloadingTimer = 0;
+    let startTime = Math.floor(Date.now() / 1000);
+    let timer = setInterval(() => {
+      this.reloadingTimer = Math.floor(Date.now() / 1000) - startTime;
+      //++this.reloadingTimer;
+    }, 100);
+
+    this.apiService.getSampleAnalysis(this.parentComponent.filters).subscribe(
+      data => {
+        clearInterval(timer);
+        this.analysis = data;
         this.changeDetectorRef.detectChanges();
         this.reloading = false;
       }
