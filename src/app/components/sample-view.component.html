@@ -18,7 +18,7 @@
          uiTooltipPosition="right"><i class="fa fa-link"></i></a>
       <p class="submission-details">Submitted on <span>{{sample?.submittedAt | date}}</span></p>
     </div>
-    <div class="recording">
+    <div *ngIf="showRecording" class="recording">
       <span *ngIf="!sample.recording.recordingFile">[no audio recording available]</span>
       <audio *ngIf="sample.recording.recordingFile" [src]="sample.recording.recordingFile | uiSafe: 'url'" controls></audio>
       <br>
