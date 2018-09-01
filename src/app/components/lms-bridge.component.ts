@@ -333,7 +333,8 @@ export class LmsBridgeComponent implements OnInit {
               queryParams: {
                 collectionSource: JSON.stringify({course: course, session: session, assignment: assignment}),
                 toolUuid: catToolUuid,
-                sampleUuid: responseValue
+                sampleUuid: responseValue,
+                showEvaluations: false
               },
               relativeTo: this.route,
               skipLocationChange: true,
@@ -345,7 +346,8 @@ export class LmsBridgeComponent implements OnInit {
             let navigationExtras: NavigationExtras = {
               relativeTo: this.route,
               skipLocationChange: true,
-              replaceUrl: false
+              replaceUrl: false,
+              queryParams: {showEvaluations: false}
             };
             this.router.navigate(['sample', responseValue], navigationExtras);
           }
