@@ -4,7 +4,7 @@ html.lms-bridge {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transition: opacity .4s ease;
+    // transition: opacity .4s ease;
   }
 
   .router-outlet {
@@ -23,6 +23,17 @@ html.lms-bridge {
       margin: 25px;
       padding: 20px;
       text-align: center;
+    }
+
+    .skip-eval-button {
+      text-align: right;
+      margin: 0 1%;
+
+      button {
+        font-size: 16px;
+        line-height: 28px;
+        height: 28px;
+      }
     }
   }
 
@@ -137,5 +148,26 @@ html.lms-bridge {
     @extend %animation-pulse;
     font-size: 1.2em;
     font-weight: bold;
+  }
+
+}
+
+.bridge-reload-mask {
+  background-color: rgba(255, 255, 255, .8);
+  bottom: 0;
+  color: rgba(0, 0, 0, .54);
+  font-size: 2em;
+  left: 0;
+  padding-left: inherit;
+  padding-right: inherit;
+  position: absolute !important;
+  right: 0;
+  text-align: center;
+  top: 0;
+
+  i {
+    font-size: 80px;
+    margin-top: 40px;
+    position: relative;
   }
 }

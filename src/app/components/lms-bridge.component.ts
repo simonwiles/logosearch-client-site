@@ -33,6 +33,7 @@ export class LmsBridgeComponent implements OnInit {
   public notice: SafeHtml;
   public hideRouter = false;
   public curEvalSampleUuid: string;
+  public busy = false;
 
   private assignmentIdToken: string;
   private peerEvalParams = {
@@ -101,7 +102,6 @@ export class LmsBridgeComponent implements OnInit {
 
         } else if (this.routing === 'peerEvaluation') {
 
-          document.querySelector('body').style.opacity = '0';
           window.parent.postMessage(JSON.stringify({'command': 'scrollToTop'}), this.remoteHost);
           const [course, session, assignment, type] = this.assignmentIdToken.split(':');
           this.peerEvaluation(course, session, assignment);
@@ -159,7 +159,6 @@ export class LmsBridgeComponent implements OnInit {
     this.router.events.subscribe(
       event => {
         if (event instanceof NavigationEnd) {
-          document.querySelector('body').style.opacity = '1';
           Array.from(document.querySelectorAll('.assignment-completion-status')).forEach(
             elem => {
               elem.classList.remove('bounce');
@@ -436,10 +435,12 @@ export class LmsBridgeComponent implements OnInit {
     const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
     const evaluationsRequired = 3;
 
+    this.busy = true;
     this.apiService.getPeerReview(sampleUuid, evaluationsRequired, skippedEvaluations).subscribe(
       response => {
 
         if (response.evaluationsForAssignment >= evaluationsRequired) {
+          setTimeout(() => this.busy = false, 300);
           this.hideRouter = true;
           this.assignmentCompletionStatus = {
             class: 'valid',
@@ -478,6 +479,7 @@ export class LmsBridgeComponent implements OnInit {
           };
           this.router.navigate(['evaluate'], navigationExtras);
           this.curEvalSampleUuid = response.nextSample;
+          setTimeout(() => this.busy = false, 300);
 
         } else {
           this.hideRouter = true;
@@ -494,11 +496,10 @@ export class LmsBridgeComponent implements OnInit {
   }
 
 
-  skipEvaluation() {
-    console.log('skipping');
+  skipEvaluation(btnElem) {
     this.peerEvalParams.skippedEvaluations.add(this.curEvalSampleUuid);
-    console.log(this.peerEvalParams);
     this.doPeerEvaluation(this.peerEvalParams);
+    btnElem.blur();
   }
 
 }
