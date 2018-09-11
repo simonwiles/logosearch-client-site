@@ -273,13 +273,14 @@ export class ApiService {
   }
 
 
-  public getPeerReview(sampleUuid: string, required?: number): Observable<any> {
+  public getPeerReview(sampleUuid: string, required: number, skippedEvaluations: Set<string>): Observable<any> {
 
     const getPeerReviewURI: string = environment.apiURL + 'peer-review/';
 
     const params: URLSearchParams = new URLSearchParams('', new DjangoQueryEncoder());
     params.set('sampleUuid', sampleUuid);
     params.set('required', required.toString());
+    params.set('skippedEvaluations', Array.from(skippedEvaluations).join(','));
 
     const options: RequestOptions = new RequestOptions({ headers: this.headers, search: params});
 

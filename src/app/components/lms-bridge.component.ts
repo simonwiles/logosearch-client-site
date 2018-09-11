@@ -32,8 +32,15 @@ export class LmsBridgeComponent implements OnInit {
   public assignmentCompletionStatus: any;
   public notice: SafeHtml;
   public hideRouter = false;
+  public curEvalSampleUuid: string;
+  public busy = false;
 
   private assignmentIdToken: string;
+  private peerEvalParams = {
+    sampleUuid: null,
+    collectionSource: null,
+    skippedEvaluations: new Set()
+  };
   private remoteHost: string;
   private routing: 'selfEvaluation'|'peerEvaluation'|'peerEvaluationFinal';
 
@@ -95,7 +102,6 @@ export class LmsBridgeComponent implements OnInit {
 
         } else if (this.routing === 'peerEvaluation') {
 
-          document.querySelector('body').style.opacity = '0';
           window.parent.postMessage(JSON.stringify({'command': 'scrollToTop'}), this.remoteHost);
           const [course, session, assignment, type] = this.assignmentIdToken.split(':');
           this.peerEvaluation(course, session, assignment);
@@ -106,7 +112,7 @@ export class LmsBridgeComponent implements OnInit {
           this.assignmentCompletionStatus = this.statuses.assignmentComplete;
           this.sendData('[Peer-Evaluation Complete]');
           this.hideRouter = true;
-
+          this.curEvalSampleUuid = '';
         }
       }
     );
@@ -153,7 +159,6 @@ export class LmsBridgeComponent implements OnInit {
     this.router.events.subscribe(
       event => {
         if (event instanceof NavigationEnd) {
-          document.querySelector('body').style.opacity = '1';
           Array.from(document.querySelectorAll('.assignment-completion-status')).forEach(
             elem => {
               elem.classList.remove('bounce');
@@ -375,10 +380,6 @@ export class LmsBridgeComponent implements OnInit {
 
   peerEvaluation(course, session, assignment) {
 
-    // the CAT (it's the only tool we have so far, so...)
-    const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
-    const evaluationsRequired = 3;
-
     // get the user's own submission in this cohort/assignment
     //  (there really should be only one), and check that the
     //  self-evaluation has been completed.
@@ -410,7 +411,9 @@ export class LmsBridgeComponent implements OnInit {
                 `;
                 return;
               } else {
-                doPeerEvaluation(sample.uuid);
+                this.peerEvalParams.sampleUuid = sample.uuid;
+                this.peerEvalParams.collectionSource = JSON.stringify({course: course, session: session, assignment: assignment});
+                this.doPeerEvaluation(this.peerEvalParams);
               }
             }
           );
@@ -424,65 +427,79 @@ export class LmsBridgeComponent implements OnInit {
         }
       }
     );
+  }
 
-    let doPeerEvaluation = (sampleUuid) => {
+  doPeerEvaluation = ({sampleUuid, collectionSource, skippedEvaluations}) => {
 
-      this.apiService.getPeerReview(sampleUuid, evaluationsRequired).subscribe(
-        response => {
+    // the CAT (it's the only tool we have so far, so...)
+    const catToolUuid = '9a3b4f7b-50a7-4ab5-a2fb-bebdb780a2c5';
+    const evaluationsRequired = 3;
 
-          if (response.evaluationsForAssignment >= evaluationsRequired) {
-            this.hideRouter = true;
-            this.assignmentCompletionStatus = {
-              class: 'valid',
-              icon: 'sliders',
-              content: `
-                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
-                <br>Your peer-evaluation assignment is now complete!  Thank you!
-              `
-            }
-          } else if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
-            if (response.evaluationsForAssignment === evaluationsRequired - 1) {
-              // this is the last one
-              this.routing = 'peerEvaluationFinal';
-            } else {
-              this.routing = 'peerEvaluation';
-            }
-            this.assignmentCompletionStatus = {
-              class: 'warning',
-              icon: 'sliders',
-              content: `
-                You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
-                <br>Please submit your review for the submission shown below.
-              `
-            };
+    this.busy = true;
+    this.apiService.getPeerReview(sampleUuid, evaluationsRequired, skippedEvaluations).subscribe(
+      response => {
 
-            let navigationExtras: NavigationExtras = {
-              queryParams: {
-                collectionSource: JSON.stringify({course: course, session: session, assignment: assignment}),
-                toolUuid: catToolUuid,
-                sampleUuid: response.nextSample,
-                routing: this.routing
-              },
-              relativeTo: this.route,
-              skipLocationChange: true,
-              replaceUrl: false
-            };
-            this.router.navigate(['evaluate'], navigationExtras);
-
-          } else {
-            this.hideRouter = true;
-            this.assignmentCompletionStatus = {
-              class: 'warning',
-              icon: 'sliders',
-              content: `
-                There are no suitable samples available for peer-evaluation at present.  Please check back later.
-              `
-            };
+        if (response.evaluationsForAssignment >= evaluationsRequired) {
+          setTimeout(() => this.busy = false, 300);
+          this.hideRouter = true;
+          this.assignmentCompletionStatus = {
+            class: 'valid',
+            icon: 'sliders',
+            content: `
+              You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
+              <br>Your peer-evaluation assignment is now complete!  Thank you!
+            `
           }
-        }
-      );
-    }
+        } else if (response.evaluationsForAssignment < evaluationsRequired && response.nextSample) {
+          if (response.evaluationsForAssignment === evaluationsRequired - 1) {
+            // this is the last one
+            this.routing = 'peerEvaluationFinal';
+          } else {
+            this.routing = 'peerEvaluation';
+          }
+          this.assignmentCompletionStatus = {
+            class: 'warning',
+            icon: 'sliders',
+            content: `
+              You have completed <span class="evals-completed">${response.evaluationsForAssignment}</span> of your 3 peer-evaluations.
+              <br>Please submit your review for the submission shown below.
+            `
+          };
 
+          let navigationExtras: NavigationExtras = {
+            queryParams: {
+              collectionSource: collectionSource,
+              toolUuid: catToolUuid,
+              sampleUuid: response.nextSample,
+              routing: this.routing
+            },
+            relativeTo: this.route,
+            skipLocationChange: true,
+            replaceUrl: false
+          };
+          this.router.navigate(['evaluate'], navigationExtras);
+          this.curEvalSampleUuid = response.nextSample;
+          setTimeout(() => this.busy = false, 300);
+
+        } else {
+          this.hideRouter = true;
+          this.assignmentCompletionStatus = {
+            class: 'warning',
+            icon: 'sliders',
+            content: `
+              There are no suitable samples available for peer-evaluation at present.  Please check back later.
+            `
+          };
+        }
+      }
+    );
+  }
+
+
+  skipEvaluation(btnElem) {
+    this.peerEvalParams.skippedEvaluations.add(this.curEvalSampleUuid);
+    this.doPeerEvaluation(this.peerEvalParams);
+    btnElem.blur();
   }
 
 }
