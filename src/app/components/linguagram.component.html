@@ -138,7 +138,7 @@
           <div formArrayName="assessedLevel" *ngFor="let standard of linguagramForm.controls['assessedLevel'].controls; let i=index">
             <div class="input-field" [formGroupName]="i">
               <select formControlName="standard">
-                <option value="" disabled selected >standard...</option>
+                <option disabled selected value=null></option>
                 <option value="access">ACCESS/WIDA</option>
                 <option value="azella">AZELLA</option>
                 <option value="celdt">CELDT</option>
@@ -152,7 +152,7 @@
             </div>
             <div class="input-field" [formGroupName]="i">
               <select formControlName="level" placeholder="level">
-                <option value="" disabled selected>level...</option>
+                <option disabled selected value=null></option>
                 <option *ngFor="let level of languageStandardLevels[linguagramForm.controls['assessedLevel'].controls[i].controls.standard.value]"
                         [value]="level">{{level}}</option>
               </select>

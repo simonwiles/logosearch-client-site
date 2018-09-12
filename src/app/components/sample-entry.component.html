@@ -201,6 +201,7 @@
               </td>
               <td class="input-field" [formGroupName]="i">
                 <select formControlName="gender">
+                  <option disabled selected value=null></option>
                   <option *ngFor="let gender of genders"
                           [value]="gender.value">{{gender.label}}</option>
                 </select>
@@ -235,6 +236,7 @@
               </td>
               <td class="input-field" [formGroupName]="i">
                 <select formControlName="gradeLevel">
+                  <option disabled selected value=null></option>
                   <option *ngFor="let gradeLevel of gradeLevels"
                           [value]="gradeLevel.value">{{gradeLevel.label}}</option>
                 </select>
@@ -288,6 +290,7 @@
               </td>
               <td class="gender input-field" [formGroupName]="i">
                 <select formControlName="gender">
+                  <option disabled selected value=null></option>
                   <option *ngFor="let gender of genders"
                           [value]="gender.value">{{gender.label}}</option>
                 </select>
@@ -401,6 +404,7 @@
               <td>{{i + 1}}</td>
               <td class="input-field" [formGroupName]="i">
                 <select formControlName="speaker" class="turn-participant">
+                  <option disabled selected value=null></option>
                   <option *ngFor="let student of participantsForm.get('students').controls"
                           [value]="student.controls.uuid.value">{{student.controls.nickname.value}}</option>
                   <option *ngFor="let adult of participantsForm.get('adults').controls"
