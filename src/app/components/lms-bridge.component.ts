@@ -145,7 +145,7 @@ export class LmsBridgeComponent implements OnInit {
     // if we're in an iframe (when wouldn't we be?), listen for resize events on document.body,
     //  and post document.body.scrollHeight to the parent script
     if (window !== parent.window) {
-      window.addResizeListener(
+      window.addResizeListener(  // see src/lib/resize-listener.js
         document.body,
         () => window.parent.postMessage(
           JSON.stringify({'command': 'setHeight', value: document.body.scrollHeight}),
@@ -440,7 +440,7 @@ export class LmsBridgeComponent implements OnInit {
       response => {
 
         if (response.evaluationsForAssignment >= evaluationsRequired) {
-          setTimeout(() => this.busy = false, 300);
+          this.busy = false;
           this.hideRouter = true;
           this.assignmentCompletionStatus = {
             class: 'valid',
