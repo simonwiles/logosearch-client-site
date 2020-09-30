@@ -10,6 +10,7 @@
     "hmr": "ng serve --hmr --environment=hmr --ssl 1 --ssl-key /etc/ssl/private/localhost.selfsigned.key --ssl-cert /etc/ssl/certs/localhost.selfsigned.crt",
     "vbox": "ng serve --environment=vbox --ssl 1 --ssl-key /etc/ssl/private/localhost.selfsigned.key --ssl-cert /etc/ssl/certs/localhost.selfsigned.crt  --host 0.0.0.0 --disable-host-check",
     "build": "ng build",
+    "build:production": "ng build --target=production",
     "lint": "ng lint"
   },
   "dependencies": {
