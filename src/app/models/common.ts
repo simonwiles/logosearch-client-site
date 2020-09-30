@@ -74,6 +74,7 @@ export const Language = {
   ipk: { label: 'Inupiaq', value: 'ipk' },
   isl: { label: 'Icelandic', value: 'isl' },
   ita: { label: 'Italian', value: 'ita' },
+  ium: { label: 'Iu Mien', value: 'ium' },
   jav: { label: 'Javanese', value: 'jav' },
   jpn: { label: 'Japanese', value: 'jpn' },
   kal: { label: 'Kalaallisut (Greenlandic)', value: 'kal' },
